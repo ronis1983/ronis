@@ -5,15 +5,28 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: #0a0a0a;
 }
 
 .hero-bg {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(ellipse at 20% 50%, rgba(255, 255, 255, 0.04) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 20%, rgba(180, 140, 100, 0.08) 0%, transparent 50%);
+  background-image: url('https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=1800&q=85');
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.05);
+  transition: transform 8s ease;
+}
+
+.hero-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.55) 0%,
+    rgba(0,0,0,0.3) 50%,
+    rgba(0,0,0,0.75) 100%
+  );
 }
 
 .hero-content {
@@ -23,42 +36,48 @@
 }
 
 .hero-subtitle {
-  font-size: 0.85rem;
-  letter-spacing: 0.35em;
-  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.8rem;
+  letter-spacing: 0.45em;
+  color: rgba(255, 255, 255, 0.6);
   text-transform: uppercase;
   margin-bottom: 24px;
+  font-family: 'DM Sans', sans-serif;
 }
 
 .hero-title {
   font-size: clamp(3.5rem, 9vw, 8rem);
-  font-weight: 800;
+  font-weight: 300;
   color: #fff;
   line-height: 1.05;
   margin: 0 0 32px;
+  font-family: 'Cormorant Garamond', serif;
+  letter-spacing: 0.02em;
 }
 
 .hero-title-accent {
   color: transparent;
-  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.55);
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.7);
+  font-style: italic;
 }
 
 .hero-description {
-  font-size: 1.1rem;
-  color: rgba(255, 255, 255, 0.5);
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.55);
   margin-bottom: 48px;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
+  font-family: 'DM Sans', sans-serif;
 }
 
 .hero-btn {
   padding: 16px 48px;
-  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.7);
   background: transparent;
   color: #fff;
-  font-size: 0.9rem;
-  letter-spacing: 0.2em;
+  font-size: 0.8rem;
+  letter-spacing: 0.25em;
   text-transform: uppercase;
   cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
   transition: background 0.3s, color 0.3s;
 }
 

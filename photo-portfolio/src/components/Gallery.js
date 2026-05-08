@@ -3,12 +3,30 @@ import { motion, AnimatePresence } from 'framer-motion';
 import './Gallery.css';
 
 const photos = [
-  { id: 1, title: 'שקיעה בים', category: 'נוף', color: '#1a1a2e', accent: '#e8c97a' },
-  { id: 2, title: 'עיר בלילה', category: 'עירוני', color: '#0d1b2a', accent: '#4fc3f7' },
-  { id: 3, title: 'פורטרט', category: 'אנשים', color: '#1c1c1c', accent: '#f48fb1' },
-  { id: 4, title: 'יער קסום', category: 'טבע', color: '#0a1f0a', accent: '#81c784' },
-  { id: 5, title: 'מדבר זהוב', category: 'נוף', color: '#2d1b00', accent: '#ffb74d' },
-  { id: 6, title: 'אדריכלות', category: 'עירוני', color: '#12121f', accent: '#ce93d8' },
+  {
+    id: 1, title: 'שקיעה בים', category: 'נוף',
+    img: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80',
+  },
+  {
+    id: 2, title: 'עיר בלילה', category: 'עירוני',
+    img: 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=800&q=80',
+  },
+  {
+    id: 3, title: 'פורטרט', category: 'אנשים',
+    img: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=800&q=80',
+  },
+  {
+    id: 4, title: 'יער קסום', category: 'טבע',
+    img: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=800&q=80',
+  },
+  {
+    id: 5, title: 'מדבר זהוב', category: 'נוף',
+    img: 'https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=800&q=80',
+  },
+  {
+    id: 6, title: 'אדריכלות', category: 'עירוני',
+    img: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&q=80',
+  },
 ];
 
 const categories = ['הכל', 'נוף', 'עירוני', 'אנשים', 'טבע'];
@@ -79,11 +97,8 @@ function Gallery() {
             variants={itemVariants}
             whileHover={{ scale: 1.03, y: -6 }}
             onClick={() => setSelected(photo)}
-            style={{ background: `linear-gradient(135deg, ${photo.color} 0%, #1a1a1a 100%)` }}
           >
-            <div className="photo-placeholder">
-              <div className="photo-accent-circle" style={{ background: photo.accent }} />
-            </div>
+            <img src={photo.img} alt={photo.title} className="photo-img" />
             <div className="photo-info">
               <span className="photo-category">{photo.category}</span>
               <h3 className="photo-title">{photo.title}</h3>
@@ -115,15 +130,11 @@ function Gallery() {
               exit={{ scale: 0.7, opacity: 0 }}
               transition={{ type: 'spring', stiffness: 260, damping: 22 }}
               onClick={e => e.stopPropagation()}
-              style={{ background: `linear-gradient(135deg, ${selected.color} 0%, #1a1a1a 100%)` }}
             >
-              <div className="lightbox-img-area">
-                <div className="lightbox-circle" style={{ background: selected.accent }} />
-              </div>
+              <img src={selected.img} alt={selected.title} className="lightbox-img" />
               <div className="lightbox-info">
                 <span className="photo-category">{selected.category}</span>
                 <h2>{selected.title}</h2>
-                <p>צילום מקצועי ברמה הגבוהה ביותר</p>
               </div>
               <button className="lightbox-close" onClick={() => setSelected(null)}>✕</button>
             </motion.div>
