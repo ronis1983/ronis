@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LENS · פורטפוליו צילום</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <!-- AOS (Animate On Scroll) -->
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-sans: 'DM Sans', sans-serif;
+      --bg: #0a0a0a;
+      --bg2: #0d0d0d;
+      --white: #ffffff;
+      --muted: rgba(255,255,255,0.45);
+      --border: rgba(255,255,255,0.12);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--font-sans);
+      overflow-x: hidden;
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 26px 60px;
+      transition: background 0.4s, padding 0.4s, backdrop-filter 0.4s;
+    }
+
+    nav.scrolled {
+      background: rgba(10,10,10,0.88);
+      backdrop-filter: blur(14px);
+      padding: 16px 60px;
+    }
+
+    .nav-logo {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: 1.5rem;
+      letter-spacing: 0.45em;
+      color: var(--white);
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 40px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.82rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      transition: color 0.25s;
+    }
+
+    .nav-links a:hover { color: var(--white); }
+
+    /* ── HERO ── */
+    #hero {
+      position: relative;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: url('https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=1800&q=85') center/cover no-repeat;
+      transform: scale(1.08);
+      animation: heroZoom 12s ease forwards;
+    }
+
+    @keyframes heroZoom {
+      to { transform: scale(1); }
+    }
+
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.25) 50%, rgba(0,0,0,0.72) 100%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 0 20px;
+      animation: heroFadeUp 1.2s ease both;
+    }
+
+    @keyframes heroFadeUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-label {
+      font-size: 0.78rem;
+      letter-spacing: 0.45em;
+      color: rgba(255,255,255,0.55);
+      text-transform: uppercase;
+      margin-bottom: 22px;
+      display: block;
+      animation: heroFadeUp 1s 0.2s ease both;
+    }
+
+    .hero-title {
+      font-family: var(--font-serif);
+      font-size: clamp(3.5rem, 9vw, 8rem);
+      font-weight: 300;
+      line-height: 1.05;
+      color: var(--white);
+      margin-bottom: 28px;
+      animation: heroFadeUp 1s 0.4s ease both;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(255,255,255,0.65);
+    }
+
+    .hero-desc {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.08em;
+      margin-bottom: 44px;
+      animation: heroFadeUp 1s 0.6s ease both;
+    }
+
+    .hero-btn {
+      display: inline-block;
+      padding: 15px 48px;
+      border: 1px solid rgba(255,255,255,0.65);
+      color: var(--white);
+      text-decoration: none;
+      font-size: 0.78rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      transition: background 0.3s, color 0.3s;
+      animation: heroFadeUp 1s 0.8s ease both;
+    }
+
+    .hero-btn:hover {
+      background: var(--white);
+      color: #0a0a0a;
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255,255,255,0.3);
+      font-size: 1.3rem;
+      animation: bounce 2s 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(10px); }
+    }
+
+    /* ── SECTION SHARED ── */
+    section { padding: 120px 60px; }
+
+    .section-label {
+      display: block;
+      font-size: 0.78rem;
+      letter-spacing: 0.4em;
+      color: rgba(255,255,255,0.3);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 300;
+      color: var(--white);
+      margin-bottom: 0;
+    }
+
+    /* ── GALLERY ── */
+    #gallery { background: var(--bg); }
+
+    .gallery-header { text-align: center; margin-bottom: 48px; }
+
+    .filters {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 56px;
+    }
+
+    .filter-btn {
+      padding: 9px 26px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.82rem;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      border-radius: 30px;
+      font-family: var(--font-sans);
+      transition: all 0.25s;
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+      border-color: var(--white);
+      color: var(--white);
+      background: rgba(255,255,255,0.07);
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 22px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .photo-card {
+      position: relative;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      aspect-ratio: 4/3;
+      background: #111;
+    }
+
+    .photo-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.55s ease;
+    }
+
+    .photo-card:hover img { transform: scale(1.07); }
+
+    .photo-card-info {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 18px 20px;
+      background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, transparent 100%);
+      transform: translateY(8px);
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+    }
+
+    .photo-card:hover .photo-card-info {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .photo-card-cat {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .photo-card-title {
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      font-weight: 400;
+      color: var(--white);
+    }
+
+    /* ── LIGHTBOX ── */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.9);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(8px);
+    }
+
+    .lightbox.open { display: flex; }
+
+    .lightbox-box {
+      position: relative;
+      max-width: min(700px, 92vw);
+      border-radius: 12px;
+      overflow: hidden;
+      animation: lbIn 0.35s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+
+    @keyframes lbIn {
+      from { opacity: 0; transform: scale(0.75); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    .lightbox-box img {
+      width: 100%;
+      max-height: 72vh;
+      object-fit: cover;
+      display: block;
+    }
+
+    .lightbox-caption {
+      padding: 22px 26px;
+      background: rgba(10,10,10,0.95);
+    }
+
+    .lightbox-caption span {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .lightbox-caption h3 {
+      font-family: var(--font-serif);
+      font-size: 1.6rem;
+      font-weight: 300;
+      color: var(--white);
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 14px; right: 14px;
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.12);
+      border: none;
+      color: var(--white);
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .lightbox-close:hover { background: rgba(255,255,255,0.25); }
+
+    /* ── ABOUT ── */
+    #about { background: var(--bg2); }
+
+    .about-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .about-frame {
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      aspect-ratio: 3/4;
+    }
+
+    .about-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .about-text .section-title { margin-bottom: 24px; }
+
+    .about-desc {
+      color: rgba(255,255,255,0.52);
+      font-size: 1rem;
+      line-height: 1.85;
+      margin-bottom: 18px;
+    }
+
+    .stats {
+      display: flex;
+      gap: 40px;
+      margin-top: 40px;
+    }
+
+    .stat-value {
+      display: block;
+      font-family: var(--font-serif);
+      font-size: 2.4rem;
+      font-weight: 300;
+      color: var(--white);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-label {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.38);
+      letter-spacing: 0.1em;
+    }
+
+    /* ── CONTACT ── */
+    #contact { background: var(--bg); }
+
+    .contact-inner {
+      max-width: 620px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .contact-inner .section-title { margin-bottom: 14px; }
+
+    .contact-desc {
+      color: var(--muted);
+      margin-bottom: 48px;
+      font-size: 1rem;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      text-align: right;
+    }
+
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+
+    .form-group label {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.38);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      color: var(--white);
+      padding: 14px 18px;
+      font-size: 0.95rem;
+      border-radius: 8px;
+      outline: none;
+      resize: none;
+      font-family: var(--font-sans);
+      direction: rtl;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus { border-color: rgba(255,255,255,0.38); }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: rgba(255,255,255,0.18); }
+
+    .submit-btn {
+      align-self: center;
+      padding: 15px 48px;
+      border: 1px solid rgba(255,255,255,0.6);
+      background: transparent;
+      color: var(--white);
+      font-size: 0.8rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 6px;
+      font-family: var(--font-sans);
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .submit-btn:hover { background: var(--white); color: #0a0a0a; }
+
+    .success-msg {
+      display: none;
+      color: #81c784;
+      font-size: 1.1rem;
+      padding: 36px;
+      border: 1px solid rgba(129,199,132,0.28);
+      border-radius: 10px;
+      background: rgba(129,199,132,0.05);
+      font-family: var(--font-serif);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.07);
+      text-align: center;
+      padding: 30px;
+      color: rgba(255,255,255,0.2);
+      font-size: 0.82rem;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── HIDDEN (filter) ── */
+    .photo-card.hidden { display: none; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 20px 24px; }
+      nav.scrolled { padding: 14px 24px; }
+      .nav-links { gap: 22px; }
+      section { padding: 80px 24px; }
+      .about-inner { grid-template-columns: 1fr; gap: 40px; }
+      .stats { gap: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav id="navbar">
+    <a class="nav-logo" href="#hero">LENS</a>
+    <ul class="nav-links">
+      <li><a href="#gallery">גלריה</a></li>
+      <li><a href="#about">אודות</a></li>
+      <li><a href="#contact">צור קשר</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <span class="hero-label">פורטפוליו צילום</span>
+      <h1 class="hero-title">
+        רגעים שנשארים<br>
+        <em>לנצח</em>
+      </h1>
+      <p class="hero-desc">כל תמונה מספרת סיפור. כל רגע הוא נצח.</p>
+      <a href="#gallery" class="hero-btn">צפה בגלריה</a>
+    </div>
+    <div class="scroll-indicator">↓</div>
+  </section>
+
+  <!-- GALLERY -->
+  <section id="gallery">
+    <div class="gallery-header" data-aos="fade-up">
+      <span class="section-label">עבודות</span>
+      <h2 class="section-title">גלריה</h2>
+    </div>
+
+    <div class="filters" data-aos="fade-up" data-aos-delay="100">
+      <button class="filter-btn active" data-filter="הכל">הכל</button>
+      <button class="filter-btn" data-filter="נוף">נוף</button>
+      <button class="filter-btn" data-filter="עירוני">עירוני</button>
+      <button class="filter-btn" data-filter="אנשים">אנשים</button>
+      <button class="filter-btn" data-filter="טבע">טבע</button>
+    </div>
+
+    <div class="photo-grid">
+      <div class="photo-card" data-cat="נוף" data-aos="fade-up" data-aos-delay="0">
+        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80" alt="שקיעה בים" loading="lazy" />
+        <div class="photo-card-info">
+          <span class="photo-card-cat">נוף</span>
+          <div class="photo-card-title">שקיעה בים</div>
+        </div>
+      </div>
+      <div class="photo-card" data-cat="עירוני" data-aos="fade-up" data-aos-delay="80">
+        <img src="https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=800&q=80" alt="עיר בלילה" loading="lazy" />
+        <div class="photo-card-info">
+          <span class="photo-card-cat">עירוני</span>
+          <div class="photo-card-title">עיר בלילה</div>
+        </div>
+      </div>
+      <div class="photo-card" data-cat="אנשים" data-aos="fade-up" data-aos-delay="160">
+        <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=800&q=80" alt="פורטרט" loading="lazy" />
+        <div class="photo-card-info">
+          <span class="photo-card-cat">אנשים</span>
+          <div class="photo-card-title">פורטרט</div>
+        </div>
+      </div>
+      <div class="photo-card" data-cat="טבע" data-aos="fade-up" data-aos-delay="0">
+        <img src="https://images.unsplash.com/photo-1448375240586-882707db888b?w=800&q=80" alt="יער קסום" loading="lazy" />
+        <div class="photo-card-info">
+          <span class="photo-card-cat">טבע</span>
+          <div class="photo-card-title">יער קסום</div>
+        </div>
+      </div>
+      <div class="photo-card" data-cat="נוף" data-aos="fade-up" data-aos-delay="80">
+        <img src="https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=800&q=80" alt="מדבר זהוב" loading="lazy" />
+        <div class="photo-card-info">
+          <span class="photo-card-cat">נוף</span>
+          <div class="photo-card-title">מדבר זהוב</div>
+        </div>
+      </div>
+      <div class="photo-card" data-cat="עירוני" data-aos="fade-up" data-aos-delay="160">
+        <img src="https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&q=80" alt="אדריכלות" loading="lazy" />
+        <div class="photo-card-info">
+          <span class="photo-card-cat">עירוני</span>
+          <div class="photo-card-title">אדריכלות</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox">
+    <div class="lightbox-box">
+      <img id="lb-img" src="" alt="" />
+      <div class="lightbox-caption">
+        <span id="lb-cat"></span>
+        <h3 id="lb-title"></h3>
+      </div>
+      <button class="lightbox-close" id="lb-close">✕</button>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="about-inner">
+      <div class="about-frame" data-aos="fade-left">
+        <img src="https://images.unsplash.com/photo-1554048612-b6a482bc67e5?w=800&q=80" alt="צלם" loading="lazy" />
+      </div>
+      <div class="about-text" data-aos="fade-right" data-aos-delay="150">
+        <span class="section-label">אודות</span>
+        <h2 class="section-title">הסיפור שלי</h2>
+        <p class="about-desc">
+          אני מאמין שכל תמונה טובה מתחילה ברגע אמיתי. מאז גיל צעיר צילמתי את העולם דרך עיניים סקרניות — עיר בשעות הקטנות, אור שקיעה על מים, הבעת פנים שאי אפשר לשחזר.
+        </p>
+        <p class="about-desc">
+          הצילום עבורי הוא שפה. כל פריים הוא משפט, וכל אלבום הוא סיפור שלם.
+        </p>
+        <div class="stats">
+          <div data-aos="fade-up" data-aos-delay="200">
+            <span class="stat-value">10+</span>
+            <span class="stat-label">שנות ניסיון</span>
+          </div>
+          <div data-aos="fade-up" data-aos-delay="300">
+            <span class="stat-value">500+</span>
+            <span class="stat-label">לקוחות מרוצים</span>
+          </div>
+          <div data-aos="fade-up" data-aos-delay="400">
+            <span class="stat-value">5000+</span>
+            <span class="stat-label">תמונות צולמו</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="contact-inner" data-aos="fade-up">
+      <span class="section-label">צור קשר</span>
+      <h2 class="section-title">בואו נעבוד יחד</h2>
+      <p class="contact-desc">יש לך פרויקט בראש? אני כאן לשמוע.</p>
+
+      <form id="contact-form">
+        <div class="form-group">
+          <label>שם מלא</label>
+          <input type="text" placeholder="השם שלך" required />
+        </div>
+        <div class="form-group">
+          <label>אימייל</label>
+          <input type="email" placeholder="האימייל שלך" required />
+        </div>
+        <div class="form-group">
+          <label>הודעה</label>
+          <textarea rows="5" placeholder="ספר לי על הפרויקט..." required></textarea>
+        </div>
+        <button type="submit" class="submit-btn">שלח הודעה</button>
+      </form>
+
+      <div class="success-msg" id="success-msg">✓ הודעתך נשלחה בהצלחה!</div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 LENS · כל הזכויות שמורות</p>
+  </footer>
+
+  <!-- AOS -->
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    AOS.init({ duration: 700, easing: 'ease-out', once: true });
+
+    // Navbar scroll effect
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    // Gallery filter
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.dataset.filter;
+        document.querySelectorAll('.photo-card').forEach(card => {
+          card.classList.toggle('hidden', filter !== 'הכל' && card.dataset.cat !== filter);
+        });
+      });
+    });
+
+    // Lightbox
+    const lightbox = document.getElementById('lightbox');
+    const lbImg    = document.getElementById('lb-img');
+    const lbCat    = document.getElementById('lb-cat');
+    const lbTitle  = document.getElementById('lb-title');
+
+    document.querySelectorAll('.photo-card').forEach(card => {
+      card.addEventListener('click', () => {
+        lbImg.src   = card.querySelector('img').src;
+        lbImg.alt   = card.querySelector('.photo-card-title').textContent;
+        lbCat.textContent   = card.querySelector('.photo-card-cat').textContent;
+        lbTitle.textContent = card.querySelector('.photo-card-title').textContent;
+        lightbox.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    const closeLightbox = () => {
+      lightbox.classList.remove('open');
+      document.body.style.overflow = '';
+    };
+
+    document.getElementById('lb-close').addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+    // Contact form
+    document.getElementById('contact-form').addEventListener('submit', e => {
+      e.preventDefault();
+      document.getElementById('contact-form').style.display = 'none';
+      document.getElementById('success-msg').style.display = 'block';
+    });
+  </script>
+</body>
+</html>
