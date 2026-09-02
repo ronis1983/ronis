@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title data-en="Nova Fintech — Case Study | Roni Samet">נובה פינטק — מקרה בוחן | רוני סמט</title>
+  <meta name="description"
+        content="מקרה בוחן: בניית אתר שיווקי ופורטל משקיעים לנובה פינטק, עם ירידה בזמן הטעינה מ־4.8 שניות ל־1.1."
+        data-en-content="Case study: a marketing site and investor portal for Nova Fintech, with load time cut from 4.8s to 1.1s.">
+  <meta name="theme-color" content="#12100E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+  <!-- Marks that JS is running, so .reveal can start hidden. Without this
+       (JS off) nothing is hidden and the page reads in full. -->
+  <script>document.documentElement.classList.add("js");</script>
+
+  <link rel="stylesheet" href="assets/css/site.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23F0A93B'/><text x='50' y='70' font-family='sans-serif' font-size='58' font-weight='900' text-anchor='middle' fill='%2312100E'>R</text></svg>">
+
+  <script src="assets/js/i18n.js" defer></script>
+  <script src="assets/js/main.js" defer></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main" data-en="Skip to content">דלג לתוכן</a>
+
+  <header class="site-header">
+    <div class="shell site-header__inner">
+      <a class="brand" href="index.html">
+        <span class="brand__mark" aria-hidden="true">R</span>
+        <span data-en="Roni Samet" data-placeholder>רוני סמט</span>
+      </a>
+
+      <nav id="primary-nav" class="nav" aria-label="ניווט ראשי" data-en-aria-label="Main navigation">
+        <a class="nav__link" href="index.html#services" data-en="Services">שירותים</a>
+        <a class="nav__link" href="index.html#work" data-en="Work">עבודות</a>
+        <a class="nav__link" href="index.html#process" data-en="Process">תהליך</a>
+        <a class="nav__link" href="index.html#about" data-en="About">אודות</a>
+        <a class="nav__link" href="index.html#contact" data-en="Contact">צור קשר</a>
+      </nav>
+
+      <div class="header__actions">
+        <div class="lang-toggle" role="group" aria-label="בחירת שפה" data-en-aria-label="Choose language">
+          <button type="button" class="lang-toggle__btn" data-lang="he" aria-pressed="true">עב</button>
+          <button type="button" class="lang-toggle__btn" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+        <button type="button" class="menu-btn" aria-expanded="false" aria-controls="primary-nav"
+                aria-label="פתיחת תפריט" data-en-aria-label="Open menu">
+          <span class="menu-btn__bar"></span>
+          <span class="menu-btn__bar"></span>
+          <span class="menu-btn__bar"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ==================================================== Case hero -->
+    <section class="cs-hero">
+      <div class="shell">
+        <p class="eyebrow" data-en="Case study · Web · Fintech">מקרה בוחן · אתר · פינטק</p>
+        <h1 class="cs-hero__title" data-placeholder
+            data-en="Nova Fintech: one design system, four seconds saved">נובה פינטק: מערכת עיצוב אחת, ארבע שניות שנחסכו</h1>
+        <p class="cs-hero__lede"
+           data-en="A marketing site and an investor portal that had drifted into two different products, rebuilt as one — and made fast enough to keep the people it was losing.">
+          אתר שיווקי ופורטל משקיעים שנסחפו לשני מוצרים שונים, נבנו מחדש כמוצר אחד — ונעשו מהירים מספיק כדי להחזיק את האנשים שאבדו בדרך.
+        </p>
+
+        <dl class="cs-facts">
+          <div>
+            <dt data-en="Client">לקוח</dt>
+            <dd data-placeholder data-en="Nova Fintech">נובה פינטק</dd>
+          </div>
+          <div>
+            <dt data-en="Year">שנה</dt>
+            <dd>2025</dd>
+          </div>
+          <div>
+            <dt data-en="Scope">היקף</dt>
+            <dd data-en="UX, UI, front-end">UX, UI, פרונט־אנד</dd>
+          </div>
+          <div>
+            <dt data-en="Duration">משך</dt>
+            <dd data-en="5 weeks">5 שבועות</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="shell">
+        <div class="cs-shot reveal" style="aspect-ratio:21/9"
+             data-en="Project screenshot — replace with assets/work/nova-hero.jpg">
+          צילום מסך של הפרויקט — להחליף ב‑assets/work/nova-hero.jpg
+        </div>
+
+        <!-- ============================================== Challenge -->
+        <div class="cs-body reveal" style="margin-block-start:clamp(2.5rem,1.5rem + 4vw,5rem)">
+          <h2 data-en="The challenge">האתגר</h2>
+          <div>
+            <p data-en="The marketing site and the investor portal had been built two years apart by two different teams. They shared a logo and nothing else — different navigation, different button styles, even different definitions of the same three metrics.">
+              האתר השיווקי ופורטל המשקיעים נבנו בהפרש של שנתיים על ידי שני צוותים שונים. חלקו לוגו ותו לא — ניווט שונה, כפתורים שונים, ואפילו הגדרות שונות לאותם שלושה מדדים.
+            </p>
+            <p data-en="The measurable damage was speed. The marketing home page took 4.8 seconds to become interactive on a mid-range phone, and roughly a third of mobile visitors left before it finished.">
+              הנזק המדיד היה מהירות. עמוד הבית השיווקי הגיע לאינטראקטיביות תוך 4.8 שניות בטלפון בינוני, וכשליש מהמבקרים בנייד עזבו לפני שהוא סיים להיטען.
+            </p>
+          </div>
+        </div>
+
+        <!-- =============================================== Approach -->
+        <div class="cs-body reveal">
+          <h2 data-en="The approach">הגישה</h2>
+          <div>
+            <p data-en="I started by auditing every screen in both products and cataloguing what was actually there: nine button variants, six card styles, four scales of the same typeface. Most of that was accidental, not intentional.">
+              התחלתי בסקירה של כל מסך בשני המוצרים ובקיטלוג של מה שבאמת קיים שם: תשעה סוגי כפתורים, שישה סגנונות כרטיס, ארבעה סקאלות של אותו גופן. רובו נוצר במקרה, לא בכוונה.
+            </p>
+            <p data-en="From that audit came a single design system — tokens for colour, type and spacing, then a small component library on top. Everything that could not be justified was removed rather than redesigned.">
+              מהסקירה נולדה מערכת עיצוב אחת — טוקנים לצבע, טיפוגרפיה וריווח, ומעליהם ספריית רכיבים קטנה. כל מה שלא היה לו הצדקה נמחק, לא עוצב מחדש.
+            </p>
+            <p data-en="On the build side the win came from deleting rather than optimising: three carousel libraries, two icon fonts and an analytics tag nobody could account for.">
+              בצד הפיתוח הרווח הגיע ממחיקה ולא מאופטימיזציה: שלוש ספריות קרוסלה, שני פונטי אייקונים ותגית אנליטיקס שאף אחד לא ידע להסביר.
+            </p>
+          </div>
+        </div>
+
+        <div class="cs-shot reveal" data-en="Design system overview — replace with assets/work/nova-system.jpg">
+          סקירת מערכת העיצוב — להחליף ב‑assets/work/nova-system.jpg
+        </div>
+
+        <!-- ================================================ Results -->
+        <div class="cs-body reveal" style="margin-block-start:clamp(2.5rem,1.5rem + 4vw,5rem)">
+          <h2 data-en="The result">התוצאה</h2>
+          <div>
+            <p data-en="Five weeks from kickoff to launch. The numbers below are from the first sixty days after go-live, measured against the same period a year earlier."
+               style="margin-block-end:1.75rem">
+              חמישה שבועות מהתחלה ועד עלייה לאוויר. המספרים למטה הם משישים הימים הראשונים אחרי ההשקה, מול אותה תקופה בשנה הקודמת.
+            </p>
+
+            <div class="cs-metrics">
+              <div class="stat" style="text-align:start;padding:0">
+                <div class="stat__num">1.1s</div>
+                <div class="stat__label" data-en="Time to interactive (was 4.8s)">זמן לאינטראקטיביות (היה 4.8 שניות)</div>
+              </div>
+              <div class="stat" style="text-align:start;padding:0">
+                <div class="stat__num">+112%</div>
+                <div class="stat__label" data-en="Demo requests">בקשות לדמו</div>
+              </div>
+              <div class="stat" style="text-align:start;padding:0">
+                <div class="stat__num">-38%</div>
+                <div class="stat__label" data-en="Mobile bounce rate">שיעור נטישה בנייד</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================== CTA -->
+    <section class="cta">
+      <div class="cta__bg" aria-hidden="true"></div>
+      <div class="shell reveal">
+        <h2 class="cta__title" data-en="Want the same kind of result?">רוצה תוצאה דומה?</h2>
+        <p class="cta__lede" data-en="Tell me where your site is losing people, and I will tell you whether it is worth rebuilding.">
+          ספר לי איפה האתר שלך מאבד אנשים, ואני אגיד לך אם שווה לבנות אותו מחדש.
+        </p>
+        <div class="cta__actions">
+          <a class="btn" href="index.html#contact">
+            <span data-en="Start a project">בוא נדבר</span>
+            <svg class="btn__arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <a class="btn btn--ghost" href="index.html#work" data-en="Back to all work">חזרה לכל העבודות</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell" style="padding-block-start:2.5rem">
+      <p class="placeholder-note"
+         data-en="Demo content: this case study is illustrative. Replace the client, metrics and screenshots with a real project.">
+        תוכן דמה: מקרה הבוחן הזה הוא להמחשה. יש להחליף את הלקוח, המדדים וצילומי המסך בפרויקט אמיתי.
+      </p>
+    </div>
+    <div class="shell site-footer__inner">
+      <a class="brand" href="index.html">
+        <span class="brand__mark" aria-hidden="true">R</span>
+        <span data-en="Roni Samet" data-placeholder>רוני סמט</span>
+      </a>
+      <p class="site-footer__legal">
+        <span data-en="© 2026 Roni Samet. All rights reserved.">© 2026 רוני סמט. כל הזכויות שמורות.</span>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>
