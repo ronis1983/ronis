@@ -338,7 +338,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   align-items: center;
   /* fit the whole hero — figure included — inside one screen, allowing
      for the sticky header above it */
-  min-block-size: min(100svh - 4.9rem, 860px);
+  min-block-size: min(100svh - 4.9rem, 940px);
   padding-block: clamp(2rem, 1rem + 4vw, 4rem) 0;
   isolation: isolate;
   overflow: hidden;
@@ -369,15 +369,15 @@ button, input, select, textarea { font: inherit; color: inherit; }
   position: absolute;
   inset-inline: 0;
   inset-block-end: 0;
-  block-size: clamp(180px, 34%, 340px);
+  block-size: clamp(200px, 38%, 400px);
   z-index: -1;
   background-color: #241708;
   background-image:
     /* vignette pulls the edges down so the copy is never fighting a
        bright patch of wet asphalt */
-    radial-gradient(120% 150% at 50% 100%, transparent 35%, rgb(18 16 14 / 0.55)),
+    radial-gradient(120% 150% at 50% 100%, transparent 45%, rgb(18 16 14 / 0.42)),
     linear-gradient(to bottom,
-      rgb(18 16 14 / 0.70) 0%, rgb(18 16 14 / 0.46) 40%, rgb(18 16 14 / 0.74) 100%),
+      rgb(18 16 14 / 0.52) 0%, rgb(18 16 14 / 0.14) 40%, rgb(18 16 14 / 0.46) 100%),
     url("../pavement.jpg");
   background-size: auto, auto, cover;
   background-position: center, center, center 60%;
@@ -396,14 +396,27 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 .hero__grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr);
   align-items: center;
   gap: clamp(1.5rem, 1rem + 3vw, 4rem);
   block-size: 100%;
 }
 
 /* the copy keeps the bottom breathing room the hero gave up */
-.hero__copy { padding-block-end: clamp(2rem, 1rem + 3vw, 3.5rem); }
+.hero__copy {
+  position: relative;
+  padding-block-end: clamp(2rem, 1rem + 3vw, 3.5rem);
+}
+/* Local scrim so the pavement can stay bright without the copy losing
+   contrast. Anchored to the copy, so it follows RTL/LTR automatically. */
+.hero__copy::before {
+  content: "";
+  position: absolute;
+  inset: -8% -12%;
+  z-index: -1;
+  background: radial-gradient(68% 62% at 50% 52%, rgb(18 16 14 / 0.62), transparent 76%);
+  pointer-events: none;
+}
 
 .hero__title {
   font-size: var(--step-5);
@@ -450,10 +463,12 @@ button, input, select, textarea { font: inherit; color: inherit; }
   justify-self: center;
   align-self: end;
   inline-size: 100%;
-  max-inline-size: 460px;
+  /* scales with the viewport — a fixed cap left him a figurine on a big
+     monitor */
+  max-inline-size: min(44vw, 620px);
   /* lifts his feet off the hero's edge and onto the pavement band, so
      there is ground in front of him rather than a cut-off */
-  margin-block-end: clamp(2.5rem, 8vh, 6rem);
+  margin-block-end: clamp(2rem, 6.5vh, 4.5rem);
 }
 /* crimson glow — stays as a deliberate design element even when the
    PNG is missing, which is why it lives on the wrapper, not the image */
@@ -484,7 +499,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   inline-size: auto;
   max-inline-size: 100%;
   /* height-capped so the figure always lands fully above the fold */
-  max-block-size: min(62svh, 580px);
+  max-block-size: min(74svh, 760px);
   height: auto;
   margin-inline: auto;
   filter: drop-shadow(0 30px 45px rgb(0 0 0 / 0.65));
@@ -535,25 +550,13 @@ button, input, select, textarea { font: inherit; color: inherit; }
    standing figure above the fold, so trim the optional parts rather than
    let the figure's feet get clipped. */
 @media (max-height: 920px) and (min-width: 1001px) {
-  .hero { min-block-size: min(100svh - 4.9rem, 780px); }
+  .hero { min-block-size: min(100svh - 4.9rem, 860px); }
   .hero__title { font-size: clamp(2.6rem, 1.2rem + 4.4vw, 4.4rem); }
   .hero__lede { font-size: var(--step-0); }
   .hero__actions { margin-block-start: 1.5rem; }
   .hero__meta { margin-block-start: 1.5rem; padding-block-start: 1.1rem; }
   .hero__scroll { display: none; }
-  .hero__figure::after {
-  content: "";
-  position: absolute;
-  inset-block-end: -0.6rem;
-  inset-inline: 20%;
-  block-size: 2.2rem;
-  z-index: -1;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgb(0 0 0 / 0.62), transparent 78%);
-  filter: blur(10px);
-}
-
-.hero__figure img { max-block-size: min(58svh, 520px); }
+  .hero__figure img { max-block-size: min(72svh, 660px); }
 }
 
 /* --------------------------------------------------------------- 7. Stats */
@@ -1081,20 +1084,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
   /* Single column: the headline leads (DOM order), with the figure below
      it grounded on the stats bar. Leading with the photo pushed the whole
      message off a phone screen. */
-  .hero__figure { max-inline-size: 290px; align-self: end; justify-self: center; }
-  .hero__figure::after {
-  content: "";
-  position: absolute;
-  inset-block-end: -0.6rem;
-  inset-inline: 20%;
-  block-size: 2.2rem;
-  z-index: -1;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgb(0 0 0 / 0.62), transparent 78%);
-  filter: blur(10px);
-}
-
-.hero__figure img { max-block-size: min(40svh, 340px); }
+  .hero__figure { max-inline-size: 340px; align-self: end; justify-self: center; }
+  .hero__figure img { max-block-size: min(46svh, 420px); }
   .hero__copy { padding-block-end: clamp(1.25rem, 0.75rem + 2vw, 2rem); }
   .about__grid, .contact__grid, .cs-body { grid-template-columns: 1fr; }
   .about__portrait { max-inline-size: 380px; }
