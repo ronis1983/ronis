@@ -27,13 +27,13 @@ choice will not persist between pages in some browsers.
 `first.html`, `contact.html` and `style.css` are the earlier practice files.
 They are untouched and unrelated to this site.
 
-## Add the three photographs
+## The three photographs
 
-The design is built around three images that are not in the repo yet. Drop
-`skyline.jpg`, `pavement.jpg` and `hero-cape.png` into `assets/` and they
-appear automatically — until then, CSS gradients stand in and the site still
-looks finished. Full details, sizes and the fallback behaviour are in
-[`assets/README.md`](assets/README.md).
+`skyline.jpg`, `pavement.jpg` and `hero-cape.png` are in `assets/` and in use.
+The JPEGs were compressed on the way in (3.3 MB → 178 KB) with no visible
+loss; the originals remain in git history. If either file ever goes missing
+the CSS gradients take over and the hero collapses to a single column, so the
+page never looks broken. Details in [`assets/README.md`](assets/README.md).
 
 ## How the bilingual toggle works
 

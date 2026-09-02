@@ -2,9 +2,9 @@
 
 ## The three photographs
 
-The site is designed around three images. They are **not in the repo yet** —
-drop them into this folder with exactly these names and everything picks them
-up with no code change:
+The site is designed around three images. **They are in place.** If you ever
+replace them, keep exactly these names and everything picks them up with no
+code change:
 
 | Filename | What it is | Where it appears | Recommended size |
 |---|---|---|---|
@@ -17,6 +17,24 @@ skyline, so a white or checkerboard background will show.
 
 Keep each JPEG under ~400 KB (they are decorative and heavily overlaid, so
 quality 70–80 is plenty). A WebP copy is not required.
+
+### What was done to the uploaded files
+
+The two JPEGs were resized and re-encoded, because 3.3 MB of background
+imagery undercuts a site whose own copy sells load speed:
+
+| File | Before | After |
+|---|---|---|
+| `skyline.jpg` | 2880×1178, 1324 KB | 1920×785, 73 KB (q72) |
+| `pavement.jpg` | 2880×876, 2027 KB | 1600×487, 105 KB (q68) |
+| `hero-cape.png` | 784×1042, 775 KB | untouched |
+
+Neither JPEG loses anything visible: the skyline is a blurred bokeh plate
+under three gradient layers, and the pavement sits under an 86–94% dark
+scrim. The cape is the sharp foreground subject, so it was left alone.
+
+The originals are still in git — `git show 4a01f38:assets/skyline.jpg > skyline.jpg`
+restores any of them.
 
 ## What happens while they are missing
 
