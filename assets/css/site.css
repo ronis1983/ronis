@@ -337,9 +337,13 @@ button, input, select, textarea { font: inherit; color: inherit; }
   display: grid;
   align-items: center;
   /* fit the whole hero — figure included — inside one screen, allowing
-     for the sticky header above it */
-  min-block-size: min(100svh - 4.9rem, 940px);
-  padding-block: clamp(2rem, 1rem + 4vw, 4rem) 0;
+     for the sticky header above it. --header-h must stay in sync with the
+     real sticky header height; the figure's size is derived from these. */
+  --header-h:     4.9rem;
+  --hero-pad-top: clamp(2rem, 1rem + 4vw, 4rem);
+  --foot-gap:     clamp(1.5rem, 4.5vh, 3.25rem);
+  min-block-size: min(100svh - var(--header-h), 1040px);
+  padding-block: var(--hero-pad-top) 0;
   isolation: isolate;
   overflow: hidden;
 }
@@ -394,9 +398,15 @@ button, input, select, textarea { font: inherit; color: inherit; }
   background: radial-gradient(120% 90% at 50% 40%, transparent 45%, rgb(18 16 14 / 0.75));
 }
 
+.hero .shell {
+  /* wider than the 1200px content shell: on a large monitor the figure
+     column, not the height cap, is what limits the figure */
+  width: min(100% - (var(--pad) * 2), 1440px);
+}
+
 .hero__grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
   align-items: center;
   gap: clamp(1.5rem, 1rem + 3vw, 4rem);
   block-size: 100%;
@@ -465,10 +475,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
   inline-size: 100%;
   /* scales with the viewport — a fixed cap left him a figurine on a big
      monitor */
-  max-inline-size: min(44vw, 620px);
+  max-inline-size: min(52vw, 760px);
   /* lifts his feet off the hero's edge and onto the pavement band, so
      there is ground in front of him rather than a cut-off */
-  margin-block-end: clamp(2rem, 6.5vh, 4.5rem);
+  margin-block-end: var(--foot-gap);
 }
 /* crimson glow — stays as a deliberate design element even when the
    PNG is missing, which is why it lives on the wrapper, not the image */
@@ -499,7 +509,14 @@ button, input, select, textarea { font: inherit; color: inherit; }
   inline-size: auto;
   max-inline-size: 100%;
   /* height-capped so the figure always lands fully above the fold */
-  max-block-size: min(74svh, 760px);
+  /* As tall as actually fits: the viewport, less the sticky header, the
+     hero's top padding, and the gap that keeps pavement in front of his
+     feet. A plain svh fraction is blind to those three and overshoots on
+     short laptops, which pushes his feet below the fold. */
+  max-block-size: min(
+    calc(100svh - var(--header-h) - var(--hero-pad-top) - var(--foot-gap)),
+    940px
+  );
   height: auto;
   margin-inline: auto;
   filter: drop-shadow(0 30px 45px rgb(0 0 0 / 0.65));
@@ -556,7 +573,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
   .hero__actions { margin-block-start: 1.5rem; }
   .hero__meta { margin-block-start: 1.5rem; padding-block-start: 1.1rem; }
   .hero__scroll { display: none; }
-  .hero__figure img { max-block-size: min(72svh, 660px); }
 }
 
 /* --------------------------------------------------------------- 7. Stats */
