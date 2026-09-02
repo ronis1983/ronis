@@ -71,6 +71,9 @@
     <!-- ========================================================== Hero -->
     <section class="hero" id="top">
       <div class="hero__bg" aria-hidden="true"></div>
+      <!-- the wet pavement he stands on; masked at the top so it meets
+           the skyline instead of cutting a hard line across it -->
+      <div class="hero__ground" aria-hidden="true"></div>
 
       <div class="shell hero__grid">
         <div class="hero__copy">
@@ -121,11 +124,12 @@
           <!-- assets/hero-cape.png — see assets/README.md.
                If the file is absent main.js adds .is-missing and the
                crimson glow behind it carries the composition. -->
-          <img src="assets/hero-cape.png"
-               alt="רוני סמט עומד עם גלימה אדומה"
-               data-en-alt="Roni Samet standing in a red cape"
+          <img class="hero__cutout" src="assets/hero-cape.png"
+               alt="רוני סמט עומד עם גלימה אדומה על מדרכה רטובה, קו הרקיע של תל אביב ברקע"
+               data-en-alt="Roni Samet standing in a red cape on wet pavement, the Tel Aviv skyline behind him"
                data-fallback=".hero__figure"
-               width="800" height="1200" fetchpriority="high">
+               width="784" height="1042" fetchpriority="high">
+          <img class="hero__reflection" src="assets/hero-cape.png" alt="" aria-hidden="true">
         </div>
       </div>
     </section>

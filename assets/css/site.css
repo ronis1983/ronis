@@ -362,6 +362,30 @@ button, input, select, textarea { font: inherit; color: inherit; }
   background-position: center, center, center, center, center 30%;
   background-repeat: no-repeat;
 }
+/* The pavement, as the ground he actually stands on. Sits above the
+   skyline layer and below the content; its top edge is masked away so the
+   two photographs meet in a haze rather than a seam. */
+.hero__ground {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  block-size: clamp(180px, 34%, 340px);
+  z-index: -1;
+  background-color: #241708;
+  background-image:
+    /* vignette pulls the edges down so the copy is never fighting a
+       bright patch of wet asphalt */
+    radial-gradient(120% 150% at 50% 100%, transparent 35%, rgb(18 16 14 / 0.55)),
+    linear-gradient(to bottom,
+      rgb(18 16 14 / 0.70) 0%, rgb(18 16 14 / 0.46) 40%, rgb(18 16 14 / 0.74) 100%),
+    url("../pavement.jpg");
+  background-size: auto, auto, cover;
+  background-position: center, center, center 60%;
+  background-repeat: no-repeat;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 30%);
+          mask-image: linear-gradient(to bottom, transparent 0%, #000 30%);
+}
+
 /* grain + vignette keeps the blurred photo from banding */
 .hero__bg::after {
   content: "";
@@ -427,6 +451,9 @@ button, input, select, textarea { font: inherit; color: inherit; }
   align-self: end;
   inline-size: 100%;
   max-inline-size: 460px;
+  /* lifts his feet off the hero's edge and onto the pavement band, so
+     there is ground in front of him rather than a cut-off */
+  margin-block-end: clamp(2.5rem, 8vh, 6rem);
 }
 /* crimson glow — stays as a deliberate design element even when the
    PNG is missing, which is why it lives on the wrapper, not the image */
@@ -441,6 +468,18 @@ button, input, select, textarea { font: inherit; color: inherit; }
   background: radial-gradient(closest-side, rgb(168 29 34 / 0.55), rgb(194 65 12 / 0.22) 60%, transparent);
   filter: blur(28px);
 }
+.hero__figure::after {
+  content: "";
+  position: absolute;
+  inset-block-end: -0.6rem;
+  inset-inline: 20%;
+  block-size: 2.2rem;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(0 0 0 / 0.62), transparent 78%);
+  filter: blur(10px);
+}
+
 .hero__figure img {
   inline-size: auto;
   max-inline-size: 100%;
@@ -450,6 +489,20 @@ button, input, select, textarea { font: inherit; color: inherit; }
   margin-inline: auto;
   filter: drop-shadow(0 30px 45px rgb(0 0 0 / 0.65));
 }
+/* Wet ground reflects. Mask runs dark-at-the-bottom because scaleY(-1)
+   is applied after masking, which flips it to fade away from his feet. */
+.hero__reflection {
+  position: absolute;
+  inset-block-start: 100%;
+  inset-inline-start: 50%;
+  transform: translateX(-50%) scaleY(-1);
+  opacity: 0.20;
+  filter: blur(3px);
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 52%, #000 100%);
+          mask-image: linear-gradient(to bottom, transparent 52%, #000 100%);
+}
+
 /* Set by main.js when hero-cape.png is absent. Rather than leave an empty
    half, the hero collapses to a single column — the warmth is carried by
    the background instead. Add the PNG and the two-column layout returns. */
@@ -488,7 +541,19 @@ button, input, select, textarea { font: inherit; color: inherit; }
   .hero__actions { margin-block-start: 1.5rem; }
   .hero__meta { margin-block-start: 1.5rem; padding-block-start: 1.1rem; }
   .hero__scroll { display: none; }
-  .hero__figure img { max-block-size: min(58svh, 520px); }
+  .hero__figure::after {
+  content: "";
+  position: absolute;
+  inset-block-end: -0.6rem;
+  inset-inline: 20%;
+  block-size: 2.2rem;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(0 0 0 / 0.62), transparent 78%);
+  filter: blur(10px);
+}
+
+.hero__figure img { max-block-size: min(58svh, 520px); }
 }
 
 /* --------------------------------------------------------------- 7. Stats */
@@ -1017,7 +1082,19 @@ button, input, select, textarea { font: inherit; color: inherit; }
      it grounded on the stats bar. Leading with the photo pushed the whole
      message off a phone screen. */
   .hero__figure { max-inline-size: 290px; align-self: end; justify-self: center; }
-  .hero__figure img { max-block-size: min(40svh, 340px); }
+  .hero__figure::after {
+  content: "";
+  position: absolute;
+  inset-block-end: -0.6rem;
+  inset-inline: 20%;
+  block-size: 2.2rem;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(0 0 0 / 0.62), transparent 78%);
+  filter: blur(10px);
+}
+
+.hero__figure img { max-block-size: min(40svh, 340px); }
   .hero__copy { padding-block-end: clamp(1.25rem, 0.75rem + 2vw, 2rem); }
   .about__grid, .contact__grid, .cs-body { grid-template-columns: 1fr; }
   .about__portrait { max-inline-size: 380px; }

@@ -9,8 +9,8 @@ code change:
 | Filename | What it is | Where it appears | Recommended size |
 |---|---|---|---|
 | `skyline.jpg` | Blurred Tel Aviv skyline at golden hour | Hero backdrop | ≥ 2000 × 800, landscape |
-| `pavement.jpg` | Wet pavement catching the sunset | The CTA band behind "יש לך משהו לבנות?" | ≥ 2000 × 700, landscape |
-| `hero-cape.png` | Cutout of the figure in the red cape | Hero foreground, right side | ≥ 800 × 1200, **transparent background** |
+| `pavement.jpg` | Wet pavement catching the sunset | **The hero's ground plane** — what he stands on — and the CTA band | ≥ 2000 × 700, landscape |
+| `hero-cape.png` | Cutout of the figure in the red cape | Hero foreground, standing on the pavement | ≥ 800 × 1200, **transparent background** |
 
 `hero-cape.png` must be a PNG with a real alpha channel — it sits on top of the
 skyline, so a white or checkerboard background will show.
@@ -35,6 +35,27 @@ scrim. The cape is the sharp foreground subject, so it was left alone.
 
 The originals are still in git — `git show 4a01f38:assets/skyline.jpg > skyline.jpg`
 restores any of them.
+
+## How the hero composes them
+
+The three photographs are one scene, not three decorations:
+
+```
+  skyline.jpg    ← sky and city, the full hero backdrop
+       ↓ (masked haze, no hard seam)
+  pavement.jpg   ← ground plane, bottom ~34% of the hero
+       ↑
+  hero-cape.png  ← stands on the pavement, ~60-90px of ground in front
+```
+
+The ground is a separate `.hero__ground` layer whose top edge is masked to
+transparent, so the two photographs meet in a haze instead of a cut line.
+The figure carries a blurred contact shadow and a faint mirrored copy
+beneath his feet, because the pavement is wet.
+
+If you swap the pavement for a different shot, the thing to check is
+`background-position` on `.hero__ground` — it is set to `center 60%` to put
+the near, reflective part of the road under his feet.
 
 ## What happens while they are missing
 
