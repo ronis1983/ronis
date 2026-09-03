@@ -153,19 +153,25 @@
   }
   var prog = gl.createProgram();
   gl.attachShader(prog, shader(gl.VERTEX_SHADER,
-    'attribute vec2 aPos; attribute vec2 aUV; varying vec2 vUV;' +
-    'void main(){ vUV=aUV; gl_Position=vec4(aPos*vec2(2.0,-2.0)+vec2(-1.0,1.0),0.0,1.0); }'));
+    'attribute vec2 aPos; attribute vec2 aUV; varying vec2 vUV; uniform float uPointSize;' +
+    'void main(){ vUV=aUV; gl_PointSize=uPointSize;' +
+    ' gl_Position=vec4(aPos*vec2(2.0,-2.0)+vec2(-1.0,1.0),0.0,1.0); }'));
   gl.attachShader(prog, shader(gl.FRAGMENT_SHADER,
-    'precision mediump float; varying vec2 vUV; uniform sampler2D uTex; uniform float uSolid;' +
-    'void main(){ vec4 t=texture2D(uTex,vUV);' +
-    ' if(uSolid>0.5){ gl_FragColor=vec4(0.94,0.66,0.23,0.5); }' +
-    ' else { if(t.a<0.02) discard; gl_FragColor=vec4(t.rgb,t.a); } }'));
+    'precision mediump float; varying vec2 vUV; uniform sampler2D uTex;' +
+    'uniform float uMode; uniform float uFade; uniform vec4 uColor;' +
+    'void main(){' +
+    ' if(uMode>0.5){ gl_FragColor=uColor; return; }' +
+    ' vec4 t=texture2D(uTex,vUV); if(t.a<0.02) discard;' +
+    ' gl_FragColor=vec4(t.rgb, t.a*uFade); }'));
   gl.linkProgram(prog);
   if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { statusEl.textContent = gl.getProgramInfoLog(prog); return; }
   gl.useProgram(prog);
 
   var aPos = gl.getAttribLocation(prog, 'aPos'), aUV = gl.getAttribLocation(prog, 'aUV');
-  var uSolid = gl.getUniformLocation(prog, 'uSolid');
+  var uMode = gl.getUniformLocation(prog, 'uMode');
+  var uFade = gl.getUniformLocation(prog, 'uFade');
+  var uColor = gl.getUniformLocation(prog, 'uColor');
+  var uPointSize = gl.getUniformLocation(prog, 'uPointSize');
   var posBuf = gl.createBuffer(), uvBuf = gl.createBuffer(), idxBuf = gl.createBuffer();
   var lineBuf = gl.createBuffer();
 
@@ -205,6 +211,7 @@
         links.push(d1, d2, Math.hypot(hx[d2] - hx[d1], hy[d2] - hy[d1]));
       }
     }
+    lineIdx = null;
     idx.length = 0;
     for (var r3 = 0; r3 < ROWS - 1; r3++) for (var c3 = 0; c3 < COLS - 1; c3++) {
       var q0 = r3 * COLS + c3, q1 = q0 + 1, q2 = q0 + COLS, q3 = q2 + 1;
@@ -255,6 +262,7 @@
   }
 
   var verts = new Float32Array(N * 2);
+  var lineIdx = null;
   function draw(showMesh) {
     for (var i = 0; i < N; i++) { verts[i * 2] = px[i]; verts[i * 2 + 1] = py[i]; }
     gl.viewport(0, 0, canvas.width, canvas.height);
@@ -267,16 +275,32 @@
     gl.bindBuffer(gl.ARRAY_BUFFER, uvBuf);
     gl.enableVertexAttribArray(aUV); gl.vertexAttribPointer(aUV, 2, gl.FLOAT, false, 0, 0);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxBuf);
-    gl.uniform1f(uSolid, 0);
+    gl.uniform1f(uMode, 0);
+    gl.uniform1f(uPointSize, 1);
+    /* WebGL caps line width at one *device* pixel (ALIASED_LINE_WIDTH_RANGE
+       is [1,1] everywhere that matters), so on a DPR-2 screen the wireframe
+       is half a CSS pixel. Dimming the fabric underneath is what actually
+       makes the mesh readable; the dots carry the rest, because point size
+       — unlike line width — is honoured. */
+    gl.uniform1f(uFade, showMesh ? 0.20 : 1.0);
     gl.drawElements(gl.TRIANGLES, idx.length, gl.UNSIGNED_SHORT, 0);
 
     if (showMesh) {
-      var lines = [];
-      for (var l = 0; l < links.length; l += 3) lines.push(links[l], links[l + 1]);
+      if (!lineIdx) {
+        var lines = [];
+        for (var l = 0; l < links.length; l += 3) lines.push(links[l], links[l + 1]);
+        lineIdx = new Uint16Array(lines);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, lineBuf);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, lineIdx, gl.STATIC_DRAW);
+      }
+      gl.uniform1f(uMode, 1);
+      gl.uniform4f(uColor, 0.98, 0.72, 0.26, 1.0);
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, lineBuf);
-      gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(lines), gl.DYNAMIC_DRAW);
-      gl.uniform1f(uSolid, 1);
-      gl.drawElements(gl.LINES, lines.length, gl.UNSIGNED_SHORT, 0);
+      gl.drawElements(gl.LINES, lineIdx.length, gl.UNSIGNED_SHORT, 0);
+
+      gl.uniform4f(uColor, 1.0, 0.97, 0.90, 1.0);
+      gl.uniform1f(uPointSize, Math.max(3.0, 2.5 * Math.min(devicePixelRatio || 1, 2)));
+      gl.drawArrays(gl.POINTS, 0, N);
     }
   }
 
