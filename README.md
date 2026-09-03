@@ -71,7 +71,8 @@ blocks to maintain. The only two exceptions are deliberate and commented in
 Everything below is invented. Each is marked with a `data-placeholder`
 attribute in the HTML, so `grep -n 'data-placeholder' *.html` lists them all.
 
-- **Name / brand** — "רוני סמט / Roni Samet", and the `R` and `RS` monograms
+- **Name / brand** — "רוני סמט / Roni Samet", and the `R` monogram (the `RS`
+  monogram is now only the About portrait's fallback)
 - **Phone number** — `+972 50 000 0000` (the email, `ronisamet@gmail.com`, is real)
 - **The six projects** — Nova Fintech, Shaked Coffee House, Tikvah Health,
   Golan Wines, Delta Fit, Orbit Studio

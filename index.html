@@ -395,8 +395,14 @@
     <!-- ========================================================= About -->
     <section class="section" id="about">
       <div class="shell about__grid">
-        <div class="about__portrait reveal" aria-hidden="true">
-          <span class="about__portrait-mark">RS</span>
+        <div class="about__portrait reveal">
+          <!-- reuses the hero cutout: already cached, so no extra weight.
+               Falls back to the monogram if the PNG is absent. -->
+          <img class="about__portrait-img" src="assets/hero-cape.png"
+               alt="רוני סמט" data-en-alt="Roni Samet"
+               data-fallback=".about__portrait" loading="lazy"
+               width="784" height="1042">
+          <span class="about__portrait-mark" aria-hidden="true">RS</span>
         </div>
 
         <div class="about__text reveal" data-delay="1">

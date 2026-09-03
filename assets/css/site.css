@@ -398,15 +398,14 @@ button, input, select, textarea { font: inherit; color: inherit; }
   background: radial-gradient(120% 90% at 50% 40%, transparent 45%, rgb(18 16 14 / 0.75));
 }
 
-.hero .shell {
-  /* wider than the 1200px content shell: on a large monitor the figure
-     column, not the height cap, is what limits the figure */
-  width: min(100% - (var(--pad) * 2), 1440px);
-}
+/* The hero uses the same 1200px shell as every other section, so the
+   headline sits on the page's content column with the nav and the section
+   headings. The figure gets its extra room from a bleed instead — see
+   .hero__figure. */
 
 .hero__grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
   align-items: center;
   gap: clamp(1.5rem, 1rem + 3vw, 4rem);
   block-size: 100%;
@@ -472,10 +471,15 @@ button, input, select, textarea { font: inherit; color: inherit; }
   position: relative;
   justify-self: center;
   align-self: end;
-  inline-size: 100%;
-  /* scales with the viewport — a fixed cap left him a figurine on a big
-     monitor */
-  max-inline-size: min(52vw, 760px);
+  /* Bleeds toward the page gutter so a big screen gives the figure room
+     without dragging the copy off the content column. The width has to
+     grow by the same amount as the negative margin — a negative margin on
+     its own only shifts a box of fixed width. Clamped to the gutter that
+     actually exists, so it can never cause overflow. */
+  --fig-bleed: clamp(0px, (100vw - var(--shell)) / 2 - var(--pad), 220px);
+  inline-size: calc(100% + var(--fig-bleed));
+  margin-inline-end: calc(-1 * var(--fig-bleed));
+  max-inline-size: min(50vw, 760px);
   /* lifts his feet off the hero's edge and onto the pavement band, so
      there is ground in front of him rather than a cut-off */
   margin-block-end: var(--foot-gap);
@@ -878,12 +882,27 @@ button, input, select, textarea { font: inherit; color: inherit; }
   background: radial-gradient(closest-side, rgb(168 29 34 / 0.45), transparent);
   filter: blur(30px);
 }
+.about__portrait-img {
+  position: absolute;
+  inset-block-end: 0;
+  inline-size: auto;
+  block-size: 94%;
+  max-inline-size: 100%;
+  object-fit: contain;
+  object-position: bottom;
+  filter: drop-shadow(0 24px 40px rgb(0 0 0 / 0.6));
+}
+
+/* the monogram is the fallback, not the default */
 .about__portrait-mark {
+  display: none;
   font-size: clamp(4rem, 2rem + 9vw, 8rem);
   font-weight: 900;
   color: transparent;
   -webkit-text-stroke: 2px rgb(240 169 59 / 0.5);
 }
+.about__portrait.is-missing .about__portrait-img { display: none; }
+.about__portrait.is-missing .about__portrait-mark { display: block; }
 .about__text p + p { margin-block-start: 1.1rem; }
 .about__text p { color: var(--muted); }
 .about__text p:first-of-type { color: var(--sand); font-size: var(--step-1); font-weight: 300; }
