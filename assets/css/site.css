@@ -525,6 +525,20 @@ button, input, select, textarea { font: inherit; color: inherit; }
   margin-inline: auto;
   filter: drop-shadow(0 30px 45px rgb(0 0 0 / 0.65));
 }
+/* The keyed video sits exactly over the cutout. The <img> keeps its place
+   in layout — it is what sizes the figure and grounds him on the pavement —
+   so it is hidden with visibility, never display, and comes straight back if
+   the video fails at any step. Its box is tracked from JS rather than
+   restated here, so the sizing maths stays in one place. */
+.hero__figure-video {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  filter: drop-shadow(0 30px 45px rgb(0 0 0 / 0.65));
+}
+.hero__figure:not(.has-video) .hero__figure-video { opacity: 0; }
+.hero__figure.has-video .hero__cutout { visibility: hidden; }
+
 /* Wet ground reflects. Mask runs dark-at-the-bottom because scaleY(-1)
    is applied after masking, which flips it to fade away from his feet. */
 .hero__reflection {

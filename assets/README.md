@@ -36,6 +36,33 @@ scrim. The cape is the sharp foreground subject, so it was left alone.
 The originals are still in git — `git show 4a01f38:assets/skyline.jpg > skyline.jpg`
 restores any of them.
 
+## `hero-cape.mp4` — the animated cape
+
+An optional enhancement layered over `hero-cape.png`. 480×624, H.264, ~1.8 MB.
+
+H.264 carries no alpha channel and the clip is the figure on a pure black
+background, so it cannot simply be dropped in — it would be an opaque
+rectangle covering the skyline. `js/hero-video.js` keys each frame to
+transparency at runtime and draws it into a canvas sitting exactly over the
+still.
+
+The key is a **flood fill inward from the frame border**, not a brightness
+threshold. The background is exactly `(0,0,0)`, but the cape's darkest folds
+are only `(20,0,0)` — any threshold that removes the background also punches
+holes through the cape. Connectivity separates them: the folds are dark but
+unreachable from the edge. Roughly 4.5 ms per frame at 480×624.
+
+The PNG remains the source of truth. The video is skipped entirely — no
+bytes fetched — under `prefers-reduced-motion`, with Save-Data on, if the
+browser cannot decode H.264, or if autoplay is refused. In every one of
+those cases the still is what shows, and it keeps its place in layout
+throughout, so the figure's size and footing on the pavement never depend on
+the video loading.
+
+To replace it, keep the name `hero-cape.mp4` and the black background. A
+taller export costs nothing extra and would sharpen it: at 480 px wide it is
+upscaled roughly 3× on a retina screen.
+
 ## How the hero composes them
 
 The three photographs are one scene, not three decorations:
