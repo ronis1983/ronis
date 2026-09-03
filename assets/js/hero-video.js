@@ -23,9 +23,16 @@
   /* a pixel is background-ish if its channels sum below this */
   var DARK = 46;
 
-  function bail(reason) {
-    if (window.console && console.debug) console.debug("[hero-video] skipped:", reason);
+  /* Reported on window and in the console: when the cape does not animate,
+     the reason should be one line away, not a debugging session. console.debug
+     is hidden behind Chrome's Verbose level, so this uses info. */
+  function report(state, detail) {
+    window.heroVideoStatus = { state: state, detail: detail || "" };
+    if (window.console && console.info) {
+      console.info("[hero-video] " + state + (detail ? ": " + detail : ""));
+    }
   }
+  function bail(reason) { report("not running", reason); }
 
   function init() {
     var figure = document.querySelector(".hero__figure");
@@ -133,7 +140,7 @@
       dctx.clearRect(0, 0, display.width, display.height);
       dctx.drawImage(work, 0, 0, display.width, display.height);
 
-      if (!ready) { ready = true; figure.classList.add("has-video"); }
+      if (!ready) { ready = true; figure.classList.add("has-video"); report("running"); }
     }
 
     var useVFC = typeof video.requestVideoFrameCallback === "function";
