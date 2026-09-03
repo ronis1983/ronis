@@ -27,6 +27,20 @@ choice will not persist between pages in some browsers.
 `first.html`, `contact.html` and `style.css` are the earlier practice files.
 They are untouched and unrelated to this site.
 
+### `lab/cape-sim.html`
+
+A standalone prototype: a real Verlet cloth simulation (particle grid,
+distance constraints, gravity, gusting wind) rendered in WebGL, so the
+motion quality can be judged before committing to it. It is **not** wired
+into the site and can be deleted freely.
+
+Its texture is the cape auto-extracted from `hero-cape.png`, which only
+recovers the brightly lit ribbon — the flat PNG cannot be separated cleanly,
+because the cape's shadow folds share a colour range with the dark clothing
+and the warm rim light on skin shares one with the lit fabric. Supply
+`hero-cape-cloth.png` as its own transparent layer and the same simulation
+runs on the full shape; only the texture changes.
+
 ## The three photographs
 
 `skyline.jpg`, `pavement.jpg` and `hero-cape.png` are in `assets/` and in use.
