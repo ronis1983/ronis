@@ -1,0 +1,45 @@
+name: Deploy site to GitHub Pages
+
+# githack redirects media to raw.githubusercontent, which is fine for images
+# but an awkward path for video, and it rate-limits. Pages serves the whole
+# site from one origin with correct MIME types and range requests.
+on:
+  push:
+    branches: ["claude/portfolio-website-designer-cosug0"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# never let two deploys race; queue instead of cancelling a live one
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure Pages
+        # enablement turns Pages on through the API, so nobody has to click
+        # through repository settings first
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload site
+        # the whole repo root; .git and .github are excluded by the action
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

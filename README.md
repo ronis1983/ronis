@@ -4,7 +4,18 @@ A bilingual (Hebrew / English) portfolio site for a web designer. Vanilla
 HTML, CSS and JavaScript — **no build step, no dependencies, no npm install.**
 Open the files and they work.
 
-## Run it
+## Where it is live
+
+Pushed to `claude/portfolio-website-designer-cosug0`, the site deploys to
+GitHub Pages at **https://ronis1983.github.io/ronis/** via
+`.github/workflows/pages.yml`. The workflow enables Pages itself, so there is
+nothing to switch on by hand.
+
+Use Pages rather than a raw-file CDN for anything involving `hero-cape.mp4`:
+those CDNs redirect media to `raw.githubusercontent.com` and rate-limit, which
+makes video an unreliable thing to preview through them.
+
+## Run it locally
 
 ```bash
 python3 -m http.server 8000
