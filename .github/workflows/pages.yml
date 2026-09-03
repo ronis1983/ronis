@@ -28,11 +28,11 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Configure Pages
-        # enablement turns Pages on through the API, so nobody has to click
-        # through repository settings first
+        # No `enablement: true` here: GITHUB_TOKEN is refused the Pages
+        # create API ("Resource not accessible by integration"), so Pages has
+        # to be switched on once by hand at Settings -> Pages -> Source:
+        # GitHub Actions. After that this step just reads the existing config.
         uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
       - name: Upload site
         # the whole repo root; .git and .github are excluded by the action

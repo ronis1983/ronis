@@ -8,8 +8,14 @@ Open the files and they work.
 
 Pushed to `claude/portfolio-website-designer-cosug0`, the site deploys to
 GitHub Pages at **https://ronis1983.github.io/ronis/** via
-`.github/workflows/pages.yml`. The workflow enables Pages itself, so there is
-nothing to switch on by hand.
+`.github/workflows/pages.yml`.
+
+**One-time setup:** at
+[Settings → Pages](https://github.com/ronis1983/ronis/settings/pages), set
+*Build and deployment → Source* to **GitHub Actions**. This cannot be
+automated — a workflow's `GITHUB_TOKEN` is refused the Pages create API
+("Resource not accessible by integration"), so the first switch has to be
+thrown by a human. Every deploy after that is automatic.
 
 Use Pages rather than a raw-file CDN for anything involving `hero-cape.mp4`:
 those CDNs redirect media to `raw.githubusercontent.com` and rate-limit, which
