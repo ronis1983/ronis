@@ -1,125 +1,67 @@
 # assets/
 
-## The three photographs
+## In use
 
-The site is designed around three images. **They are in place.** If you ever
-replace them, keep exactly these names and everything picks them up with no
-code change:
-
-| Filename | What it is | Where it appears | Recommended size |
-|---|---|---|---|
-| `skyline.jpg` | Blurred Tel Aviv skyline at golden hour | Hero backdrop | ≥ 2000 × 800, landscape |
-| `pavement.jpg` | Wet pavement catching the sunset | **The hero's ground plane** — what he stands on — and the CTA band | ≥ 2000 × 700, landscape |
-| `hero-cape.png` | Cutout of the figure in the red cape | Hero foreground, standing on the pavement | ≥ 800 × 1200, **transparent background** |
-
-`hero-cape.png` must be a PNG with a real alpha channel — it sits on top of the
-skyline, so a white or checkerboard background will show.
-
-Keep each JPEG under ~400 KB (they are decorative and heavily overlaid, so
-quality 70–80 is plenty). A WebP copy is not required.
-
-### What was done to the uploaded files
-
-The two JPEGs were resized and re-encoded, because 3.3 MB of background
-imagery undercuts a site whose own copy sells load speed:
-
-| File | Before | After |
+| File | Where | Notes |
 |---|---|---|
-| `skyline.jpg` | 2880×1178, 1324 KB | 1920×785, 73 KB (q72) |
-| `pavement.jpg` | 2880×876, 2027 KB | 1600×487, 105 KB (q68) |
-| `hero-cape.png` | 784×1042, 775 KB | untouched |
+| `hero.jpg` | The hero — the whole of it | 1800×794, 221 KB |
+| `pavement.jpg` | The CTA band behind "יש לך משהו לבנות?" | 1600×487, 105 KB |
+| `hero-cape.png` | The About portrait | 784×1042, transparent, lazy-loaded |
 
-Neither JPEG loses anything visible: the skyline is a blurred bokeh plate
-under three gradient layers, and the pavement sits under an 86–94% dark
-scrim. The cape is the sharp foreground subject, so it was left alone.
+## The hero
 
-The originals are still in git — `git show 4a01f38:assets/skyline.jpg > skyline.jpg`
-restores any of them.
+`hero.jpg` is one photograph with the skyline, the rooftop and the figure
+already composited. It replaced a hero that stacked three separate layers in
+CSS to build that same scene — a backdrop, a masked ground plane, and a
+transparent cutout standing on it. All of that is gone; the picture does it.
 
-## `hero-cape.mp4` — the animated cape
+Two things about this image drive how the hero is built, and both are worth
+knowing before swapping it for another:
 
-An optional enhancement layered over `hero-cape.png`. 480×624, H.264, ~1.8 MB.
+**It is bright on one side.** Sampling the frame: the left half runs ~130
+luminance (the sun), the right ~85 (dark skyline), the rooftop ~49. The copy
+sits on the reading-start side, which *flips* between Hebrew and English — so
+in Hebrew it lands on the dark half and in English on the sun. That is why
+`.hero__copy::before` exists: a scrim anchored to the copy rather than to a
+side, so it follows the text either way. The headline and the outlined line
+also carry their own `text-shadow`; an outline has no fill to carry it and
+vanishes over the sun without one.
 
-H.264 carries no alpha channel and the clip is the figure on a pure black
-background, so it cannot simply be dropped in — it would be an opaque
-rectangle covering the skyline. `js/hero-video.js` keys each frame to
-transparency at runtime and draws it into a canvas sitting exactly over the
-still.
+**It is 2.27:1.** Very wide. On a desktop hero `cover` crops a little from the
+sides and the framing (`background-position: 56%`) keeps the figure in. On a
+phone it cannot work at all — `cover` in a tall narrow box crops to a sliver
+and the copy ends up over his face. So below 700px the hero stops being an
+overlay: the copy reads on flat ink and the photograph follows as a band at
+close to its natural shape. That is the only place on the site it is seen
+uncropped.
 
-The key is a **flood fill inward from the frame border**, not a brightness
-threshold. The background is exactly `(0,0,0)`, but the cape's darkest folds
-are only `(20,0,0)` — any threshold that removes the background also punches
-holes through the cape. Connectivity separates them: the folds are dark but
-unreachable from the edge. Roughly 4.5 ms per frame at 480×624.
+If you replace it, a **wider-than-tall image with a quiet area on one side**
+is what this layout wants. Something closer to 16:9 would survive the phone
+crop and could stay a full-bleed backdrop throughout.
 
-The PNG remains the source of truth. The video is skipped entirely — no
-bytes fetched — under `prefers-reduced-motion`, with Save-Data on, if the
-browser cannot decode H.264, or if autoplay is refused. In every one of
-those cases the still is what shows, and it keeps its place in layout
-throughout, so the figure's size and footing on the pavement never depend on
-the video loading.
+### Why JPEG
 
-To replace it, keep the name `hero-cape.mp4` and the black background. A
-taller export costs nothing extra and would sharpen it: at 480 px wide it is
-upscaled roughly 3× on a retina screen.
+It arrived as a 2.1 MB PNG. PNG is lossless and meant for flat colour and
+transparency; for a photograph it stores noise faithfully at great expense.
+Re-encoded to JPEG at quality 82 it is **221 KB — a 90% saving** with nothing
+visible lost. The original PNG is still in git at commit `82ee12d`.
 
-## How the hero composes them
+## Not currently used
 
-The three photographs are one scene, not three decorations:
+Nothing references these. They cost nothing at runtime — no visitor downloads
+them — but they are still in the repository:
 
-```
-  skyline.jpg    ← sky and city, the full hero backdrop
-       ↓ (masked haze, no hard seam)
-  pavement.jpg   ← ground plane, bottom ~34% of the hero
-       ↑
-  hero-cape.png  ← stands on the pavement, ~60-90px of ground in front
-```
+- `skyline.jpg` — the old hero backdrop, superseded by `hero.jpg`
+- `hero-cape.mp4` + `js/hero-video.js` — the animated cape and its runtime
+  keying. The clip is the figure on black; the script keyed it to
+  transparency per frame so it could sit over the old layered hero. With the
+  figure now baked into `hero.jpg` there is no cutout to replace, so nothing
+  loads it. Kept rather than deleted — say the word and it goes.
 
-The ground is a separate `.hero__ground` layer whose top edge is masked to
-transparent, so the two photographs meet in a haze instead of a cut line.
-The figure carries a blurred contact shadow and a faint mirrored copy
-beneath his feet, because the pavement is wet.
+`lab/cape-sim.html` still uses `hero-cape.png` and still runs.
 
-If you swap the pavement for a different shot, the thing to check is
-`background-position` on `.hero__ground` — it is set to `center 60%` to put
-the near, reflective part of the road under his feet.
+## If a file goes missing
 
-## What happens while they are missing
-
-Nothing breaks, and nothing looks unfinished:
-
-- **Backgrounds** are declared as `linear-gradient(…), url(…)` in
-  `css/site.css`, so the gradient is painted regardless and a 404 on the
-  photo simply leaves the gradient — a golden-hour sky for the hero, an
-  ember wash for the CTA band.
-- **The cape cutout** is a real `<img>`. When it fails to load, `js/main.js`
-  adds `.is-missing` to `.hero__figure`, which hides the broken image and
-  leaves the crimson glow behind it — a deliberate part of the composition,
-  not a hole.
-
-So the only visible difference after you add the files is that the photographs
-appear. Layout and spacing do not shift.
-
-## Adding project screenshots
-
-`case-study.html` has dashed placeholder blocks (`.cs-shot`) where real
-screenshots go. Suggested convention:
-
-```
-assets/work/nova-hero.jpg
-assets/work/nova-system.jpg
-```
-
-Replace the `<div class="cs-shot">…</div>` with an `<img>` when you have them.
-
-## Folder layout
-
-```
-assets/
-├── css/site.css     the whole design system, one file
-├── js/i18n.js       Hebrew ⇄ English toggle
-├── js/main.js       nav, reveals, filter, counters, form validation
-├── skyline.jpg      ← you add
-├── pavement.jpg     ← you add
-└── hero-cape.png    ← you add
-```
+Nothing breaks. The hero's background falls back to solid ink and the copy
+stays readable; the About portrait falls back to an `RS` monogram. Verified,
+not assumed.

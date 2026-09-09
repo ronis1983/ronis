@@ -15,7 +15,7 @@
         data-en-content="Roni Samet — Web Designer &amp; Developer">
   <meta property="og:description" content="אתרים שנראים מצוין, נטענים מהר, ומביאים לקוחות."
         data-en-content="Websites that look sharp, load fast, and bring in clients.">
-  <meta property="og:image" content="assets/skyline.jpg">
+  <meta property="og:image" content="assets/hero.jpg">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,7 +30,6 @@
 
   <script src="assets/js/i18n.js" defer></script>
   <script src="assets/js/main.js" defer></script>
-  <script src="assets/js/hero-video.js" defer></script>
 </head>
 
 <body>
@@ -71,10 +70,8 @@
   <main id="main">
     <!-- ========================================================== Hero -->
     <section class="hero" id="top">
+      <!-- one photograph: skyline, rooftop and figure already composited -->
       <div class="hero__bg" aria-hidden="true"></div>
-      <!-- the wet pavement he stands on; masked at the top so it meets
-           the skyline instead of cutting a hard line across it -->
-      <div class="hero__ground" aria-hidden="true"></div>
 
       <div class="shell hero__grid">
         <div class="hero__copy">
@@ -121,18 +118,7 @@
           </a>
         </div>
 
-        <div class="hero__figure">
-          <!-- assets/hero-cape.png — see assets/README.md.
-               If the file is absent main.js adds .is-missing and the
-               crimson glow behind it carries the composition. -->
-          <img class="hero__cutout" src="assets/hero-cape.png"
-               alt="רוני סמט עומד עם גלימה אדומה על מדרכה רטובה, קו הרקיע של תל אביב ברקע"
-               data-en-alt="Roni Samet standing in a red cape on wet pavement, the Tel Aviv skyline behind him"
-               data-fallback=".hero__figure"
-               width="784" height="1042" fetchpriority="high">
-          <img class="hero__reflection" src="assets/hero-cape.png" alt="" aria-hidden="true">
-        </div>
-      </div>
+
     </section>
 
     <!-- ========================================================= Stats -->

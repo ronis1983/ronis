@@ -58,13 +58,13 @@ and the warm rim light on skin shares one with the lit fabric. Supply
 `hero-cape-cloth.png` as its own transparent layer and the same simulation
 runs on the full shape; only the texture changes.
 
-## The three photographs
+## The hero photograph
 
-`skyline.jpg`, `pavement.jpg` and `hero-cape.png` are in `assets/` and in use.
-The JPEGs were compressed on the way in (3.3 MB → 178 KB) with no visible
-loss; the originals remain in git history. If either file ever goes missing
-the CSS gradients take over and the hero collapses to a single column, so the
-page never looks broken. Details in [`assets/README.md`](assets/README.md).
+`assets/hero.jpg` is the hero: one image with skyline, rooftop and figure
+already composited. It replaced three CSS-stacked layers that used to build
+that scene. It is very wide (2.27:1) and bright on one side, which is why the
+copy carries its own scrim and phones get a stacked layout instead of an
+overlay — see [`assets/README.md`](assets/README.md).
 
 ## How the bilingual toggle works
 

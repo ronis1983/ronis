@@ -341,56 +341,35 @@ button, input, select, textarea { font: inherit; color: inherit; }
      real sticky header height; the figure's size is derived from these. */
   --header-h:     4.9rem;
   --hero-pad-top: clamp(2rem, 1rem + 4vw, 4rem);
-  --foot-gap:     clamp(1.5rem, 4.5vh, 3.25rem);
-  min-block-size: min(100svh - var(--header-h), 1040px);
-  padding-block: var(--hero-pad-top) 0;
+  min-block-size: min(100svh - var(--header-h), 880px);
+  padding-block: var(--hero-pad-top) clamp(2rem, 1rem + 4vw, 4rem);
   isolation: isolate;
   overflow: hidden;
 }
 
-/* Skyline backdrop. The gradient sits ON TOP of the photo, so if
-   assets/skyline.jpg is absent the gradient alone still reads as a
-   golden-hour sky rather than an empty box. */
+/* One photograph — skyline, rooftop and figure already composited — so the
+   three separate layers this hero used to stack are gone. The gradient sits
+   on top of it: the left of the frame is the sun (luminance ~130) and the
+   right is dark skyline (~85), so the copy needs its own scrim regardless of
+   which side the reading direction puts it on. See .hero__copy::before. */
 .hero__bg {
   position: absolute;
   inset: 0;
   z-index: -2;
   background-color: var(--ink);
   background-image:
-    radial-gradient(60% 65% at 18% 22%, rgb(255 208 138 / 0.42), transparent 62%),
-    radial-gradient(45% 55% at 82% 78%, rgb(168 29 34 / 0.30), transparent 68%),
-    radial-gradient(90% 80% at 50% 0%, rgb(194 65 12 / 0.30), transparent 70%),
-    linear-gradient(to bottom, rgb(18 16 14 / 0.55) 0%, rgb(18 16 14 / 0.82) 55%, var(--ink) 100%),
-    url("../skyline.jpg");
-  background-size: auto, auto, auto, auto, cover;
-  background-position: center, center, center, center, center 30%;
-  background-repeat: no-repeat;
-}
-/* The pavement, as the ground he actually stands on. Sits above the
-   skyline layer and below the content; its top edge is masked away so the
-   two photographs meet in a haze rather than a seam. */
-.hero__ground {
-  position: absolute;
-  inset-inline: 0;
-  inset-block-end: 0;
-  block-size: clamp(200px, 38%, 400px);
-  z-index: -1;
-  background-color: #241708;
-  background-image:
-    /* vignette pulls the edges down so the copy is never fighting a
-       bright patch of wet asphalt */
-    radial-gradient(120% 150% at 50% 100%, transparent 45%, rgb(18 16 14 / 0.42)),
     linear-gradient(to bottom,
-      rgb(18 16 14 / 0.52) 0%, rgb(18 16 14 / 0.14) 40%, rgb(18 16 14 / 0.46) 100%),
-    url("../pavement.jpg");
-  background-size: auto, auto, cover;
-  background-position: center, center, center 60%;
+      rgb(18 16 14 / 0.32) 0%, rgb(18 16 14 / 0.30) 45%,
+      rgb(18 16 14 / 0.72) 82%, var(--ink) 100%),
+    url("../hero.jpg");
+  background-size: auto, cover;
+  /* framed right of centre: the figure stands there, and at 2.27:1 the crop
+     bites hard from the sides as the viewport narrows */
+  background-position: center, 56% center;
   background-repeat: no-repeat;
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 30%);
-          mask-image: linear-gradient(to bottom, transparent 0%, #000 30%);
 }
 
-/* grain + vignette keeps the blurred photo from banding */
+/* grain + vignette keeps the photo from banding */
 .hero__bg::after {
   content: "";
   position: absolute;
@@ -400,14 +379,13 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 /* The hero uses the same 1200px shell as every other section, so the
    headline sits on the page's content column with the nav and the section
-   headings. The figure gets its extra room from a bleed instead — see
-   .hero__figure. */
-
+   headings below it. With the figure now inside the photograph there is no
+   second column to balance — the copy takes a readable measure and the rest
+   of the frame is left to the picture. */
 .hero__grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+  grid-template-columns: minmax(0, min(52ch, 58%));
   align-items: center;
-  gap: clamp(1.5rem, 1rem + 3vw, 4rem);
   block-size: 100%;
 }
 
@@ -416,20 +394,24 @@ button, input, select, textarea { font: inherit; color: inherit; }
   position: relative;
   padding-block-end: clamp(2rem, 1rem + 3vw, 3.5rem);
 }
-/* Local scrim so the pavement can stay bright without the copy losing
-   contrast. Anchored to the copy, so it follows RTL/LTR automatically. */
+/* Local scrim: the photograph is bright on one side and dark on the other,
+   and which side the copy lands on flips with reading direction. Anchoring
+   the scrim to the copy means it follows the text either way. */
 .hero__copy::before {
   content: "";
   position: absolute;
-  inset: -8% -12%;
+  inset: -10% -14%;
   z-index: -1;
-  background: radial-gradient(68% 62% at 50% 52%, rgb(18 16 14 / 0.62), transparent 76%);
+  background: radial-gradient(72% 66% at 50% 52%, rgb(18 16 14 / 0.88), rgb(18 16 14 / 0.45) 55%, transparent 78%);
   pointer-events: none;
 }
 
 .hero__title {
   font-size: var(--step-5);
   margin-block-end: 1.25rem;
+  /* the photograph is bright on one side and the copy swaps sides with the
+     reading direction, so the headline carries its own contrast */
+  text-shadow: 0 2px 26px rgb(18 16 14 / 0.6);
 }
 .hero__title .line { display: block; }
 .hero__title .stroke {
@@ -438,6 +420,9 @@ button, input, select, textarea { font: inherit; color: inherit; }
   paint-order: stroke fill;
   /* outlines collide at display size — undo the tight tracking here */
   letter-spacing: 0.02em;
+  /* an outline has no fill to carry it, so over the sun it needs a halo of
+     its own or it disappears */
+  text-shadow: 0 0 22px rgb(18 16 14 / 0.85), 0 2px 6px rgb(18 16 14 / 0.7);
 }
 
 .hero__lede {
@@ -466,98 +451,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .hero__meta dt { color: var(--muted); font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; }
 .hero__meta dd { margin: 0.15rem 0 0; font-size: var(--step-1); font-weight: 700; }
 
-/* The cape cutout */
-.hero__figure {
-  position: relative;
-  justify-self: center;
-  align-self: end;
-  /* Bleeds toward the page gutter so a big screen gives the figure room
-     without dragging the copy off the content column. The width has to
-     grow by the same amount as the negative margin — a negative margin on
-     its own only shifts a box of fixed width. Clamped to the gutter that
-     actually exists, so it can never cause overflow. */
-  --fig-bleed: clamp(0px, (100vw - var(--shell)) / 2 - var(--pad), 220px);
-  inline-size: calc(100% + var(--fig-bleed));
-  margin-inline-end: calc(-1 * var(--fig-bleed));
-  max-inline-size: min(50vw, 760px);
-  /* lifts his feet off the hero's edge and onto the pavement band, so
-     there is ground in front of him rather than a cut-off */
-  margin-block-end: var(--foot-gap);
-}
-/* crimson glow — stays as a deliberate design element even when the
-   PNG is missing, which is why it lives on the wrapper, not the image */
-.hero__figure::before {
-  content: "";
-  position: absolute;
-  inset-block-end: -8%;
-  inset-inline: 5%;
-  block-size: 78%;
-  z-index: -1;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgb(168 29 34 / 0.55), rgb(194 65 12 / 0.22) 60%, transparent);
-  filter: blur(28px);
-}
-.hero__figure::after {
-  content: "";
-  position: absolute;
-  inset-block-end: -0.6rem;
-  inset-inline: 20%;
-  block-size: 2.2rem;
-  z-index: -1;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgb(0 0 0 / 0.62), transparent 78%);
-  filter: blur(10px);
-}
-
-.hero__figure img {
-  inline-size: auto;
-  max-inline-size: 100%;
-  /* height-capped so the figure always lands fully above the fold */
-  /* As tall as actually fits: the viewport, less the sticky header, the
-     hero's top padding, and the gap that keeps pavement in front of his
-     feet. A plain svh fraction is blind to those three and overshoots on
-     short laptops, which pushes his feet below the fold. */
-  max-block-size: min(
-    calc(100svh - var(--header-h) - var(--hero-pad-top) - var(--foot-gap)),
-    940px
-  );
-  height: auto;
-  margin-inline: auto;
-  filter: drop-shadow(0 30px 45px rgb(0 0 0 / 0.65));
-}
-/* The keyed video sits exactly over the cutout. The <img> keeps its place
-   in layout — it is what sizes the figure and grounds him on the pavement —
-   so it is hidden with visibility, never display, and comes straight back if
-   the video fails at any step. Its box is tracked from JS rather than
-   restated here, so the sizing maths stays in one place. */
-.hero__figure-video {
-  position: absolute;
-  z-index: 1;
-  pointer-events: none;
-  filter: drop-shadow(0 30px 45px rgb(0 0 0 / 0.65));
-}
-.hero__figure:not(.has-video) .hero__figure-video { opacity: 0; }
-.hero__figure.has-video .hero__cutout { visibility: hidden; }
-
-/* Wet ground reflects. Mask runs dark-at-the-bottom because scaleY(-1)
-   is applied after masking, which flips it to fade away from his feet. */
-.hero__reflection {
-  position: absolute;
-  inset-block-start: 100%;
-  inset-inline-start: 50%;
-  transform: translateX(-50%) scaleY(-1);
-  opacity: 0.20;
-  filter: blur(3px);
-  pointer-events: none;
-  -webkit-mask-image: linear-gradient(to bottom, transparent 52%, #000 100%);
-          mask-image: linear-gradient(to bottom, transparent 52%, #000 100%);
-}
-
-/* Set by main.js when hero-cape.png is absent. Rather than leave an empty
-   half, the hero collapses to a single column — the warmth is carried by
-   the background instead. Add the PNG and the two-column layout returns. */
-.hero__figure.is-missing { display: none; }
-.hero__grid:has(.hero__figure.is-missing) { grid-template-columns: minmax(0, 1fr); }
 
 .hero__scroll {
   display: inline-flex;
@@ -588,6 +481,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   .hero { min-block-size: min(100svh - 4.9rem, 860px); }
   .hero__title { font-size: clamp(2.6rem, 1.2rem + 4.4vw, 4.4rem); }
   .hero__lede { font-size: var(--step-0); }
+  .hero__title { text-shadow: 0 2px 20px rgb(18 16 14 / 0.6); }
   .hero__actions { margin-block-start: 1.5rem; }
   .hero__meta { margin-block-start: 1.5rem; padding-block-start: 1.1rem; }
   .hero__scroll { display: none; }
@@ -1129,15 +1023,46 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 /* -------------------------------------------------------- 18. Responsive */
 @media (max-width: 1000px) {
-  .hero__grid { grid-template-columns: 1fr; text-align: start; }
-  /* Single column: the headline leads (DOM order), with the figure below
-     it grounded on the stats bar. Leading with the photo pushed the whole
-     message off a phone screen. */
-  .hero__figure { max-inline-size: 340px; align-self: end; justify-self: center; }
-  .hero__figure img { max-block-size: min(46svh, 420px); }
-  .hero__copy { padding-block-end: clamp(1.25rem, 0.75rem + 2vw, 2rem); }
+  /* At 2.27:1 the photograph cannot fill a tall phone hero — `cover` would
+     crop it to a narrow sliver and lose the figure entirely. So the hero
+     shortens and the frame holds on him. */
+  .hero { min-block-size: min(76svh, 640px); }
+  .hero__bg { background-position: center, 57% center; }
+  .hero__grid { grid-template-columns: minmax(0, 1fr); text-align: start; }
   .about__grid, .contact__grid, .cs-body { grid-template-columns: 1fr; }
   .about__portrait { max-inline-size: 380px; }
+}
+
+/* Phones: a 2.27:1 photograph cannot be a full-bleed backdrop behind text —
+   `cover` crops it to a sliver and the copy ends up sitting on his face. So
+   below 700px the hero stops being an overlay: the copy reads on flat ink,
+   and the photograph follows as a band at close to its natural shape, which
+   is the only way it is seen uncropped anywhere on the site. */
+@media (max-width: 700px) {
+  .hero {
+    min-block-size: auto;
+    padding-block-end: 0;
+    background: var(--ink);
+  }
+  .hero .shell { order: 1; }
+  .hero__bg {
+    order: 2;
+    position: relative;
+    inset: auto;
+    z-index: 0;
+    aspect-ratio: 16 / 10;
+    margin-block-start: clamp(1.5rem, 5vw, 2.5rem);
+    background-image:
+      linear-gradient(to bottom, transparent 62%, rgb(18 16 14 / 0.85)),
+      url("../hero.jpg");
+    background-position: center, 56% center;
+  }
+  /* the vignette and the copy scrim both exist to protect text sitting on
+     the photo; nothing sits on it here */
+  .hero__bg::after { display: none; }
+  .hero__copy::before { display: none; }
+  .hero__title { text-shadow: none; }
+  .hero__scroll { display: none; }
 }
 
 @media (max-width: 860px) {
