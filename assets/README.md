@@ -62,6 +62,30 @@ To change it again, or to put the mauve back, the original is in git at
 `82ee12d` and the recolour runs from that lossless source in one pass —
 resize and JPEG encode happen once, so there is no second generation of loss.
 
+### The chest letter is printed, not pasted
+
+`hero.jpg` carries a gold **R** on the chest. It is not in the uploaded
+original; it is composited in, from the same script that does the recolour and
+against the same ~23,000 px shirt mask, so the letter can only ever land on
+fabric — a glyph pixel outside the mask is discarded rather than drawn.
+
+Two things stop it reading as a sticker. It is drawn through a squashed,
+slightly rotated transform, so it follows the chest rather than the picture
+plane. And every glyph pixel is multiplied by the luminance of the fabric
+underneath it, so the shirt's folds run *through* the print. That shading is
+normalised against the mean luminance **under the glyph**, not across the whole
+shirt: against the shirt-wide mean the bright upper chest pins at the clamp and
+the letter comes out flat.
+
+Placement was measured, not guessed. The clear runs of shirt are an upper chest
+band at y 25.7–30.7% (widest unbroken run 160 px) and a lower torso band at
+y 41.7–50.1% (143 px). The letter sits in the upper band at
+`cx 0.503, cy 0.288, size 0.044·H`.
+
+To move it, change it, or take it out, re-run the emblem pass from the lossless
+original in git at `82ee12d` — recolour and letter happen in one pass before the
+single resize and encode, so there is still no second generation of loss.
+
 ### Why JPEG
 
 It arrived as a 2.1 MB PNG. PNG is lossless and meant for flat colour and
