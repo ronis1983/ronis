@@ -39,6 +39,29 @@ If you replace it, a **wider-than-tall image with a quiet area on one side**
 is what this layout wants. Something closer to 16:9 would survive the phone
 crop and could stay a full-bleed backdrop throughout.
 
+### The shirt is recoloured
+
+The shirt in `hero.jpg` is navy; in the uploaded original it is dusty mauve.
+It was recoloured here, not re-shot.
+
+Skin and that mauve are almost the same RGB — chest `[183,120,118]` against
+forearm `[162,104,74]` — so brightness or hue distance alone cannot separate
+them. What does: **skin carries a yellow cast and the shirt does not.**
+Measured as G−B, skin runs +27 to +30 across face and arms, the shirt −4 to
++2. Two more terms exclude the rest: the cape is nearly pure red (G under
+10), the shorts are neutral (R−G ≈ 2). A flood fill from a seed in the chest
+then keeps warm clouds that happen to pass the colour test from being
+recoloured too. The mask lands at ~23,000 px.
+
+Recolouring replaces hue and saturation but **keeps each pixel's own
+lightness**, which is what preserves the folds and the shading — the fabric
+still reads as fabric rather than a flat fill. The edge is feathered by
+neighbour count so it does not look like a sticker.
+
+To change it again, or to put the mauve back, the original is in git at
+`82ee12d` and the recolour runs from that lossless source in one pass —
+resize and JPEG encode happen once, so there is no second generation of loss.
+
 ### Why JPEG
 
 It arrived as a 2.1 MB PNG. PNG is lossless and meant for flat colour and
