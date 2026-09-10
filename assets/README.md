@@ -141,6 +141,23 @@ To move it, change it, or take it out, re-run the emblem pass from the lossless
 original in git at `82ee12d` — recolour and letter happen in one pass before the
 single resize and encode, so there is still no second generation of loss.
 
+### Bump `?v=` whenever an asset changes
+
+Every reference to the stylesheet, the scripts and the two photographs carries
+a `?v=N`. A fixed filename is what lets a cache between the repository and a
+browser keep serving the previous bytes after a change lands -- which is
+invisible from the server side, because the files on GitHub are correct and the
+page still looks untouched.
+
+The version only works if it moves. Editing `site.css` and leaving `?v=4` in
+place reintroduces exactly the bug the query was added to kill. Bump every
+occurrence together, in `index.html`, `case-study.html` and `site.css`:
+
+    grep -rl '?v=' index.html case-study.html assets/css/site.css \
+      | xargs sed -i 's/?v=5/?v=6/g'
+
+`og:image` is deliberately left unversioned -- social scrapers fetch it fresh.
+
 ### Why JPEG
 
 It arrived as a 2.1 MB PNG. PNG is lossless and meant for flat colour and
