@@ -69,18 +69,39 @@ original; it is composited in, from the same script that does the recolour and
 against the same ~23,000 px shirt mask, so the letter can only ever land on
 fabric — a glyph pixel outside the mask is discarded rather than drawn.
 
-Two things stop it reading as a sticker. It is drawn through a squashed,
+Three things stop it reading as a sticker. It is drawn through a squashed,
 slightly rotated transform, so it follows the chest rather than the picture
-plane. And every glyph pixel is multiplied by the luminance of the fabric
-underneath it, so the shirt's folds run *through* the print. That shading is
-normalised against the mean luminance **under the glyph**, not across the whole
-shirt: against the shirt-wide mean the bright upper chest pins at the clamp and
-the letter comes out flat.
+plane. Every glyph pixel is multiplied by the luminance of the fabric
+underneath it, so the shirt's folds run *through* the print — normalised
+against the mean luminance **under the glyph**, not across the whole shirt,
+because against the shirt-wide mean the bright upper chest pins at the clamp
+and the letter comes out flat. And the ink carries an absolute exposure term
+as well: fabric under the letter measures 1.18x the shirt mean here, so the
+print sits at 1.09x. Drop identical ink on the lit chest and on the shadowed
+belly and both come out equally bright, which is exactly what a pasted-on
+sticker looks like.
 
-Placement was measured, not guessed. The clear runs of shirt are an upper chest
-band at y 25.7–30.7% (widest unbroken run 160 px) and a lower torso band at
-y 41.7–50.1% (143 px). The letter sits in the upper band at
-`cx 0.503, cy 0.288, size 0.044·H`.
+### The arms cover part of it, for free
+
+The letter sits at `cx 0.500, cy 0.330, size 0.100·H` — on the line where the
+crossed forearms pass. **31% of it is hidden behind them**, and that needed no
+occlusion layer: the arms are skin, skin is not in the shirt mask, and a glyph
+pixel outside the mask was already being discarded. The depth cue falls out of
+the masking that was there for a different reason.
+
+That 31% is worth measuring rather than eyeballing, because "hidden" and "fell
+off the figure" produce the same coverage number and only one of them is the
+effect wanted. Classifying each discarded pixel by what covers it in the source
+gives **612 to skin, 0 to cape, 0 to sky** — the letter is entirely on the body
+and only the arms take any of it. Moving it sideways is what breaks that: at
+`cx 0.524` ink starts spilling to cape and sky.
+
+Legibility sets the floor. Below roughly 60% visible the R loses its leg and
+starts reading as a P, so the sweep ran across the arm line and stopped at the
+largest letter that still clears that bar.
+
+The clear runs of shirt, for reference: an upper chest band at y 25.7-30.7%
+(widest unbroken run 160 px) and a lower torso band at y 41.7-50.1% (143 px).
 
 To move it, change it, or take it out, re-run the emblem pass from the lossless
 original in git at `82ee12d` — recolour and letter happen in one pass before the
