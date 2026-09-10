@@ -481,10 +481,19 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
 
-/* Short viewports (most laptops) cannot fit the full hero stack plus the
-   standing figure above the fold, so trim the optional parts rather than
-   let the figure's feet get clipped. */
-@media (max-height: 920px) and (min-width: 1001px) {
+/* The hero's job is to show the whole photograph -- rooftop included --
+   without scrolling, so the copy stack must fit in `100svh - header`.
+   Untrimmed it measures ~1013px, which needs a 1090px-tall window; trimmed it
+   is ~822px. The old threshold here was 920px, which left every window
+   between 920 and 1090 untrimmed and overflowing: a 1512x982 laptop pushed
+   108px of pavement below the fold, a 1920x1080 desktop 10px. Trimming from
+   1090 down closes that gap.
+
+   The width floor is 701px, not 1001px: between those two the hero is still
+   the overlay layout with an untrimmed copy stack, so a short window there
+   (1000x700, 900x650) pushed 150-175px of pavement under the fold. Below
+   701px the hero stops being an overlay entirely and this no longer applies. */
+@media (max-height: 1090px) and (min-width: 701px) {
   .hero { min-block-size: min(100svh - 4.9rem, 860px); }
   .hero__title { font-size: clamp(2.6rem, 1.2rem + 4.4vw, 4.4rem); }
   .hero__lede { font-size: var(--step-0); }
@@ -492,6 +501,14 @@ button, input, select, textarea { font: inherit; color: inherit; }
   .hero__actions { margin-block-start: 1.5rem; }
   .hero__meta { margin-block-start: 1.5rem; padding-block-start: 1.1rem; }
   .hero__scroll { display: none; }
+}
+
+/* Shorter still. Trimmed, the copy stack still misses by 16-36px in a very
+   short window (900x650, 760x600). The meta row is the last part worth its
+   height when the photograph is competing for the same pixels -- the headline,
+   the lede and both CTAs all outrank it. */
+@media (max-height: 700px) and (min-width: 701px) {
+  .hero__meta { display: none; }
 }
 
 /* --------------------------------------------------------------- 7. Stats */

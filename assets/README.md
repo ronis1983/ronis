@@ -43,6 +43,24 @@ contrast only from 6.21 to 5.55, still above the 4.5 AA floor. Measure it
 against the *real* local backdrop — render with the glyphs made transparent and
 sample their boxes — not against an assumed flat colour.
 
+**The hero has to fit the fold, and that is a height problem, not a width
+one.** The point of the hero is the whole photograph, rooftop included, with no
+scrolling. The photograph's bottom edge is the hero's bottom edge, so the test
+is simply whether the hero box ends above the fold -- and the hero is as tall
+as its copy stack, which is ~1013px untrimmed and ~860px trimmed. A rule that
+trims the stack existed, but it only fired below `max-height: 920px`, which
+left a dead band: a 1512x982 laptop pushed 108px of pavement under the fold, a
+1680x1050 40px, a 1920x1080 10px. It also demanded `min-width: 1001px`, so a
+short window between 701 and 1000 was never trimmed at all and lost 150-175px.
+Both floors moved (`max-height: 1090px`, `min-width: 701px`), and below
+`max-height: 700px` the meta row goes too. Measured across 22 viewports from
+760x600 to 2560x1440, every one now ends the photograph above the fold.
+
+Phones are the deliberate exception: below 700px the hero is stacked -- copy on
+flat ink, photograph as a band underneath -- so the picture is below the fold
+by construction. Putting a 2.27:1 frame above the copy instead is a design
+choice, not a bug fix, and it has not been made.
+
 **It is 2.27:1.** Very wide. On a desktop hero `cover` crops a little from the
 sides and the framing (`background-position: 56%`) keeps the figure in. On a
 phone it cannot work at all — `cover` in a tall narrow box crops to a sliver
