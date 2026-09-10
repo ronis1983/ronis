@@ -11,6 +11,81 @@
   var $$ = function (sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); };
 
   /* ------------------------------------------------- sticky header state */
+  /* ---- headline: both display lines to one width ------------------------
+     The two lines of the hero headline read as a single block only when they
+     end flush. They do not naturally: "שאנשים זוכרים" measures 1.40x the
+     width of "מעצב חוויות", while in English the second line is 9% narrower
+     than the first. The first line is the anchor; the second is scaled to it.
+
+     Measured rather than hardcoded per language, because the headline is copy
+     and copy gets rewritten -- a hardcoded ratio would go silently wrong the
+     first time someone edits it. One pass is enough: width scales linearly
+     with font-size, and the tracking on the outlined line is em-based so it
+     scales with it. */
+  function fitHeadline() {
+    var title = $(".hero__title");
+    if (!title) return;
+    var lines = $$(".line", title);
+    if (lines.length < 2) return;
+
+    /* drop any previous fit so the cascade's own clamp() is what we measure */
+    lines.forEach(function (el) { el.style.fontSize = ""; });
+
+    /* the span is display:block, so its box is the column, not the text --
+       a Range gives the ink */
+    var rects = function (el) {
+      var r = document.createRange();
+      r.selectNodeContents(el);
+      return { box: r.getBoundingClientRect().width,
+               lines: Array.prototype.filter.call(r.getClientRects(), function (x) { return x.width > 1; }).length };
+    };
+    var ink = function (el) { return rects(el).box; };
+
+    /* Only meaningful while every line is a single visual line. Once one
+       wraps, its bounding box is the width of its longest word, not of the
+       phrase, and matching that equalises nothing -- it just resizes the
+       headline. English wraps at this column width, so the fit stands down
+       there and the cascade's own size is left in place. */
+    for (var n = 0; n < lines.length; n++) {
+      if (rects(lines[n]).lines !== 1) return;
+    }
+
+    var target = ink(lines[0]);
+    if (!target) return;                       /* fonts not in yet; caller retries */
+
+    /* Two passes. The first lands within ~1%, the rest being hinting and
+       sub-pixel rounding at the new size rather than anything linear; the
+       second measures the fitted line and corrects for it. */
+    for (var pass = 0; pass < 2; pass++) {
+      for (var i = 1; i < lines.length; i++) {
+        var w = ink(lines[i]);
+        if (!w) continue;
+        var base = parseFloat(getComputedStyle(lines[i]).fontSize);
+        lines[i].style.fontSize = (base * target / w).toFixed(2) + "px";
+      }
+    }
+  }
+
+  function initHeadlineFit() {
+    if (!$(".hero__title")) return;
+    fitHeadline();
+    /* the web font changes every measurement, so fit again once it lands */
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(fitHeadline);
+    }
+    /* the inline size is px, so it has to be recomputed when the clamp moves */
+    var t;
+    window.addEventListener("resize", function () {
+      clearTimeout(t);
+      t = setTimeout(fitHeadline, 120);
+    });
+    /* swapping language swaps the text under us */
+    document.addEventListener("langchange", function () {
+      /* let the new text lay out first */
+      requestAnimationFrame(fitHeadline);
+    });
+  }
+
   function initHeader() {
     var header = $(".site-header");
     if (!header) return;
@@ -257,6 +332,7 @@
       initMenu();
       initReveals();
       initCounters();
+      initHeadlineFit();
       initFilter();
       initParallax();
       initImageFallbacks();

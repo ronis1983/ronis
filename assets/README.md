@@ -142,6 +142,32 @@ To move it, change it, or take it out, re-run the emblem pass from the lossless
 original in git at `82ee12d` — recolour and letter happen in one pass before the
 single resize and encode, so there is still no second generation of loss.
 
+### The headline's two lines are fitted to one width
+
+`.hero__title` is two display lines and they read as one block only when they
+end flush. They do not naturally: measured, "שאנשים זוכרים" is 515px against
+"מעצב חוויות" at 369 -- **1.40x**. The first line is the anchor and the second
+is scaled to it (`fitHeadline` in `main.js`), landing both at 369px exactly.
+
+Measured at runtime rather than hardcoded per language, because a headline is
+copy and copy gets rewritten; a baked-in ratio would go silently wrong the
+first time someone edits it. Two passes: the first lands within ~1%, the rest
+being hinting and sub-pixel rounding at the new size, and the second corrects
+for that. It re-runs on `langchange`, on resize (the inline size is px, so it
+has to follow the `clamp()`), and again after `document.fonts.ready`, since the
+web font changes every measurement.
+
+**It stands down when a line wraps.** English wraps into two visual lines at
+this column width, and a wrapped span's bounding box is the width of its
+longest word, not of the phrase -- matching that equalises nothing and merely
+resizes the headline (it grew the English one 11%). So the fit checks that
+every line is a single visual line first, and otherwise clears its inline size
+and leaves the cascade alone. English is therefore untouched, exactly as
+before.
+
+With JavaScript off the lines keep their natural widths. That is a cosmetic
+difference in a headline that still reads, which is the right side to fail on.
+
 ### Bump `?v=` whenever an asset changes
 
 Every reference to the stylesheet, the scripts and the two photographs carries
