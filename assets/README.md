@@ -15,7 +15,7 @@ already composited. It replaced a hero that stacked three separate layers in
 CSS to build that same scene — a backdrop, a masked ground plane, and a
 transparent cutout standing on it. All of that is gone; the picture does it.
 
-Two things about this image drive how the hero is built, and both are worth
+Three things about this image drive how the hero is built, and all are worth
 knowing before swapping it for another:
 
 **It is bright on one side.** Sampling the frame: the left half runs ~130
@@ -26,6 +26,22 @@ in Hebrew it lands on the dark half and in English on the sun. That is why
 side, so it follows the text either way. The headline and the outlined line
 also carry their own `text-shadow`; an outline has no fill to carry it and
 vanishes over the sun without one.
+
+**The rooftop is the first thing a scrim eats.** It lives in the bottom sixth
+of the frame, and no crop touches it — measured, the vertical crop is 0% at
+every desktop width, so anything that hides it is a gradient, not framing. The
+hero's own gradient used to run to 0.72 from 82% down, which held the pavement
+at 21 luminance against the 59 the photograph offers; the vignette over it was
+worth only 1 more. The ramp to solid ink now waits until 95%, below every piece
+of hero text — the lowest is `.hero__scroll`, ending at 88% at 1920 — and the
+pavement reads at 45. The phone banner had the same problem and took the same
+fix: 33 to 45.
+
+Contrast was the thing that could have vetoed this, and it did not: the copy's
+own scrim carries the text, so lifting the backdrop moved the worst hero
+contrast only from 6.21 to 5.55, still above the 4.5 AA floor. Measure it
+against the *real* local backdrop — render with the glyphs made transparent and
+sample their boxes — not against an assumed flat colour.
 
 **It is 2.27:1.** Very wide. On a desktop hero `cover` crops a little from the
 sides and the framing (`background-position: 56%`) keeps the figure in. On a

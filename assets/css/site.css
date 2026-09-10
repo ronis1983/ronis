@@ -357,10 +357,17 @@ button, input, select, textarea { font: inherit; color: inherit; }
   inset: 0;
   z-index: -2;
   background-color: var(--ink);
+  /* The rooftop the figure stands on lives in the bottom sixth of the frame,
+     and nothing is cropping it -- measured, the vertical crop is 0% at every
+     desktop width. It was this gradient burying it: at 0.72 from 82% down it
+     held the pavement at 21 of the 59 luminance the photograph offers, and
+     the vignette was worth only 1 of that. The
+     ramp to solid ink now waits until 95%, which is below every piece of hero
+     text (the lowest, .hero__scroll at 1920, ends at 88%). */
   background-image:
     linear-gradient(to bottom,
-      rgb(18 16 14 / 0.32) 0%, rgb(18 16 14 / 0.30) 45%,
-      rgb(18 16 14 / 0.72) 82%, var(--ink) 100%),
+      rgb(18 16 14 / 0.30) 0%, rgb(18 16 14 / 0.28) 45%,
+      rgb(18 16 14 / 0.22) 88%, rgb(18 16 14 / 0.30) 95%, var(--ink) 100%),
     url("../hero.jpg");
   background-size: auto, cover;
   /* framed right of centre: the figure stands there, and at 2.27:1 the crop
@@ -374,7 +381,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(120% 90% at 50% 40%, transparent 45%, rgb(18 16 14 / 0.75));
+  background: radial-gradient(125% 95% at 50% 40%, transparent 50%, rgb(18 16 14 / 0.55));
 }
 
 /* The hero uses the same 1200px shell as every other section, so the
@@ -1053,7 +1060,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
     aspect-ratio: 16 / 10;
     margin-block-start: clamp(1.5rem, 5vw, 2.5rem);
     background-image:
-      linear-gradient(to bottom, transparent 62%, rgb(18 16 14 / 0.85)),
+      linear-gradient(to bottom, transparent 74%,
+        rgb(18 16 14 / 0.30) 90%, rgb(18 16 14 / 0.85) 100%),
       url("../hero.jpg");
     background-position: center, 56% center;
   }
