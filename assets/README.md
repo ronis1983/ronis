@@ -4,7 +4,8 @@
 
 | File | Where | Notes |
 |---|---|---|
-| `hero.jpg` | The hero — the whole of it | 1800×794, 221 KB |
+| `hero.webp` | The hero — the whole of it | 1889×833, 218 KB |
+| `hero.jpg` | The same frame, fallback only | 1800×794, 221 KB |
 | `pavement.jpg` | The CTA band behind "יש לך משהו לבנות?" | 1600×487, 105 KB |
 | `hero-cape.png` | The About portrait | 784×1042, transparent, lazy-loaded |
 
@@ -157,6 +158,34 @@ occurrence together, in `index.html`, `case-study.html` and `site.css`:
       | xargs sed -i 's/?v=5/?v=6/g'
 
 `og:image` is deliberately left unversioned -- social scrapers fetch it fresh.
+
+### Why WebP, and what still limits the quality
+
+The hero ships as WebP at the source's full 1889px, with the JPEG kept as a
+fallback for anything without `image-set()`. Measured against the uncompressed
+master, at roughly the same budget:
+
+| encoding | KB | PSNR vs master |
+|---|---|---|
+| JPEG 1800 q82 (the old file) | 221 | 34.02 |
+| WebP 1889 q80 | 163 | 35.71 |
+| **WebP 1889 q86 (shipped)** | **218** | **36.97** |
+| WebP 1889 q88 | 238 | 37.52 |
+
+Better on both axes at once: 3 KB lighter and 2.95 dB closer to the master.
+Even q72, at 131 KB, beats the old JPEG on fidelity.
+
+**What this does not fix is resolution, which is the real ceiling.** The upload
+is 1889px wide. `cover` on a 2.27:1 frame draws it at ~1950 CSS px on any
+window from 1470 to 1920 wide, which is ~3900 device px on a retina screen —
+a **2.06x upscale**, and 2.71x on a 2560 display. No encoder recovers detail
+that was never captured; only a larger source does. Re-encoding was worth doing
+because it is free, but softness on a retina screen is a pixel-count problem.
+
+The pipeline is verified end to end: rebuilding the master from the lossless
+original and re-encoding at 1800 q82 reproduces the shipped `hero.jpg`
+byte-for-byte, so the WebP is the same image, encoded better — not a
+re-processed one.
 
 ### Why JPEG
 
