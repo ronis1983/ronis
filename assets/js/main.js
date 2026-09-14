@@ -1,6 +1,6 @@
 /* ==========================================================================
    Site behaviour: sticky header, mobile menu, scroll reveals, work filter,
-   counters, hero parallax, image fallbacks, form validation.
+   counters, image fallbacks, form validation.
    Every animation is gated behind prefers-reduced-motion.
    ========================================================================== */
 (function () {
@@ -214,46 +214,6 @@
     });
   }
 
-  /* -------------------------------------------------------- hero parallax */
-  /* Publishes scroll offset as one custom property and lets CSS do the rest:
-     each sky layer multiplies it by its own --depth, so adding or retuning a
-     layer never comes back here. One property write per frame, no per-element
-     style churn.
-
-     This replaced a version that moved .hero__figure -- an element deleted
-     when the hero became a single composited photograph, so the whole
-     function had been returning immediately and there was no parallax at all,
-     only code that looked like there was.
-
-     The photograph itself still does not move: its bottom edge is the hero's
-     bottom edge and keeping that above the fold at every viewport was
-     measured carefully. Only the added sky drifts. */
-  function initParallax() {
-    var hero = $(".hero");
-    var sky = $(".hero__sky");
-    if (!hero || !sky || reduceMotion) return;
-
-    var ticking = false;
-    var apply = function () {
-      /* Clamp to the sky band's own height, not the hero's. The band is the
-         top ~54% and scrolls out of view well before the hero does, so past
-         that the layers are invisible and the travel is wasted -- spending it
-         inside the range where the sky is actually on screen is what makes
-         the displacement large enough to read at all. */
-      var limit = sky.offsetHeight || 460;
-      var y = Math.max(0, Math.min(window.scrollY, limit));
-      /* on .hero, so the sky layers and the copy can both read it */
-      hero.style.setProperty("--sy", y + "px");
-      ticking = false;
-    };
-    window.addEventListener("scroll", function () {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(apply);
-    }, { passive: true });
-    apply();
-  }
-
   /* ------------------------------------------------------ image fallbacks */
   /* The three photographs are dropped into assets/ by hand. Until they are
      there the CSS gradients carry the design; this only has to deal with the
@@ -356,7 +316,6 @@
       initCounters();
       initHeadlineFit();
       initFilter();
-      initParallax();
       initImageFallbacks();
       initForm();
       initActiveNav();
