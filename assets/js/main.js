@@ -215,21 +215,39 @@
   }
 
   /* -------------------------------------------------------- hero parallax */
-  function initParallax() {
-    var figure = $(".hero__figure");
-    if (!figure || reduceMotion) return;
+  /* Publishes scroll offset as one custom property and lets CSS do the rest:
+     each sky layer multiplies it by its own --depth, so adding or retuning a
+     layer never comes back here. One property write per frame, no per-element
+     style churn.
 
+     This replaced a version that moved .hero__figure -- an element deleted
+     when the hero became a single composited photograph, so the whole
+     function had been returning immediately and there was no parallax at all,
+     only code that looked like there was.
+
+     The photograph itself still does not move: its bottom edge is the hero's
+     bottom edge and keeping that above the fold at every viewport was
+     measured carefully. Only the added sky drifts. */
+  function initParallax() {
+    var sky = $(".hero__sky");
+    if (!sky || reduceMotion) return;
+
+    var hero = $(".hero");
     var ticking = false;
-    var onScroll = function () {
+    var apply = function () {
+      /* stop tracking once the hero is off-screen -- past that the layers are
+         invisible and the work is wasted */
+      var limit = hero ? hero.offsetHeight : 900;
+      var y = Math.max(0, Math.min(window.scrollY, limit));
+      sky.style.setProperty("--sy", y + "px");
+      ticking = false;
+    };
+    window.addEventListener("scroll", function () {
       if (ticking) return;
       ticking = true;
-      requestAnimationFrame(function () {
-        var y = Math.min(window.scrollY, 700);
-        figure.style.transform = "translateY(" + (y * 0.08) + "px)";
-        ticking = false;
-      });
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
+      requestAnimationFrame(apply);
+    }, { passive: true });
+    apply();
   }
 
   /* ------------------------------------------------------ image fallbacks */
