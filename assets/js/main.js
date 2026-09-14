@@ -229,17 +229,21 @@
      bottom edge and keeping that above the fold at every viewport was
      measured carefully. Only the added sky drifts. */
   function initParallax() {
-    var sky = $(".hero__sky");
-    if (!sky || reduceMotion) return;
-
     var hero = $(".hero");
+    var sky = $(".hero__sky");
+    if (!hero || !sky || reduceMotion) return;
+
     var ticking = false;
     var apply = function () {
-      /* stop tracking once the hero is off-screen -- past that the layers are
-         invisible and the work is wasted */
-      var limit = hero ? hero.offsetHeight : 900;
+      /* Clamp to the sky band's own height, not the hero's. The band is the
+         top ~54% and scrolls out of view well before the hero does, so past
+         that the layers are invisible and the travel is wasted -- spending it
+         inside the range where the sky is actually on screen is what makes
+         the displacement large enough to read at all. */
+      var limit = sky.offsetHeight || 460;
       var y = Math.max(0, Math.min(window.scrollY, limit));
-      sky.style.setProperty("--sy", y + "px");
+      /* on .hero, so the sky layers and the copy can both read it */
+      hero.style.setProperty("--sy", y + "px");
       ticking = false;
     };
     window.addEventListener("scroll", function () {

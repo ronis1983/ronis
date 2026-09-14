@@ -168,39 +168,56 @@ before.
 With JavaScript off the lines keep their natural widths. That is a cosmetic
 difference in a headline that still reads, which is the right side to fail on.
 
-### The drifting sky, and what it cost
+### The drifting sky, and what the parallax can and cannot be
 
 The hero is one flat photograph, so there are no depth planes to move against
 each other -- separating them was already proven impossible on the cape. The
 depth is added instead: two procedural cloud sheets (`feTurbulence`, inline
 data URIs, no network request) drifting across the sky at different scales and
-speeds and translating at different rates on scroll. The photograph itself does
-not move; its bottom edge is the hero's bottom edge and keeping that above the
-fold was measured carefully.
+speeds. The photograph itself does not move; its bottom edge is the hero's
+bottom edge and keeping that above the fold was measured carefully.
 
-Three things were measured rather than assumed, and each changed the design:
+Everything here was measured as a mean per-pixel delta against the same frame
+without the effect, on the sky band. Roughly: **2/255 is invisible on a
+photograph, 8-12 reads clearly.**
 
-**Mask it to the sky.** Unmasked, the sheet washes over the figure and the
-pavement and flattens both. The first version did exactly that.
+**Getting the amplitude right.** The first version measured **2.22** -- and the
+whole drift across 70 seconds measured **2.1**. That is not "subtle", it is
+absent, and it shipped that way because when `mix-blend-mode: screen` came out
+for performance the opacities were lowered at the same time, when removing the
+blend meant they had to go *up*. At 0.60/0.45 the layer measures **11.25** and
+the drift **10.03**.
 
-**Blend modes are not free.** `mix-blend-mode: screen` looked marginally
-richer and cost half the frame rate -- 33.3ms a frame against 16.7 with the
-layer off -- because blending reads the backdrop back every frame.
+**Scroll parallax on a translucent layer cannot be made to read.** A layer can
+only displace as much as it is visible in the first place, and the clouds have
+to stay translucent to sit on a photograph at all. Three attempts, each
+measured: more depth (1.57), travel concentrated into the range where the sky
+is still on screen (2.82), a sharper and finer texture (2.94-2.96 -- no change
+at all). None crossed the threshold.
 
-**Cost scales with animated area.** Restricting the layer to the top 54%,
-which is all the mask kept anyway, plus dropping the blend, brings it to
-16.7ms median and 16.8ms worst over 180 frames: identical to having no layer
-at all.
+**So the parallax moves something opaque.** The copy block, at `-0.20` of
+scroll -- negative because it sits in front of the photograph and nearer things
+travel further. Text edges are high-contrast, so the same displacement measures
+**6.75 to 10.55 with peaks around 218**. That is the half of the effect that is
+actually seen.
 
-`prefers-reduced-motion` stops all of it -- the global rule kills the drift
-animation and `initParallax` returns before binding a scroll listener.
+**Cost.** `mix-blend-mode: screen` looked marginally richer and cost half the
+frame rate -- 33.3ms a frame against 16.7 with the layer off -- because
+blending reads the backdrop back every frame. Dropping it and restricting the
+layer to the top 54% (all the mask kept anyway) gives 16.7ms median and 16.8ms
+worst over 180 frames: identical to having no layer at all.
 
-`initParallax` publishes scroll offset as a single `--sy` custom property and
-lets CSS multiply it by each layer's own `--depth`, so retuning a layer never
-touches JavaScript. It replaced a version targeting `.hero__figure`, an element
-deleted when the hero became one composited photograph -- so it had been
-returning immediately and there was no parallax at all, only code that looked
-like there was.
+Masked to the sky. Unmasked, the sheet washes over the figure and the pavement
+and flattens both; the first version did exactly that.
+
+`prefers-reduced-motion` and a JavaScript failure both make the whole thing a
+no-op: `--sy` is only ever set by `initParallax`, and both transforms read it
+as `var(--sy, 0px)`, so unset it resolves to zero. `initParallax` publishes it
+on `.hero` as one property and lets CSS multiply it per layer, so retuning a
+layer never touches JavaScript. It replaced a version targeting
+`.hero__figure`, an element deleted when the hero became one composited
+photograph -- so it had been returning immediately and there was no parallax at
+all, only code that looked like there was.
 
 ### Bump `?v=` whenever an asset changes
 

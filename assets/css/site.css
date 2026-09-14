@@ -372,10 +372,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
      image-set() keeps. The WebP holds the source's full 1889px rather than
      the JPEG's 1800, and measures 218 KB against 221 while landing 2.95 dB
      closer to the uncompressed master -- better on both axes at once. */
-  background-image: var(--hero-scrim), url("../hero.jpg?v=8");
+  background-image: var(--hero-scrim), url("../hero.jpg?v=9");
   background-image: var(--hero-scrim), image-set(
-      url("../hero.webp?v=8") type("image/webp"),
-      url("../hero.jpg?v=8")  type("image/jpeg"));
+      url("../hero.webp?v=9") type("image/webp"),
+      url("../hero.jpg?v=9")  type("image/jpeg"));
   background-size: auto, cover;
   /* framed right of centre: the figure stands there, and at 2.27:1 the crop
      bites hard from the sides as the viewport narrows */
@@ -414,10 +414,11 @@ button, input, select, textarea { font: inherit; color: inherit; }
    so the two never fight over one transform property. */
 .hero__sky span {
   position: absolute;
-  /* Slack above the band: the near layer travels 0.15 x hero height (~129px
-     at 860), which is 28% of the band -- less headroom than that and the
-     sheet visibly pulls away from the top edge as you scroll. */
-  inset: -32% 0 0;
+  /* Slack above the band: --sy is clamped to the band's own height (~464px),
+     so the near layer travels at most 0.50 x that = 232px, which is 50% of
+     the band. Less headroom than that and the sheet visibly pulls away from
+     the top edge as you scroll. */
+  inset: -56% 0 0;
   display: block;
   transform: translate3d(0, calc(var(--sy, 0px) * var(--depth)), 0);
 }
@@ -442,19 +443,19 @@ button, input, select, textarea { font: inherit; color: inherit; }
 @keyframes sky-drift { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-50%, 0, 0); } }
 
 .hero__sky span:first-child {
-  --depth: 0.06;
+  --depth: 0.22;
   --drift: 240s;
-  opacity: 0.13;
+  opacity: 0.60;
 }
 .hero__sky span:first-child::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1400' height='700'%3E%3Cfilter id='c' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.005 0.012' numOctaves='5' seed='3' stitchTiles='stitch' result='n'/%3E%3CfeColorMatrix in='n' type='luminanceToAlpha' result='a'/%3E%3CfeComponentTransfer in='a' result='b'%3E%3CfeFuncA type='table' tableValues='0 0 0 0.35 0.9 1'/%3E%3C/feComponentTransfer%3E%3CfeFlood flood-color='%23FFE6C0' result='f'/%3E%3CfeComposite in='f' in2='b' operator='in'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23c)'/%3E%3C/svg%3E");
   background-size: 50% auto;
 }
 .hero__sky span:last-child {
-  --depth: 0.15;
+  --depth: 0.50;
   --drift: 150s;
   --dir: reverse;
-  opacity: 0.09;
+  opacity: 0.45;
 }
 .hero__sky span:last-child::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1400' height='700'%3E%3Cfilter id='c' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.009 0.020' numOctaves='5' seed='7' stitchTiles='stitch' result='n'/%3E%3CfeColorMatrix in='n' type='luminanceToAlpha' result='a'/%3E%3CfeComponentTransfer in='a' result='b'%3E%3CfeFuncA type='table' tableValues='0 0 0 0.35 0.9 1'/%3E%3C/feComponentTransfer%3E%3CfeFlood flood-color='%23FFE6C0' result='f'/%3E%3CfeComposite in='f' in2='b' operator='in'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23c)'/%3E%3C/svg%3E");
@@ -485,6 +486,18 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .hero__copy {
   position: relative;
   padding-block-end: clamp(2rem, 1rem + 3vw, 3.5rem);
+  /* The half of the parallax that can actually be seen. A translucent overlay
+     can only displace as much as it is visible in the first place, so the
+     clouds' scroll shift measures ~3/255 against the frame no matter how it
+     is tuned -- more depth, travel concentrated where the sky is on screen,
+     and a sharper texture were each measured and none crossed the threshold.
+     Text edges are opaque and high-contrast, so the same displacement here
+     measures ~9 with peaks of 215. Negative, because the copy sits in front
+     of the photograph and nearer things travel further.
+
+     --sy is published by initParallax on .hero and is 0 without JavaScript or
+     under prefers-reduced-motion, which makes this a no-op in both. */
+  transform: translate3d(0, calc(var(--sy, 0px) * -0.20), 0);
 }
 /* Local scrim: the photograph is bright on one side and dark on the other,
    and which side the copy lands on flips with reading direction. Anchoring
@@ -979,7 +992,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   background-image:
     linear-gradient(105deg, rgb(255 208 138 / 0.22), transparent 45%),
     linear-gradient(to bottom, rgb(18 16 14 / 0.86), rgb(18 16 14 / 0.94)),
-    url("../pavement.jpg?v=8");
+    url("../pavement.jpg?v=9");
   background-size: auto, auto, cover;
   background-position: center, center, center;
   background-repeat: no-repeat;
@@ -1164,10 +1177,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
     --hero-scrim:
       linear-gradient(to bottom, transparent 74%,
         rgb(18 16 14 / 0.30) 90%, rgb(18 16 14 / 0.85) 100%);
-    background-image: var(--hero-scrim), url("../hero.jpg?v=8");
+    background-image: var(--hero-scrim), url("../hero.jpg?v=9");
     background-image: var(--hero-scrim), image-set(
-        url("../hero.webp?v=8") type("image/webp"),
-        url("../hero.jpg?v=8")  type("image/jpeg"));
+        url("../hero.webp?v=9") type("image/webp"),
+        url("../hero.jpg?v=9")  type("image/jpeg"));
     background-position: center, 56% center;
   }
   /* the vignette and the copy scrim both exist to protect text sitting on
