@@ -1,0 +1,363 @@
+/* ==========================================================================
+   RONIS landing page
+   Built from Figma "Wireframe - 1" (frame 2003:33), design canvas 1440x1024.
+
+   Every size is written in `cqw` (1cqw = 1% of .hero's width) so the whole
+   composition scales as one piece. The conversion is  px / 14.4  , because
+   1440px / 100 = 14.4. The design's pixel value is kept in a comment next
+   to each rule so it can be checked against Figma.
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Assistant", sans-serif;
+    background-color: #c9c554;
+}
+
+/* --------------------------------------------------------------------------
+   Hero stage
+   The frame clips its content, and its 1440x1024 ratio is what keeps the
+   proportional scaling honest: height follows width, so one set of cqw
+   values positions things on both axes.
+   -------------------------------------------------------------------------- */
+
+.hero {
+    container-type: inline-size;
+    position: relative;
+    width: 100%;
+    max-width: 1440px;
+    margin-inline: auto;
+    aspect-ratio: 1440 / 1024;
+    overflow: hidden;
+    /* Radial gradient from node 2003:35: an ellipse centred in the frame,
+       with radii 720x513 - exactly half the frame, i.e. farthest-side. */
+    background: radial-gradient(
+        ellipse farthest-side at 50% 50%,
+        #d9d9d9 0%,
+        #d1cf97 50%,
+        #cdca75 75%,
+        #c9c554 100%
+    );
+}
+
+/* Layers are absolutely positioned siblings, so document order is paint
+   order - the same stacking Figma uses. */
+.hero > * {
+    position: absolute;
+}
+
+/* Wave, node 2005:68. The SVG carries filter bleed, so the rendered box is
+   1552.78x152.624 at (-36.76, 942.13) rather than the node's own bounds. */
+.hero__wave {
+    left: -2.5528cqw;   /* -36.76px  */
+    top: 65.4257cqw;    /* 942.13px  */
+    width: 107.8319cqw; /* 1552.78px */
+    height: 10.5989cqw; /* 152.624px */
+}
+
+/* Ground shadow, node 2003:36 - also bleed-expanded, to 688x95 at (269, 923). */
+.hero__shadow {
+    left: 18.6819cqw;  /* 269.02px */
+    top: 64.0972cqw;   /* 923px    */
+    width: 47.775cqw;  /* 687.96px */
+    height: 6.5972cqw; /* 95px     */
+}
+
+/* Oversized wordmark, node 2003:44. */
+.hero__wordmark {
+    left: 20.2778cqw;      /* 292px */
+    top: 6.4583cqw;        /* 93px  */
+    margin: 0;
+    font-family: "Inter", sans-serif;
+    font-weight: 900;
+    font-size: 20.8333cqw; /* 300px */
+    line-height: normal;
+    color: #fff;
+    white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   Headline and call to action
+   -------------------------------------------------------------------------- */
+
+.hero__copy {
+    left: 62.0833cqw; /* 894px */
+    top: 30.4861cqw;  /* 439px */
+}
+
+.hero__headline {
+    margin: 0;
+    line-height: normal;
+    color: #000;
+    white-space: nowrap;
+}
+
+.hero__headline-top,
+.hero__headline-bottom {
+    display: block;
+}
+
+.hero__headline-top {
+    font-weight: 600;
+    font-size: 4.8611cqw; /* 70px */
+}
+
+/* The two headline lines are separate text nodes whose boxes overlap: node
+   2003:55 occupies 439-531px and node 2003:56 starts at 499px, so the second
+   line is pulled up by 32px. Both are right-aligned on the same edge
+   (x=1231px), which the RTL direction gives for free - no horizontal nudge. */
+.hero__headline-bottom {
+    margin-top: -2.2222cqw; /* 499px - (439px + 92px line box) */
+    font-weight: 800;
+    font-size: 5cqw;        /* 72px */
+}
+
+/* Node 2003:59 (the pill) plus node 2003:60 (the label). The pill is drawn as
+   a pseudo-element so its 59% opacity does not wash out the label. */
+.hero__cta {
+    position: absolute;
+    left: 4.0278cqw;      /* 952px - 894px */
+    top: 13.9583cqw;      /* 640px - 439px */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18.1944cqw;    /* 262px */
+    height: 3.4722cqw;    /* 50px  */
+    font-weight: 600;
+    font-size: 2.7778cqw; /* 40px  */
+    color: #000;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.hero__cta::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: #fff;
+    border-radius: 2.0139cqw; /* 29px */
+    opacity: 0.59;
+}
+
+.hero__cta:hover::before,
+.hero__cta:focus-visible::before {
+    opacity: 0.85;
+}
+
+/* Artwork, node 2003:34. Painted last in Figma, so it sits in front of the
+   wordmark and the wave. */
+.hero__art {
+    left: 9.3056cqw;   /* 134px */
+    top: 15.4861cqw;   /* 223px */
+    width: 49.5833cqw; /* 714px */
+    height: 53.125cqw; /* 765px */
+    object-fit: cover;
+    filter: drop-shadow(-2.3611cqw 0 1.0417cqw rgba(0, 0, 0, 0.1));
+    pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Header
+   The design positions these five items absolutely, but they are evenly
+   spaced, so a flex row reproduces it and survives text changes.
+   Logo left, links right - hence direction: ltr on the row itself.
+   -------------------------------------------------------------------------- */
+
+.site-header {
+    left: 0;
+    top: 0;
+    z-index: 2;
+    direction: ltr;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 6.7361cqw;            /* 97px, the tallest header item */
+    padding-left: 3.0556cqw;      /* 44px  */
+    padding-right: 7.5694cqw;     /* 109px, 1440px - 1331px */
+}
+
+.site-logo {
+    font-family: "Inter", sans-serif;
+    font-weight: 900;
+    font-size: 3.4722cqw; /* 50px */
+    color: #fff;
+    text-decoration: none;
+}
+
+.nav-list {
+    display: flex;
+    align-items: center;
+    gap: 1.5278cqw; /* 22px, the average gap between the design's nav items */
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.nav-link {
+    font-weight: 300;
+    font-size: 2.0833cqw; /* 30px */
+    color: #000;
+    text-decoration: none;
+}
+
+.nav-link:hover,
+.nav-link:focus-visible {
+    text-decoration: underline;
+}
+
+/* Node 2010:13 wrapped around node 2003:47. */
+.nav-link--pill {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 8.1944cqw;  /* 118px */
+    height: 4.2361cqw; /* 61px  */
+    color: #252525;
+}
+
+.nav-link--pill::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: rgba(217, 217, 217, 0.45);
+    border: 0.1389cqw solid #fff;  /* 2px */
+    border-radius: 2.0139cqw;      /* 29px */
+    opacity: 0.59;
+}
+
+.nav-link--pill:hover,
+.nav-link--pill:focus-visible {
+    text-decoration: none;
+}
+
+.nav-link--pill:hover::before,
+.nav-link--pill:focus-visible::before {
+    opacity: 0.85;
+}
+
+/* Node 2010:9 - a 36px rule the design rotates to vertical. */
+.nav-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 0.0694cqw;  /* 1px  */
+    height: 2.5cqw;    /* 36px */
+}
+
+.nav-divider img {
+    flex: none;
+    transform: rotate(91.59deg);
+}
+
+/* --------------------------------------------------------------------------
+   Small screens
+   The Figma file has no mobile frame, so this layout is not from the design:
+   below 768px the stage stops being a fixed-ratio canvas and the layers fall
+   into a single column, because proportional scaling alone would shrink the
+   30px nav links to about 8px on a phone.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+    .hero {
+        container-type: normal;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        aspect-ratio: auto;
+        min-height: 100svh;
+        padding: 24px 20px 0;
+        text-align: center;
+    }
+
+    .hero > * {
+        position: static;
+    }
+
+    .site-header {
+        order: 1;
+        height: auto;
+        padding: 0 0 32px;
+    }
+
+    .site-logo {
+        font-size: 34px;
+    }
+
+    .nav-list {
+        gap: 14px;
+    }
+
+    .nav-link {
+        font-size: 18px;
+    }
+
+    .nav-link--pill {
+        width: 74px;
+        height: 38px;
+    }
+
+    .nav-link--pill::before {
+        border-width: 2px;
+        border-radius: 19px;
+    }
+
+    .nav-divider {
+        width: 1px;
+        height: 22px;
+    }
+
+    .hero__wordmark {
+        order: 2;
+        font-size: 19vw;
+    }
+
+    .hero__copy {
+        order: 3;
+    }
+
+    .hero__headline-top {
+        font-size: 32px;
+    }
+
+    .hero__headline-bottom {
+        margin: 0;
+        font-size: 33px;
+    }
+
+    .hero__cta {
+        position: relative;
+        left: auto;
+        top: auto;
+        width: 200px;
+        height: 46px;
+        margin: 24px auto 0;
+        font-size: 22px;
+    }
+
+    .hero__cta::before {
+        border-radius: 23px;
+    }
+
+    .hero__art {
+        order: 4;
+        width: 100%;
+        max-width: 420px;
+        height: auto;
+        margin-top: 8px;
+        filter: none;
+    }
+
+    /* Both are ground/edge decoration for the desktop composition. */
+    .hero__shadow,
+    .hero__wave {
+        display: none;
+    }
+}
