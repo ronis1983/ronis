@@ -1,0 +1,416 @@
+/* ==========================================================================
+   Shared across every page: fonts, background, header, and the shell the
+   inner pages are built on. The home page adds index.css on top of this.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Fonts, served from this repo rather than from Google Fonts, so the pages
+   have no third-party dependency at render time and no visitor IP is sent
+   to a CDN. Both families are SIL Open Font License 1.1; the licence text
+   ships alongside the files in fonts/.
+
+   Assistant is a variable font: Google serves one file per subset covering
+   the whole 200-800 range, which is why three weights share two files.
+   Only the subsets these pages need are included - Hebrew and Latin for
+   Assistant, Latin for Inter.
+   -------------------------------------------------------------------------- */
+
+@font-face {
+    font-family: "Assistant";
+    font-style: normal;
+    font-weight: 200 800;
+    font-display: swap;
+    src: url("fonts/assistant-hebrew.woff2") format("woff2");
+    unicode-range: U+0307-0308, U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F;
+}
+
+@font-face {
+    font-family: "Assistant";
+    font-style: normal;
+    font-weight: 200 800;
+    font-display: swap;
+    src: url("fonts/assistant-latin.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 900;
+    font-display: swap;
+    src: url("fonts/inter-900-latin.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* --------------------------------------------------------------------------
+   Base
+   -------------------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Assistant", sans-serif;
+    color: #23220b;
+    background-color: #c9c554;
+}
+
+/* The background, fixed to the viewport so it stays put on the pages that
+   scroll and matches the home page exactly on the one that does not.
+   Node 2003:35: an ellipse centred in the frame with radii 720x513, which is
+   exactly half of it - farthest-side. It is clamped to #c9c554 along all four
+   edges, which is why that colour works as the page's base. */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(
+        ellipse farthest-side at 50% 50%,
+        #d9d9d9 0%,
+        #d1cf97 50%,
+        #cdca75 75%,
+        #c9c554 100%
+    );
+}
+
+/* Hebrew sits on the baseline and does not use the descender space the line
+   box reserves, so a line box centred in a box leaves the letters looking
+   low. Measured in Assistant: ascent 102, descent 29, Hebrew letters 56 tall
+   per 100 of font-size, which puts the letter body 8.5 below the centre.
+   Lifting by 0.085em centres the letters themselves, at any size, and the
+   same amount keeps letters with descenders (ק ן ף ך ץ) in line with the
+   rest rather than centring each word differently. */
+.optical {
+    display: inline-block;
+    transform: translateY(-0.085em);
+}
+
+/* --------------------------------------------------------------------------
+   Header, shared by all four pages
+   The design positions its five items absolutely, but they are evenly
+   spaced, so a flex row reproduces it and survives the labels changing.
+   Logo left and nav right, per the design, hence direction: ltr on the row;
+   the list inside is rtl so the links read right to left.
+   -------------------------------------------------------------------------- */
+
+.site-header {
+    direction: ltr;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: clamp(12px, 2vw, 32px);
+    width: 100%;
+    height: clamp(58px, 6.7361vw, 104px);      /* 97px at 1440 */
+    padding-inline: clamp(16px, 3.0556vw, 56px); /* 44px at 1440 */
+}
+
+.site-logo {
+    flex: none;
+    font-family: "Inter", sans-serif;
+    font-weight: 900;
+    font-size: clamp(24px, 3.4722vw, 52px);    /* 50px at 1440 */
+    line-height: 1;
+    color: #fff;
+    text-decoration: none;
+}
+
+.nav-list {
+    direction: rtl;
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 1.5278vw, 24px);          /* 22px at 1440 */
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.nav-link {
+    position: relative;
+    display: inline-block;
+    font-weight: 300;
+    font-size: clamp(15px, 1.8056vw, 26px);    /* 26px at 1440 */
+    line-height: 1.3;
+    color: #000;
+    text-decoration: none;
+    transition: color 0.25s ease;
+}
+
+/* The underline is drawn rather than text-decoration so it can grow from the
+   centre on hover instead of appearing all at once. */
+.nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.08em;
+    height: max(1px, 0.055em);
+    border-radius: 1px;
+    background-color: currentColor;
+    transform: scaleX(0);
+    transform-origin: 50% 50%;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-link:hover,
+.nav-link:focus-visible {
+    color: #45430f;
+}
+
+.nav-link:hover::after,
+.nav-link:focus-visible::after,
+.nav-link[aria-current="page"]::after {
+    transform: scaleX(1);
+}
+
+/* Node 2010:13. Sized by its padding rather than fixed pixels so it fits
+   whatever the label says. The shape is a pseudo-element behind the text, so
+   its 59% opacity does not wash the label out the way the design's layer
+   order does, and the whole thing stays one clickable link. */
+.nav-link--pill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.42em 0.95em;
+    color: #252525;
+    transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.nav-link--pill::after {
+    content: none;
+}
+
+.nav-link--pill::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: rgba(217, 217, 217, 0.45);
+    border: 2px solid #fff;
+    border-radius: 999px;
+    opacity: 0.59;
+    transition: opacity 0.25s ease, background-color 0.25s ease;
+}
+
+.nav-link--pill:hover,
+.nav-link--pill:focus-visible {
+    color: #000;
+    transform: translateY(-2px);
+}
+
+.nav-link--pill:hover::before,
+.nav-link--pill:focus-visible::before,
+.nav-link--pill[aria-current="page"]::before {
+    background-color: rgba(255, 255, 255, 0.7);
+    opacity: 0.85;
+}
+
+/* Node 2010:9 - a rule the design rotates to vertical. */
+.nav-divider {
+    width: 1px;
+    height: clamp(18px, 2.2222vw, 34px);       /* 32px at 1440 */
+    background-color: #656464;
+    opacity: 0.6;
+}
+
+/* --------------------------------------------------------------------------
+   Inner pages
+   -------------------------------------------------------------------------- */
+
+.page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100svh;
+}
+
+.page__main {
+    flex: 1;
+    width: min(1040px, 90vw);
+    margin-inline: auto;
+    padding-block: clamp(28px, 5vw, 72px) clamp(56px, 9vw, 120px);
+}
+
+.page__title {
+    margin: 0 0 0.2em;
+    font-weight: 800;
+    font-size: clamp(38px, 6vw, 86px);
+    line-height: 1.15;
+    color: #1b1a06;
+}
+
+.page__lead {
+    margin: 0 0 clamp(28px, 4vw, 52px);
+    font-weight: 600;
+    font-size: clamp(20px, 2.6vw, 34px);
+    line-height: 1.4;
+    color: #3d3b0f;
+}
+
+.prose {
+    max-width: 62ch;
+    font-size: clamp(17px, 1.5vw, 22px);
+    line-height: 1.75;
+}
+
+.prose p {
+    margin: 0 0 1.1em;
+}
+
+/* Shares the CTA's look so the pages feel like one site. */
+.button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.55em 1.6em;
+    font-weight: 600;
+    font-size: clamp(18px, 1.9vw, 28px);
+    line-height: 1.3;
+    color: #000;
+    text-decoration: none;
+    transition: transform 0.25s ease;
+}
+
+.button::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: #fff;
+    border-radius: 999px;
+    opacity: 0.59;
+    transition: opacity 0.25s ease;
+}
+
+.button:hover,
+.button:focus-visible {
+    transform: translateY(-2px);
+}
+
+.button:hover::before,
+.button:focus-visible::before {
+    opacity: 0.85;
+}
+
+/* Projects grid */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+    gap: clamp(18px, 2.6vw, 36px);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.42);
+    border-radius: clamp(14px, 1.6vw, 22px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.07);
+}
+
+.card__media {
+    aspect-ratio: 4 / 3;
+    background:
+        repeating-linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.5) 0 14px,
+            rgba(255, 255, 255, 0.24) 14px 28px
+        );
+}
+
+.card__body {
+    padding: clamp(14px, 1.6vw, 22px);
+}
+
+.card__title {
+    margin: 0 0 0.25em;
+    font-weight: 600;
+    font-size: clamp(18px, 1.7vw, 24px);
+    line-height: 1.3;
+}
+
+.card__note {
+    margin: 0;
+    font-size: clamp(14px, 1.2vw, 17px);
+    color: #55531c;
+}
+
+/* Contact form */
+.form {
+    display: grid;
+    gap: clamp(14px, 1.8vw, 24px);
+    max-width: 620px;
+}
+
+.field {
+    display: grid;
+    gap: 0.4em;
+}
+
+.field > span {
+    font-weight: 600;
+    font-size: clamp(16px, 1.4vw, 20px);
+}
+
+.field input,
+.field textarea {
+    width: 100%;
+    padding: 0.7em 0.9em;
+    font: inherit;
+    font-size: clamp(16px, 1.4vw, 20px);
+    color: inherit;
+    background-color: rgba(255, 255, 255, 0.62);
+    border: 2px solid transparent;
+    border-radius: 12px;
+    transition: border-color 0.25s ease, background-color 0.25s ease;
+}
+
+.field textarea {
+    min-height: 8em;
+    resize: vertical;
+}
+
+.field input:focus,
+.field textarea:focus {
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.85);
+    border-color: #fff;
+}
+
+/* Hidden without being pulled off-canvas: an element parked at a large
+   negative offset widens the document, which on an RTL page shows up as a
+   horizontal scrollbar. Clipping it in place hides it from people while
+   leaving it in the markup for bots to fill in. */
+.form__hp {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Anyone who has asked their system to reduce motion gets the same pages
+   without the movement.
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

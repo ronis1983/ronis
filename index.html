@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RONIS — עיצוב אתרים מעולם אחר</title>
+    <meta name="description" content="RONIS — עיצוב ובניית אתרים.">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="site.css">
     <link rel="stylesheet" href="index.css">
     <link rel="preload" href="fonts/inter-900-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="fonts/assistant-hebrew.woff2" as="font" type="font/woff2" crossorigin>
@@ -11,47 +14,52 @@
 </head>
 <body>
 
-<!-- Fills the viewport and carries the background and the ground, both of
-     which run edge to edge. The composition itself lives in .hero, which
-     keeps the design's proportions. -->
+<!-- Fills the window and carries the ground, which runs edge to edge. The
+     composition itself lives in .hero, which keeps the design's proportions. -->
 <div class="stage-frame">
 
     <!-- The ground. Outside .hero so it spans the full window rather than
          stopping at the edge of the composition. -->
     <img class="wave-ground" src="images/wave-bottom.svg" alt="" aria-hidden="true">
 
-<section class="hero">
+    <section class="hero">
 
-    <!-- Soft ground shadow under the artwork -->
-    <img class="hero__shadow" src="images/hero-shadow.svg" alt="" aria-hidden="true">
+        <!-- Soft ground shadow under the artwork -->
+        <img class="hero__shadow" src="images/hero-shadow.svg" alt="" aria-hidden="true">
 
-    <p class="hero__wordmark">RONIS</p>
+        <p class="hero__wordmark">RONIS</p>
 
-    <div class="hero__copy">
-        <h1 class="hero__headline">
-            <span class="hero__headline-top">עיצוב אתרים</span>
-            <span class="hero__headline-bottom">מעולם אחר</span>
-        </h1>
-        <a class="hero__cta" href="#">צפייה בעבודות</a>
-    </div>
+        <div class="hero__copy">
+            <h1 class="hero__headline">
+                <span class="hero__headline-top">עיצוב אתרים</span>
+                <span class="hero__headline-bottom">מעולם אחר</span>
+            </h1>
 
-    <img class="hero__art" src="images/hero-rhino.png" alt="רוני רוכב על קרנף ורוד">
+            <a class="hero__cta" href="projects.html"><span class="optical">צפייה בעבודות</span></a>
+
+            <a class="hero__more" href="projects.html" aria-label="לעמוד הפרויקטים">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <path d="M5 9l7 7 7-7"></path>
+                </svg>
+            </a>
+        </div>
+
+        <img class="hero__art" src="images/hero-rhino.png" alt="רוני רוכב על קרנף ורוד">
+
+    </section>
 
     <header class="site-header">
-        <a class="site-logo" href="#">RONIS</a>
-        <nav>
+        <a class="site-logo" href="index.html">RONIS</a>
+        <nav aria-label="ראשי">
             <ul class="nav-list">
-                <li><a class="nav-link" href="#">אודות</a></li>
-                <li class="nav-divider" aria-hidden="true">
-                    <img src="images/nav-divider.svg" alt="">
-                </li>
-                <li><a class="nav-link" href="#">אודות</a></li>
-                <li><a class="nav-link nav-link--pill" href="#">אודות</a></li>
+                <li><a class="nav-link" href="about.html"><span class="optical">אודות</span></a></li>
+                <li><a class="nav-link" href="projects.html"><span class="optical">פרויקטים</span></a></li>
+                <li class="nav-divider" aria-hidden="true"></li>
+                <li><a class="nav-link nav-link--pill" href="contact.html"><span class="optical">צור קשר</span></a></li>
             </ul>
         </nav>
     </header>
-
-</section>
 
 </div>
 

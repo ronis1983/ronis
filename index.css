@@ -1,84 +1,33 @@
 /* ==========================================================================
-   RONIS landing page
-   Built from Figma "Wireframe - 1" (frame 2003:33), design canvas 1440x1024.
+   The home page composition, built from Figma "Wireframe - 1" (frame
+   2003:33), design canvas 1440x1024. Loaded on top of site.css.
 
-   Every size is written in `cqw` (1cqw = 1% of .hero's width) so the whole
-   composition scales as one piece. The conversion is  px / 14.4  , because
-   1440px / 100 = 14.4. The design's pixel value is kept in a comment next
-   to each rule so it can be checked against Figma.
+   Inside .hero every size is written in `cqw` - 1cqw is 1% of .hero's width -
+   so the whole composition scales as one piece. The conversion is px / 14.4,
+   because 1440/100 = 14.4, and the design's pixel value is kept in a comment
+   next to each rule so it can be checked against Figma.
    ========================================================================== */
 
-/* --------------------------------------------------------------------------
-   Fonts, served from this repo rather than from Google Fonts, so the page
-   has no third-party dependency at render time and no visitor IP is sent
-   to a CDN. Both families are SIL Open Font License 1.1; the licence text
-   ships alongside the files in fonts/.
-
-   Assistant is a variable font: Google serves one file per subset covering
-   the whole 200-800 range, which is why three weights share two files.
-   Only the subsets this page needs are included - Hebrew and Latin for
-   Assistant, Latin for Inter.
-   -------------------------------------------------------------------------- */
-
-@font-face {
-    font-family: "Assistant";
-    font-style: normal;
-    font-weight: 200 800;
-    font-display: swap;
-    src: url("fonts/assistant-hebrew.woff2") format("woff2");
-    unicode-range: U+0307-0308, U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F;
-}
-
-@font-face {
-    font-family: "Assistant";
-    font-style: normal;
-    font-weight: 200 800;
-    font-display: swap;
-    src: url("fonts/assistant-latin.woff2") format("woff2");
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-@font-face {
-    font-family: "Inter";
-    font-style: normal;
-    font-weight: 900;
-    font-display: swap;
-    src: url("fonts/inter-900-latin.woff2") format("woff2");
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
-}
-
-/* The page is meant to be taken in at a glance, with no scrolling, so the
-   whole thing is sized to the window rather than to the design's pixels.
-
-   --stage-w is the width the composition gets: the window's width, or as
-   much as its height allows at the design's ratio, whichever is smaller.
-   1.40625 is 1440/1024, so a window wider than that is limited by its
-   height and a narrower one by its width. The 2166px cap is where the
-   artwork reaches its native resolution - a 714px slot in a 2166px stage
-   renders the 1074px image at exactly 1:1 - so it never has to upscale. */
+/* --stage-w is the width the composition gets: the window's width, or as much
+   as its height allows at the design's ratio, whichever is smaller. 1.40625 is
+   1440/1024, so a window wider than that is limited by its height and a
+   narrower one by its width. The 2166px cap is where the artwork reaches its
+   native resolution - a 714px slot in a 2166px stage renders the 1074px image
+   at exactly 1:1 - so it never has to upscale. */
 :root {
     --stage-w: min(100vw, 100svh * 1.40625, 2166px);
 }
 
 body {
-    margin: 0;
     overflow: hidden;
-    font-family: "Assistant", sans-serif;
-    background-color: #c9c554;
 }
 
-/* The window-sized frame. The gradient and the ground live here rather than
-   on .hero so they run edge to edge: a ground that stopped at the edge of
-   the composition would read as a white rectangle floating in the
-   background on a wide window. The composition sits at the bottom, so on a
-   window taller than the design's ratio the room left over opens up above
-   it, where the gradient is flat, instead of below the ground. */
+/* The window-sized frame. The ground lives here rather than on .hero so it
+   runs edge to edge: a ground that stopped at the edge of the composition
+   would read as a white rectangle floating in the background on a wide
+   window. The composition sits at the bottom, so on a window taller than the
+   design's ratio the room left over opens up above it, where the gradient is
+   flat, instead of below the ground. */
 .stage-frame {
     position: relative;
     display: flex;
@@ -88,13 +37,6 @@ body {
     height: 100vh;
     height: 100svh;
     overflow: hidden;
-    background: radial-gradient(
-        ellipse farthest-side at 50% 50%,
-        #d9d9d9 0%,
-        #d1cf97 50%,
-        #cdca75 75%,
-        #c9c554 100%
-    );
 }
 
 /* Node 2005:68, stretched to the window's width. Its height and its overhang
@@ -108,17 +50,18 @@ body {
     bottom: calc(var(--stage-w) * -0.049135); /* the design clips its lower part */
 }
 
-/* --------------------------------------------------------------------------
-   Hero stage
-   The frame clips its content, and its 1440x1024 ratio is what keeps the
-   proportional scaling honest: height follows width, so one set of cqw
-   values positions things on both axes.
-   -------------------------------------------------------------------------- */
+/* The header floats over the composition, as it does in the design. */
+.stage-frame > .site-header {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 2;
+}
 
-/* The composition. Transparent, so the frame's gradient shows through and
-   the artwork inside here still paints over the ground behind it, which is
-   the layer order the design uses. Its ratio is what makes the cqw values
-   below position things on both axes from one set of numbers. */
+/* The composition. Transparent, so the page background shows through and the
+   artwork inside here still paints over the ground behind it, which is the
+   layer order the design uses. Its ratio is what lets the cqw values below
+   position things on both axes from one set of numbers. */
 .hero {
     container-type: inline-size;
     position: relative;
@@ -133,7 +76,8 @@ body {
     position: absolute;
 }
 
-/* Ground shadow, node 2003:36 - also bleed-expanded, to 688x95 at (269, 923). */
+/* Ground shadow, node 2003:36. The SVG carries filter bleed, so its rendered
+   box is 688x95 at (269, 923) rather than the node's own bounds. */
 .hero__shadow {
     left: 18.6819cqw;  /* 269.02px */
     top: 64.0972cqw;   /* 923px    */
@@ -155,7 +99,7 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   Headline and call to action
+   Headline, call to action and the cue below it
    -------------------------------------------------------------------------- */
 
 .hero__copy {
@@ -190,22 +134,27 @@ body {
     font-size: 5cqw;        /* 72px */
 }
 
-/* Node 2003:59 (the pill) plus node 2003:60 (the label). The pill is drawn as
-   a pseudo-element so its 59% opacity does not wash out the label. */
+/* Node 2003:59 plus its label, node 2003:60.
+
+   The design puts this pill at x=952-1214, whose centre is 1083, while the
+   headline block above it runs 894-1231 and centres on 1062.5 - so in the
+   file the button sits 20.5px right of the text it belongs to. That reads as
+   a misalignment rather than an intention, so it is centred on the block
+   here instead. */
 .hero__cta {
-    position: absolute;
-    left: 4.0278cqw;      /* 952px - 894px */
-    top: 13.9583cqw;      /* 640px - 439px */
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 18.1944cqw;    /* 262px */
-    height: 3.4722cqw;    /* 50px  */
+    width: 18.1944cqw;      /* 262px */
+    height: 3.4722cqw;      /* 50px  */
+    margin: 3.2639cqw auto 0; /* 640px - (439px + 154px of headline) */
     font-weight: 600;
-    font-size: 2.7778cqw; /* 40px  */
+    font-size: 2.7778cqw;   /* 40px  */
     color: #000;
     text-decoration: none;
     white-space: nowrap;
+    transition: transform 0.25s ease;
 }
 
 .hero__cta::before {
@@ -215,6 +164,12 @@ body {
     background-color: #fff;
     border-radius: 2.0139cqw; /* 29px */
     opacity: 0.59;
+    transition: opacity 0.25s ease;
+}
+
+.hero__cta:hover,
+.hero__cta:focus-visible {
+    transform: translateY(-2px);
 }
 
 .hero__cta:hover::before,
@@ -222,8 +177,37 @@ body {
     opacity: 0.85;
 }
 
+/* A cue under the button. It rests for most of the cycle and dips once, so it
+   reads as an invitation rather than something blinking for attention. */
+.hero__more {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    width: 2.7778cqw;         /* 40px */
+    margin: 1.7361cqw auto 0; /* 25px below the button */
+    color: #2f2d0c;
+    transition: color 0.25s ease;
+}
+
+.hero__more svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    animation: hero-more-dip 3.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.hero__more:hover,
+.hero__more:focus-visible {
+    color: #000;
+}
+
+@keyframes hero-more-dip {
+    0%, 58%, 100% { transform: translateY(0);   opacity: 0.5; }
+    76%           { transform: translateY(28%); opacity: 0.9; }
+}
+
 /* Artwork, node 2003:34. Painted last in Figma, so it sits in front of the
-   wordmark and the wave. */
+   wordmark and the ground. */
 .hero__art {
     left: 9.3056cqw;   /* 134px */
     top: 15.4861cqw;   /* 223px */
@@ -235,105 +219,10 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   Header
-   The design positions these five items absolutely, but they are evenly
-   spaced, so a flex row reproduces it and survives text changes.
-   Logo left, links right - hence direction: ltr on the row itself.
-   -------------------------------------------------------------------------- */
-
-.site-header {
-    left: 0;
-    top: 0;
-    z-index: 2;
-    direction: ltr;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    height: 6.7361cqw;            /* 97px, the tallest header item */
-    padding-left: 3.0556cqw;      /* 44px  */
-    padding-right: 7.5694cqw;     /* 109px, 1440px - 1331px */
-}
-
-.site-logo {
-    font-family: "Inter", sans-serif;
-    font-weight: 900;
-    font-size: 3.4722cqw; /* 50px */
-    color: #fff;
-    text-decoration: none;
-}
-
-.nav-list {
-    display: flex;
-    align-items: center;
-    gap: 1.5278cqw; /* 22px, the average gap between the design's nav items */
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-.nav-link {
-    font-weight: 300;
-    font-size: 2.0833cqw; /* 30px */
-    color: #000;
-    text-decoration: none;
-}
-
-.nav-link:hover,
-.nav-link:focus-visible {
-    text-decoration: underline;
-}
-
-/* Node 2010:13 wrapped around node 2003:47. */
-.nav-link--pill {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 8.1944cqw;  /* 118px */
-    height: 4.2361cqw; /* 61px  */
-    color: #252525;
-}
-
-.nav-link--pill::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-color: rgba(217, 217, 217, 0.45);
-    border: 0.1389cqw solid #fff;  /* 2px */
-    border-radius: 2.0139cqw;      /* 29px */
-    opacity: 0.59;
-}
-
-.nav-link--pill:hover,
-.nav-link--pill:focus-visible {
-    text-decoration: none;
-}
-
-.nav-link--pill:hover::before,
-.nav-link--pill:focus-visible::before {
-    opacity: 0.85;
-}
-
-/* Node 2010:9 - a 36px rule the design rotates to vertical. */
-.nav-divider {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 0.0694cqw;  /* 1px  */
-    height: 2.5cqw;    /* 36px */
-}
-
-.nav-divider img {
-    flex: none;
-    transform: rotate(91.59deg);
-}
-
-/* --------------------------------------------------------------------------
    Portrait and narrow screens
    The Figma file has no mobile frame, so this layout is not from the design.
    It takes over for anything portrait or square, phones and tablets alike,
-   because a viewport much taller than the design's 1.40625 ratio would
+   because a window much taller than the design's 1.40625 ratio would
    otherwise leave a third of the screen as empty background above the
    composition, with the nav stranded in the middle of it.
 
@@ -346,62 +235,44 @@ body {
    -------------------------------------------------------------------------- */
 
 @media (max-width: 768px), (max-aspect-ratio: 1 / 1) {
+    /* The frame itself becomes the column: header on top, composition filling
+       what is left. The header is a sibling of .hero, not a child, so it is
+       the frame's direction that has to change - setting `order` on it while
+       the frame was still a row is what put it beside the composition. */
+    .stage-frame {
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
+    }
+
+    .stage-frame > .site-header {
+        position: static;
+        flex: none;
+        height: auto;
+        padding-block: clamp(14px, 3vmin, 28px) clamp(14px, 4vmin, 34px);
+    }
+
     .hero {
         container-type: normal;
+        flex: 1 1 auto;
+        min-height: 0;
         display: flex;
         flex-direction: column;
         align-items: center;
         aspect-ratio: auto;
         width: 100%;
-        height: 100%;
-        padding: clamp(14px, 3vmin, 28px) clamp(14px, 4vmin, 40px) 0;
+        height: auto;
+        padding: 0 clamp(14px, 4vmin, 40px);
         text-align: center;
     }
 
+    /* Document order inside .hero is already wordmark, copy, artwork. */
     .hero > * {
         position: static;
     }
 
-    .site-header {
-        order: 1;
-        height: auto;
-        padding: 0 0 clamp(14px, 4vmin, 34px);
-    }
-
-    .site-logo {
-        font-size: clamp(30px, 6vmin, 56px);
-    }
-
-    .nav-list {
-        gap: clamp(10px, 2.2vmin, 22px);
-    }
-
-    .nav-link {
-        font-size: clamp(16px, 3.4vmin, 28px);
-    }
-
-    .nav-link--pill {
-        width: clamp(66px, 14vmin, 116px);
-        height: clamp(34px, 7.2vmin, 58px);
-    }
-
-    .nav-link--pill::before {
-        border-width: 2px;
-        border-radius: 999px;
-    }
-
-    .nav-divider {
-        width: 1px;
-        height: clamp(22px, 4.4vmin, 36px);
-    }
-
     .hero__wordmark {
-        order: 2;
         font-size: clamp(56px, 19vmin, 240px);
-    }
-
-    .hero__copy {
-        order: 3;
     }
 
     .hero__headline-top {
@@ -414,9 +285,6 @@ body {
     }
 
     .hero__cta {
-        position: relative;
-        left: auto;
-        top: auto;
         width: clamp(170px, 46vmin, 300px);
         height: clamp(40px, 11.8vmin, 72px);
         margin: clamp(14px, 6vmin, 36px) auto 0;
@@ -427,11 +295,15 @@ body {
         border-radius: 999px;
     }
 
+    .hero__more {
+        width: clamp(24px, 7vmin, 44px);
+        margin: clamp(10px, 3vmin, 22px) auto 0;
+    }
+
     /* The artwork takes whatever height the text leaves, rather than its own
        aspect ratio, which is what keeps the column inside one screen.
        `contain` means it shrinks whole instead of cropping. */
     .hero__art {
-        order: 4;
         flex: 1 1 auto;
         min-height: 0;
         width: 100%;
@@ -446,6 +318,15 @@ body {
     /* Both are ground and edge decoration for the landscape composition. */
     .hero__shadow,
     .wave-ground {
+        display: none;
+    }
+}
+
+/* On a screen too short to hold the column comfortably, the cue is the first
+   thing to go - it is the only element that is decoration rather than
+   content, and dropping it gives the artwork back its room. */
+@media (max-height: 480px) {
+    .hero__more {
         display: none;
     }
 }

@@ -1,30 +1,70 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>צור קשר — RONIS</title>
+    <meta name="description" content="יצירת קשר עם RONIS.">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="site.css">
+    <link rel="preload" href="fonts/inter-900-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/assistant-hebrew.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/assistant-latin.woff2" as="font" type="font/woff2" crossorigin>
 </head>
 <body>
-    <form name="contact" method="POST" data-netlify="true">
-        <p>
-          <label>Your Name: <input type="text" name="name" /></label>   
-        </p>
-        <p>
-          <label>Your Email: <input type="email" name="email" /></label>
-        </p>
-        <p>
-          <label>Your Role: <select name="role[]" multiple>
-            <option value="leader">Leader</option>
-            <option value="follower">Follower</option>
-          </select></label>
-        </p>
-        <p>
-          <label>Message: <textarea name="message"></textarea></label>
-        </p>
-        <p>
-          <button type="submit">Send</button>
-        </p>
-      </form>
+
+<div class="page">
+
+    <header class="site-header">
+        <a class="site-logo" href="index.html">RONIS</a>
+        <nav aria-label="ראשי">
+            <ul class="nav-list">
+                <li><a class="nav-link" href="about.html"><span class="optical">אודות</span></a></li>
+                <li><a class="nav-link" href="projects.html"><span class="optical">פרויקטים</span></a></li>
+                <li class="nav-divider" aria-hidden="true"></li>
+                <li><a class="nav-link nav-link--pill" href="contact.html" aria-current="page"><span class="optical">צור קשר</span></a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="page__main">
+
+        <h1 class="page__title">צור קשר</h1>
+        <p class="page__lead">ספרו במשפט מה אתם רוצים לבנות.</p>
+
+        <!-- The name, method and data-netlify attributes are what Netlify
+             matches submissions against, so they are kept exactly as they
+             were. bot-field is a honeypot: real people never see it, bots
+             fill it in, and Netlify discards those submissions. -->
+        <form class="form" name="contact" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
+            <input type="hidden" name="form-name" value="contact">
+            <p class="form__hp">
+                <label>אל תמלאו את השדה הזה: <input name="bot-field" tabindex="-1" autocomplete="off"></label>
+            </p>
+
+            <label class="field">
+                <span>שם</span>
+                <input type="text" name="name" autocomplete="name" required>
+            </label>
+
+            <label class="field">
+                <span>אימייל</span>
+                <input type="email" name="email" autocomplete="email" required>
+            </label>
+
+            <label class="field">
+                <span>הודעה</span>
+                <textarea name="message" required></textarea>
+            </label>
+
+            <p style="margin: 0">
+                <button class="button" type="submit"><span class="optical">שליחה</span></button>
+            </p>
+        </form>
+
+    </main>
+
+</div>
+
 </body>
 </html>
