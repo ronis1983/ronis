@@ -52,6 +52,16 @@
     box-sizing: border-box;
 }
 
+:root {
+    /* One header height, used by the header itself and by everything that
+       has to keep clear of it. */
+    --header-h: clamp(58px, 6.7361vw, 104px);  /* 97px at 1440 */
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     margin: 0;
     font-family: "Assistant", sans-serif;
@@ -99,14 +109,35 @@ body::before {
    -------------------------------------------------------------------------- */
 
 .site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 20;
     direction: ltr;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: clamp(12px, 2vw, 32px);
-    width: 100%;
-    height: clamp(58px, 6.7361vw, 104px);      /* 97px at 1440 */
+    height: var(--header-h);
     padding-inline: clamp(16px, 3.0556vw, 56px); /* 44px at 1440 */
+    transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
+}
+
+/* Over the hero the header has nothing behind it and stays clear, the way
+   the design draws it. Once the page has scrolled, text would otherwise
+   slide underneath it, so it picks up a frosted backdrop. site.js is what
+   adds the class; without it the header simply stays clear. */
+.site-header.is-scrolled {
+    background-color: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .site-header.is-scrolled {
+        background-color: rgba(233, 231, 176, 0.92);
+    }
 }
 
 .site-logo {
@@ -231,7 +262,27 @@ body::before {
     flex: 1;
     width: min(1040px, 90vw);
     margin-inline: auto;
-    padding-block: clamp(28px, 5vw, 72px) clamp(56px, 9vw, 120px);
+    padding-block: calc(var(--header-h) + clamp(28px, 5vw, 72px)) clamp(56px, 9vw, 120px);
+}
+
+/* A band of the long page. scroll-margin-top is what stops a heading from
+   landing underneath the fixed header when the nav jumps to it. */
+.section {
+    scroll-margin-top: var(--header-h);
+    padding-block: clamp(56px, 9vw, 130px);
+}
+
+.section__inner {
+    width: min(1040px, 90vw);
+    margin-inline: auto;
+}
+
+.site-footer {
+    padding: clamp(28px, 4vw, 48px) clamp(16px, 3.0556vw, 56px);
+    font-size: clamp(14px, 1.2vw, 17px);
+    color: #55531c;
+    text-align: center;
+    border-top: 1px solid rgba(85, 83, 28, 0.18);
 }
 
 .page__title {

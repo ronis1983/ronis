@@ -14,54 +14,182 @@
 </head>
 <body>
 
-<!-- Fills the window and carries the ground, which runs edge to edge. The
-     composition itself lives in .hero, which keeps the design's proportions. -->
-<div class="stage-frame">
+<header class="site-header">
+    <a class="site-logo" href="#top">RONIS</a>
+    <nav aria-label="ראשי">
+        <ul class="nav-list">
+            <li><a class="nav-link" href="#about"><span class="optical">אודות</span></a></li>
+            <li><a class="nav-link" href="#projects"><span class="optical">פרויקטים</span></a></li>
+            <li class="nav-divider" aria-hidden="true"></li>
+            <li><a class="nav-link nav-link--pill" href="#contact"><span class="optical">צור קשר</span></a></li>
+        </ul>
+    </nav>
+</header>
 
-    <!-- The ground. Outside .hero so it spans the full window rather than
-         stopping at the edge of the composition. -->
-    <img class="wave-ground" src="images/wave-bottom.svg" alt="" aria-hidden="true">
+<main id="top">
 
-    <section class="hero">
+    <!-- Fills the window and carries the ground, which runs edge to edge. The
+         composition itself lives in .hero, which keeps the design's proportions. -->
+    <div class="stage-frame">
 
-        <!-- Soft ground shadow under the artwork -->
-        <img class="hero__shadow" src="images/hero-shadow.svg" alt="" aria-hidden="true">
+        <!-- The ground. Outside .hero so it spans the full window rather than
+             stopping at the edge of the composition. -->
+        <img class="wave-ground" src="images/wave-bottom.svg" alt="" aria-hidden="true">
 
-        <p class="hero__wordmark">RONIS</p>
+        <section class="hero">
 
-        <div class="hero__copy">
-            <h1 class="hero__headline">
-                <span class="hero__headline-top">עיצוב אתרים</span>
-                <span class="hero__headline-bottom">מעולם אחר</span>
-            </h1>
+            <!-- Soft ground shadow under the artwork -->
+            <img class="hero__shadow" src="images/hero-shadow.svg" alt="" aria-hidden="true">
 
-            <a class="hero__cta" href="projects.html"><span class="optical">צפייה בעבודות</span></a>
+            <p class="hero__wordmark">RONIS</p>
 
-            <a class="hero__more" href="projects.html" aria-label="לעמוד הפרויקטים">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
-                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                    <path d="M5 9l7 7 7-7"></path>
-                </svg>
-            </a>
+            <div class="hero__copy">
+                <h1 class="hero__headline">
+                    <span class="hero__headline-top">עיצוב אתרים</span>
+                    <span class="hero__headline-bottom">מעולם אחר</span>
+                </h1>
+
+                <a class="hero__cta" href="#projects"><span class="optical">צפייה בעבודות</span></a>
+
+                <a class="hero__more" href="#about" aria-label="המשך לאודות">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                        <path d="M5 9l7 7 7-7"></path>
+                    </svg>
+                </a>
+            </div>
+
+            <img class="hero__art" src="images/hero-rhino.png" alt="רוני רוכב על קרנף ורוד">
+
+        </section>
+
+    </div>
+
+    <section class="section" id="about">
+        <div class="section__inner">
+            <h2 class="page__title">אודות</h2>
+            <p class="page__lead">עיצוב אתרים מעולם אחר.</p>
+
+            <!-- TODO: placeholder copy. These are deliberately about approach
+                 rather than facts, so nothing here claims anything untrue - but
+                 it is not your voice yet. Replace before this goes public. -->
+            <div class="prose">
+                <p>
+                    כל אתר מתחיל בשאלה אחת: מה הדבר שהמבקר צריך להבין בשלוש
+                    השניות הראשונות. משם נגזר כל השאר — המבנה, הצבע, הקצב,
+                    ובעיקר מה שמוותרים עליו.
+                </p>
+                <p>
+                    העבודה נעשית מקצה לקצה: אפיון, עיצוב ובנייה. בלי תבניות מדף,
+                    ובלי עמוד שנראה כמו עוד אחד מאותו הדבר.
+                </p>
+                <p>
+                    אתר טוב לא נמדד בכמה הוא מרשים בצילום מסך, אלא בכמה קל למצוא
+                    בו את מה שבאת בשבילו. זה מה שמנחה כל החלטה כאן.
+                </p>
+            </div>
         </div>
-
-        <img class="hero__art" src="images/hero-rhino.png" alt="רוני רוכב על קרנף ורוד">
-
     </section>
 
-    <header class="site-header">
-        <a class="site-logo" href="index.html">RONIS</a>
-        <nav aria-label="ראשי">
-            <ul class="nav-list">
-                <li><a class="nav-link" href="about.html"><span class="optical">אודות</span></a></li>
-                <li><a class="nav-link" href="projects.html"><span class="optical">פרויקטים</span></a></li>
-                <li class="nav-divider" aria-hidden="true"></li>
-                <li><a class="nav-link nav-link--pill" href="contact.html"><span class="optical">צור קשר</span></a></li>
-            </ul>
-        </nav>
-    </header>
+    <section class="section" id="projects">
+        <div class="section__inner">
+            <h2 class="page__title">פרויקטים</h2>
+            <p class="page__lead">מבחר עבודות.</p>
 
-</div>
+            <!-- TODO: placeholder tiles. Swap each .card__media for a real image
+                 and give it the project's own name and one-line description.
+                 Do not ship this section as it stands. -->
+            <ul class="grid">
+                <li class="card">
+                    <div class="card__media"></div>
+                    <div class="card__body">
+                        <h3 class="card__title">שם הפרויקט</h3>
+                        <p class="card__note">ממתין לתוכן</p>
+                    </div>
+                </li>
+                <li class="card">
+                    <div class="card__media"></div>
+                    <div class="card__body">
+                        <h3 class="card__title">שם הפרויקט</h3>
+                        <p class="card__note">ממתין לתוכן</p>
+                    </div>
+                </li>
+                <li class="card">
+                    <div class="card__media"></div>
+                    <div class="card__body">
+                        <h3 class="card__title">שם הפרויקט</h3>
+                        <p class="card__note">ממתין לתוכן</p>
+                    </div>
+                </li>
+                <li class="card">
+                    <div class="card__media"></div>
+                    <div class="card__body">
+                        <h3 class="card__title">שם הפרויקט</h3>
+                        <p class="card__note">ממתין לתוכן</p>
+                    </div>
+                </li>
+                <li class="card">
+                    <div class="card__media"></div>
+                    <div class="card__body">
+                        <h3 class="card__title">שם הפרויקט</h3>
+                        <p class="card__note">ממתין לתוכן</p>
+                    </div>
+                </li>
+                <li class="card">
+                    <div class="card__media"></div>
+                    <div class="card__body">
+                        <h3 class="card__title">שם הפרויקט</h3>
+                        <p class="card__note">ממתין לתוכן</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="section" id="contact">
+        <div class="section__inner">
+            <h2 class="page__title">צור קשר</h2>
+            <p class="page__lead">ספרו במשפט מה אתם רוצים לבנות.</p>
+
+            <!-- The name, method and data-netlify attributes are what Netlify
+                 matches submissions against, so they are kept exactly as they
+                 were. bot-field is a honeypot: real people never see it, bots
+                 fill it in, and Netlify discards those submissions. -->
+            <form class="form" name="contact" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
+                <input type="hidden" name="form-name" value="contact">
+                <p class="form__hp">
+                    <label>אל תמלאו את השדה הזה: <input name="bot-field" tabindex="-1" autocomplete="off"></label>
+                </p>
+
+                <label class="field">
+                    <span>שם</span>
+                    <input type="text" name="name" autocomplete="name" required>
+                </label>
+
+                <label class="field">
+                    <span>אימייל</span>
+                    <input type="email" name="email" autocomplete="email" required>
+                </label>
+
+                <label class="field">
+                    <span>הודעה</span>
+                    <textarea name="message" required></textarea>
+                </label>
+
+                <p style="margin: 0">
+                    <button class="button" type="submit"><span class="optical">שליחה</span></button>
+                </p>
+            </form>
+        </div>
+    </section>
+
+</main>
+
+<footer class="site-footer">
+    <p style="margin: 0">RONIS — עיצוב ובניית אתרים</p>
+</footer>
+
+<script src="site.js" defer></script>
 
 </body>
 </html>

@@ -18,16 +18,15 @@
     --stage-w: min(100vw, 100svh * 1.40625, 2166px);
 }
 
-body {
-    overflow: hidden;
-}
+/* The first screen of the page, exactly one window tall, so the composition
+   is always seen whole before anything is scrolled.
 
-/* The window-sized frame. The ground lives here rather than on .hero so it
-   runs edge to edge: a ground that stopped at the edge of the composition
-   would read as a white rectangle floating in the background on a wide
-   window. The composition sits at the bottom, so on a window taller than the
-   design's ratio the room left over opens up above it, where the gradient is
-   flat, instead of below the ground. */
+   The ground lives here rather than on .hero so it runs edge to edge: a
+   ground that stopped at the edge of the composition would read as a white
+   rectangle floating in the background on a wide window. The composition sits
+   at the bottom, so on a window taller than the design's ratio the room left
+   over opens up above it, where the gradient is flat, instead of below the
+   ground. */
 .stage-frame {
     position: relative;
     display: flex;
@@ -48,14 +47,6 @@ body {
     width: 100%;
     height: calc(var(--stage-w) * 0.105989);  /* 152.624px at 1440 */
     bottom: calc(var(--stage-w) * -0.049135); /* the design clips its lower part */
-}
-
-/* The header floats over the composition, as it does in the design. */
-.stage-frame > .site-header {
-    position: absolute;
-    left: 0;
-    top: 0;
-    z-index: 2;
 }
 
 /* The composition. Transparent, so the page background shows through and the
@@ -243,13 +234,9 @@ body {
         flex-direction: column;
         align-items: stretch;
         justify-content: flex-start;
-    }
-
-    .stage-frame > .site-header {
-        position: static;
-        flex: none;
-        height: auto;
-        padding-block: clamp(14px, 3vmin, 28px) clamp(14px, 4vmin, 34px);
+        /* The header is fixed, so the column has to start below it. In
+           landscape the composition is positioned clear of it already. */
+        padding-top: calc(var(--header-h) + clamp(8px, 2vmin, 20px));
     }
 
     .hero {
