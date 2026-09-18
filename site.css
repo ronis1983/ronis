@@ -175,7 +175,7 @@ body::before {
        sideways each time it moves to another link. */
     padding: 0.42em 0.95em;
     font-weight: 300;
-    font-size: clamp(12px, 1.25vw, 19px);      /* 18px at 1440 */
+    font-size: clamp(14px, 1.25vw, 19px);      /* 18px at 1440 */
     line-height: 1.3;
     color: #000;
     text-decoration: none;
@@ -259,6 +259,121 @@ body::before {
     height: clamp(13px, 1.5278vw, 24px);       /* 22px at 1440 */
     background-color: #656464;
     opacity: 0.6;
+}
+
+/* --------------------------------------------------------------------------
+   The narrow-screen menu
+   Below 768px the row of links is down at its smallest and reads as a
+   cramped strip, so it collapses behind a button.
+
+   All of it is gated on .has-js-nav, which site.js adds. A panel hidden by
+   the stylesheet with no script to reopen it would leave the menu
+   unreachable, so without the script the links simply stay in their row.
+   -------------------------------------------------------------------------- */
+
+.nav-toggle {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .site-header.has-js-nav .nav-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        margin: 0;
+        padding: 0;
+        color: #252525;
+        background: none;
+        border: 0;
+        cursor: pointer;
+    }
+
+    .nav-toggle__bars {
+        position: relative;
+        display: block;
+        width: 24px;
+        height: 2px;
+        border-radius: 2px;
+        background-color: currentColor;
+        transition: background-color 0.2s ease;
+    }
+
+    .nav-toggle__bars::before,
+    .nav-toggle__bars::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        display: block;
+        width: 24px;
+        height: 2px;
+        border-radius: 2px;
+        background-color: currentColor;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .nav-toggle__bars::before { top: -7px; }
+    .nav-toggle__bars::after  { top: 7px; }
+
+    /* The three bars fold into a cross. */
+    .nav-toggle[aria-expanded="true"] .nav-toggle__bars {
+        background-color: transparent;
+    }
+
+    .nav-toggle[aria-expanded="true"] .nav-toggle__bars::before {
+        transform: translateY(7px) rotate(45deg);
+    }
+
+    .nav-toggle[aria-expanded="true"] .nav-toggle__bars::after {
+        transform: translateY(-7px) rotate(-45deg);
+    }
+
+    .has-js-nav .site-nav {
+        position: fixed;
+        top: var(--header-h);
+        left: 0;
+        right: 0;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        /* Opaque rather than frosted on purpose. The panel sits inside the
+           header, and the header's own backdrop-filter makes a backdrop root
+           for everything inside it - so a backdrop-filter here has nothing
+           left to blur and the page shows straight through the menu. */
+        background-color: rgb(238, 236, 196);
+        border-top: 1px solid rgba(255, 255, 255, 0.55);
+        box-shadow: 0 14px 30px rgba(0, 0, 0, 0.08);
+        transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+    }
+
+    .has-js-nav .site-nav.is-open {
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+    }
+
+    /* Stacked and hugging the right edge, so each link stays the width of its
+       own label and the ring still fits it the way it does in the row. */
+    .has-js-nav .nav-list {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+        padding: 10px clamp(14px, 5vw, 30px) 16px;
+    }
+
+    .has-js-nav .nav-link {
+        font-size: clamp(18px, 5vw, 24px);
+    }
+
+    /* Stacked, a vertical rule makes no sense; it becomes a hairline between
+       the rows instead. */
+    .has-js-nav .nav-divider {
+        align-self: stretch;
+        width: auto;
+        height: 1px;
+        margin-block: 6px;
+    }
 }
 
 /* --------------------------------------------------------------------------

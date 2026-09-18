@@ -20,6 +20,54 @@
         header.classList.toggle("is-scrolled", window.scrollY > 24);
     }
 
+    /* The narrow-screen menu. The collapsed layout is switched on from here
+       rather than declared in the stylesheet, so a panel is never hidden with
+       no way to open it: if this never runs, the links stay in their row. */
+    var toggle = document.querySelector(".nav-toggle");
+    var nav = document.querySelector(".site-nav");
+
+    if (toggle && nav) {
+        header.classList.add("has-js-nav");
+
+        var setOpen = function (open) {
+            toggle.setAttribute("aria-expanded", open ? "true" : "false");
+            toggle.setAttribute("aria-label", open ? "סגירת תפריט" : "פתיחת תפריט");
+            nav.classList.toggle("is-open", open);
+        };
+
+        var isOpen = function () {
+            return toggle.getAttribute("aria-expanded") === "true";
+        };
+
+        toggle.addEventListener("click", function () {
+            setOpen(!isOpen());
+        });
+
+        /* Every link here goes to a section of this same page, so following
+           one means the menu has done its job. */
+        nav.addEventListener("click", function (event) {
+            if (event.target.closest("a")) setOpen(false);
+        });
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape" && isOpen()) {
+                setOpen(false);
+                toggle.focus();
+            }
+        });
+
+        document.addEventListener("click", function (event) {
+            if (!isOpen()) return;
+            if (!nav.contains(event.target) && !toggle.contains(event.target)) setOpen(false);
+        });
+
+        /* Widening the window past the breakpoint puts the links back in the
+           row, where a left-open panel would otherwise linger. */
+        window.addEventListener("resize", function () {
+            if (window.innerWidth > 768 && isOpen()) setOpen(false);
+        });
+    }
+
     var pairs = [];
     [].forEach.call(document.querySelectorAll('.nav-link[href^="#"]'), function (link) {
         var section = document.querySelector(link.getAttribute("href"));
@@ -31,7 +79,11 @@
        screen - nothing is lit, which is the point: no ring until you have
        arrived somewhere. */
     function markCurrent() {
-        var line = header.offsetHeight + 8;
+        /* A section counts as the one being read once its top has come up
+           into the first fifth of the screen, not the moment it clears the
+           header - otherwise the ring only catches up long after the section
+           fills the view. */
+        var line = header.offsetHeight + window.innerHeight * 0.2;
         var current = null;
 
         pairs.forEach(function (pair) {
