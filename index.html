@@ -56,6 +56,10 @@
 
                 <a class="hero__cta" href="#projects"><span class="optical">צפייה בעבודות</span></a>
 
+            <button class="hero__skip" type="button" hidden>
+                <span class="optical">דילוג</span>
+            </button>
+
                 <a class="hero__more" href="#about" aria-label="המשך לאודות">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
                          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
@@ -65,6 +69,15 @@
             </div>
 
             <img class="hero__art" src="images/hero-rhino.png" alt="רוני רוכב על קרנף ורוד">
+
+            <!-- Plays once when the button is pressed, then the page moves on to
+                 the work. Nothing is fetched until then: preload="none" keeps it
+                 out of the first screen's weight entirely. Needs an alpha channel
+                 to sit in front of the letters, so site.js checks the browser can
+                 actually show one before using it at all. -->
+            <video class="hero__clip" src="images/hero-rhino.webm"
+                   preload="none" muted playsinline
+                   poster="images/hero-rhino.png" aria-hidden="true"></video>
 
         </section>
 

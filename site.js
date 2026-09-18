@@ -113,6 +113,112 @@
     window.addEventListener("scroll", update, { passive: true });
     window.addEventListener("resize", update, { passive: true });
 
+    /* ----------------------------------------------------------------------
+       The clip on the hero
+
+       Pressing the button plays it once and the page then moves on to the
+       work. The button is an ordinary link to #projects underneath all of
+       this, so every way this can fail - no file, a decode error, a browser
+       that cannot show transparency, a request to reduce motion - ends with
+       exactly what the link would have done anyway.
+       ---------------------------------------------------------------------- */
+    var hero = document.querySelector(".hero");
+    var clip = document.querySelector(".hero__clip");
+    var cta = document.querySelector(".hero__cta");
+    var skip = document.querySelector(".hero__skip");
+
+    if (hero && clip && cta && skip) {
+        var target = document.querySelector(cta.getAttribute("href"));
+        var alphaOk = null;
+
+        var goToWork = function () {
+            hero.classList.remove("is-playing");
+            skip.hidden = true;
+            try { clip.pause(); } catch (e) {}
+            if (target) target.scrollIntoView({ block: "start" });
+        };
+
+        /* A transparent clip shown by a browser that cannot decode the alpha
+           channel is an opaque rectangle over the wordmark, which is worse
+           than no clip at all. Rather than guess from the browser's name,
+           decode one 2x2 transparent frame and look at it. */
+        var checkAlpha = function (done) {
+            if (alphaOk !== null) return done(alphaOk);
+
+            var probe = document.createElement("video");
+            var settle = function (ok) {
+                if (alphaOk !== null) return;
+                alphaOk = ok;
+                done(ok);
+            };
+
+            probe.muted = true;
+            probe.playsInline = true;
+            probe.src = "data:video/webm;base64,GkXfo59ChoEBQveBAULygQRC84EIQoKEd2VibUKHgQJChYECGFOAZwEAAAAAAAITEU2bdLpNu4tTq4QVSalmU6yBoU27i1OrhBZUrmtTrIHYTbuMU6uEElTDZ1OsggEpTbuMU6uEHFO7a1OsggH97AEAAAAAAABZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVSalmsirXsYMPQkBNgI1MYXZmNjAuMTYuMTAwV0GNTGF2ZjYwLjE2LjEwMESJiEBEAAAAAAAAFlSua8yuAQAAAAAAAEPXgQFzxYgOaPQMobajWJyBACK1nIN1bmSIgQCGhVZfVlA5g4EBI+ODhAJiWgDglLCBArqBApqBAlPAgQFVsIRVuYEBElTDZ0CAc3OgY8CAZ8iaRaOHRU5DT0RFUkSHjUxhdmY2MC4xNi4xMDBzc9pjwItjxYgOaPQMobajWGfIpUWjh0VOQ09ERVJEh5hMYXZjNjAuMzEuMTAyIGxpYnZweC12cDlnyKFFo4hEVVJBVElPTkSHkzAwOjAwOjAwLjA0MDAwMDAwMAAfQ7Z1yeeBAKDEoZ6BAAAAgkmDQgAAEAAWADgkHBlwAAAgIAARv/u8AAB1oaGmn+6BAaWagkmDQgAAEAAWADgkHBlwAAAgAAARv8qgAAAcU7trkbuPs4EAt4r3gQHxggGv8IED";
+            probe.addEventListener("loadeddata", function () {
+                try {
+                    var canvas = document.createElement("canvas");
+                    canvas.width = probe.videoWidth || 2;
+                    canvas.height = probe.videoHeight || 2;
+                    var ctx = canvas.getContext("2d");
+                    ctx.drawImage(probe, 0, 0);
+                    settle(ctx.getImageData(0, 0, 1, 1).data[3] < 20);
+                } catch (e) {
+                    settle(false);
+                }
+            });
+            probe.addEventListener("error", function () { settle(false); });
+            setTimeout(function () { settle(false); }, 400);
+        };
+
+        var play = function () {
+            var started = false;
+
+            var fail = function () {
+                if (!started) goToWork();
+            };
+
+            clip.addEventListener("playing", function () {
+                started = true;
+                hero.classList.add("is-playing");
+                skip.hidden = false;
+            }, { once: true });
+
+            clip.addEventListener("ended", goToWork, { once: true });
+            clip.addEventListener("error", fail, { once: true });
+
+            /* If it has not begun by now it is not going to feel like a
+               response to a press, so stop waiting and move on. */
+            setTimeout(fail, 2500);
+
+            var attempt = clip.play();
+            if (attempt && attempt.catch) attempt.catch(fail);
+        };
+
+        cta.addEventListener("click", function (event) {
+            event.preventDefault();
+
+            var reduced = window.matchMedia &&
+                window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+            if (reduced || !clip.canPlayType("video/webm")) {
+                goToWork();
+                return;
+            }
+
+            checkAlpha(function (ok) {
+                if (ok) play();
+                else goToWork();
+            });
+        });
+
+        skip.addEventListener("click", goToWork);
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape" && hero.classList.contains("is-playing")) goToWork();
+        });
+    }
+
     /* Sections ease in as they arrive rather than being there all at once.
        The hidden state is added here rather than in the stylesheet, so a
        section is never left invisible if this never runs. */

@@ -223,6 +223,78 @@
     pointer-events: none;
 }
 
+/* The clip sits in exactly the artwork's slot, so the figure does not shift
+   when one takes over from the other. Hidden until it is actually playing;
+   if it never plays, nothing here is ever seen. */
+.hero__clip {
+    left: 9.3056cqw;   /* 134px */
+    top: 15.4861cqw;   /* 223px */
+    width: 49.5833cqw; /* 714px */
+    height: 53.125cqw; /* 765px */
+    object-fit: cover;
+    opacity: 0;
+    pointer-events: none;
+    /* The same shadow the still carries, or it would vanish the instant the
+       clip starts. It is recomputed against a moving silhouette every frame,
+       which is why a permanently looping clip would be a bad idea - for a
+       few seconds on a press it is affordable. */
+    filter: drop-shadow(-0.8cqw 0 0.42cqw rgba(0, 0, 0, 0.22))
+            drop-shadow(-2.3611cqw 0 1.0417cqw rgba(0, 0, 0, 0.3));
+    transition: opacity 0.35s ease;
+}
+
+.hero.is-playing .hero__clip {
+    opacity: 1;
+}
+
+/* The still stays put underneath rather than being removed, so there is no
+   gap in the composition on the frame the clip starts or stops. */
+.hero.is-playing .hero__art {
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+/* Nobody should be stuck watching. Takes the button's place while the clip
+   runs, so the composition does not jump. */
+.hero__skip {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18.1944cqw;      /* matches the button it stands in for */
+    height: 3.4722cqw;
+    margin: 3.2639cqw auto 0;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 2.7778cqw;
+    color: #000;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.hero__skip::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: #fff;
+    border-radius: 2.0139cqw;
+    opacity: 0.42;
+    transition: opacity 0.25s ease;
+}
+
+.hero__skip:hover::before,
+.hero__skip:focus-visible::before {
+    opacity: 0.7;
+}
+
+/* While it plays, the call to action and the cue stand down. */
+.hero.is-playing .hero__cta,
+.hero.is-playing .hero__more {
+    display: none;
+}
+
 /* --------------------------------------------------------------------------
    Portrait and narrow screens
    The Figma file has no mobile frame, so this layout is not from the design.
