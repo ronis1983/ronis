@@ -233,7 +233,9 @@
     object-fit: cover;
 }
 
-/* Hidden until it is actually playing; if it never plays, it is never seen. */
+/* The still is what is on screen until the clip is genuinely running, so a
+   clip that never loads, never decodes or is never allowed to play is simply
+   never seen. */
 .hero__clip {
     opacity: 0;
     transition: opacity 0.35s ease;
@@ -248,14 +250,6 @@
 .hero.is-playing .hero__art {
     opacity: 0;
     transition: opacity 0.35s ease;
-}
-
-/* While it plays, the call to action and the cue stand down. */
-.hero.is-playing .hero__cta,
-.hero.is-playing .hero__more {
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.25s ease;
 }
 
 /* --------------------------------------------------------------------------

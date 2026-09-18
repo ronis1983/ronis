@@ -116,30 +116,23 @@
     /* ----------------------------------------------------------------------
        The clip on the hero
 
-       Pressing the button plays it once and the page then moves on to the
-       work. The button is an ordinary link to #projects underneath all of
-       this, so every way this can fail - no file, a decode error, a browser
-       that cannot show transparency, a request to reduce motion - ends with
-       exactly what the link would have done anyway.
+       It runs by itself, and the still underneath is what everyone sees if it
+       cannot: a missing file, a decode error, a browser that will not
+       autoplay it, a browser that cannot show transparency, a request to
+       reduce motion, or this script never running at all. The still is what
+       renders first in every case, and the clip only ever replaces it once it
+       is genuinely playing.
        ---------------------------------------------------------------------- */
     var hero = document.querySelector(".hero");
     var clip = document.querySelector(".hero__clip");
-    var cta = document.querySelector(".hero__cta");
 
-    if (hero && clip && cta) {
-        var target = document.querySelector(cta.getAttribute("href"));
+    if (hero && clip) {
         var alphaOk = null;
-
-        var goToWork = function () {
-            hero.classList.remove("is-playing");
-            try { clip.pause(); } catch (e) {}
-            if (target) target.scrollIntoView({ block: "start" });
-        };
 
         /* A transparent clip shown by a browser that cannot decode the alpha
            channel is an opaque rectangle over the wordmark, which is worse
-           than no clip at all. Rather than guess from the browser's name,
-           decode one 2x2 transparent frame and look at it. */
+           than the still. Rather than guess from the browser's name, decode
+           one 2x2 transparent frame and look at it. */
         var checkAlpha = function (done) {
             if (alphaOk !== null) return done(alphaOk);
 
@@ -169,58 +162,38 @@
             setTimeout(function () { settle(false); }, 400);
         };
 
-        var play = function () {
-            var started = false;
-
-            var fail = function () {
-                if (!started) goToWork();
-            };
-
-            clip.addEventListener("playing", function () {
-                started = true;
-                hero.classList.add("is-playing");
-            }, { once: true });
-
-            clip.addEventListener("ended", goToWork, { once: true });
-            clip.addEventListener("error", fail, { once: true });
-
-            /* If it has not begun by now it is not going to feel like a
-               response to a press, so stop waiting and move on. */
-            setTimeout(fail, 2500);
-
-            var attempt = clip.play();
-            if (attempt && attempt.catch) attempt.catch(fail);
+        var fallBackToStill = function () {
+            hero.classList.remove("is-playing");
         };
 
-        cta.addEventListener("click", function (event) {
-            event.preventDefault();
-
-            var reduced = window.matchMedia &&
-                window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-            if (reduced || !clip.canPlayType("video/webm")) {
-                goToWork();
-                return;
-            }
-
+        var start = function () {
             checkAlpha(function (ok) {
-                if (ok) play();
-                else goToWork();
-            });
-        });
+                if (!ok) return;   /* the still stays, and nothing is fetched */
 
-        /* There is no skip button, so these are the ways out. Without one of
-           them a press would commit you to watching the whole clip, with no
-           way back to the page. */
-        document.addEventListener("keydown", function (event) {
-            if (event.key === "Escape" && hero.classList.contains("is-playing")) goToWork();
-        });
+                clip.loop = true;
 
-        var frame = document.querySelector(".stage-frame");
-        if (frame) {
-            frame.addEventListener("click", function () {
-                if (hero.classList.contains("is-playing")) goToWork();
+                /* Only once it is actually playing does the still step aside.
+                   Until then, and if it ever stops being able to, the still is
+                   what is on screen. */
+                clip.addEventListener("playing", function () {
+                    hero.classList.add("is-playing");
+                });
+                clip.addEventListener("error", fallBackToStill);
+                clip.addEventListener("stalled", fallBackToStill);
+
+                var attempt = clip.play();
+                if (attempt && attempt.catch) attempt.catch(fallBackToStill);
             });
+        };
+
+        var reduced = window.matchMedia &&
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        if (!reduced && clip.canPlayType("video/webm")) {
+            /* Held until the page has loaded, so the clip never competes with
+               the first screen. The still is up long before it arrives. */
+            if (document.readyState === "complete") start();
+            else window.addEventListener("load", start);
         }
     }
 
