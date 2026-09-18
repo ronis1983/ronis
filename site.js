@@ -125,15 +125,13 @@
     var hero = document.querySelector(".hero");
     var clip = document.querySelector(".hero__clip");
     var cta = document.querySelector(".hero__cta");
-    var skip = document.querySelector(".hero__skip");
 
-    if (hero && clip && cta && skip) {
+    if (hero && clip && cta) {
         var target = document.querySelector(cta.getAttribute("href"));
         var alphaOk = null;
 
         var goToWork = function () {
             hero.classList.remove("is-playing");
-            skip.hidden = true;
             try { clip.pause(); } catch (e) {}
             if (target) target.scrollIntoView({ block: "start" });
         };
@@ -181,7 +179,6 @@
             clip.addEventListener("playing", function () {
                 started = true;
                 hero.classList.add("is-playing");
-                skip.hidden = false;
             }, { once: true });
 
             clip.addEventListener("ended", goToWork, { once: true });
@@ -212,11 +209,19 @@
             });
         });
 
-        skip.addEventListener("click", goToWork);
-
+        /* There is no skip button, so these are the ways out. Without one of
+           them a press would commit you to watching the whole clip, with no
+           way back to the page. */
         document.addEventListener("keydown", function (event) {
             if (event.key === "Escape" && hero.classList.contains("is-playing")) goToWork();
         });
+
+        var frame = document.querySelector(".stage-frame");
+        if (frame) {
+            frame.addEventListener("click", function () {
+                if (hero.classList.contains("is-playing")) goToWork();
+            });
+        }
     }
 
     /* Sections ease in as they arrive rather than being there all at once.
