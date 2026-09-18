@@ -60,6 +60,11 @@
 
 html {
     scroll-behavior: smooth;
+    /* A net, not the fix: nothing in the layout is sized to 100vw any more, so
+       nothing should reach past the right edge. `clip` rather than `hidden`
+       because it does not turn the page into a scroll container, so smooth
+       scrolling and any sticky positioning keep working. */
+    overflow-x: clip;
 }
 
 body {

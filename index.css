@@ -8,14 +8,22 @@
    next to each rule so it can be checked against Figma.
    ========================================================================== */
 
-/* --stage-w is the width the composition gets: the window's width, or as much
+/* --stage-w is the width the composition gets: the frame's width, or as much
    as its height allows at the design's ratio, whichever is smaller. 1.40625 is
    1440/1024, so a window wider than that is limited by its height and a
    narrower one by its width. The 2166px cap is where the artwork reaches its
    native resolution - a 714px slot in a 2166px stage renders the 1074px image
-   at exactly 1:1 - so it never has to upscale. */
-:root {
-    --stage-w: min(100vw, 100svh * 1.40625, 2166px);
+   at exactly 1:1 - so it never has to upscale.
+
+   It is measured in cqw against .stage-frame rather than in vw on purpose.
+   100vw counts the vertical scrollbar's width, which the page does not
+   actually have to draw in, so anything sized to it hangs past the right edge
+   by however wide that scrollbar is and puts a horizontal scrollbar on the
+   page. The frame is 100% of the body, so 100cqw is the width really
+   available. Declared on the frame's children because an element cannot
+   query itself. */
+.stage-frame > * {
+    --stage-w: min(100cqw, 100svh * 1.40625, 2166px);
 }
 
 /* The first screen of the page, exactly one window tall, so the composition
@@ -28,11 +36,12 @@
    over opens up above it, where the gradient is flat, instead of below the
    ground. */
 .stage-frame {
+    container-type: inline-size;
     position: relative;
     display: flex;
     justify-content: center;
     align-items: flex-end;
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     height: 100svh;
     overflow: hidden;
