@@ -205,7 +205,12 @@
     width: 49.5833cqw; /* 714px */
     height: 53.125cqw; /* 765px */
     object-fit: cover;
-    filter: drop-shadow(-2.3611cqw 0 1.0417cqw rgba(0, 0, 0, 0.1));
+    /* Node 2003:34 gives this 10% black, which barely registers against the
+       wordmark behind it. Deepened, and split into a tight contact shadow
+       plus the design's wider one, so the figure reads as standing in front
+       of the letters rather than pasted onto them. */
+    filter: drop-shadow(-0.8cqw 0 0.42cqw rgba(0, 0, 0, 0.22))
+            drop-shadow(-2.3611cqw 0 1.0417cqw rgba(0, 0, 0, 0.3));
     pointer-events: none;
 }
 

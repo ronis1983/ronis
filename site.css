@@ -282,8 +282,29 @@ body::before {
 }
 
 .section__inner {
+    position: relative;
+    z-index: 1;
     width: min(1040px, 90vw);
     margin-inline: auto;
+}
+
+/* The hero ends on its white ground, and the page underneath returns to the
+   gradient - which met it as a hard line straight across the window. This
+   carries the ground down into the section and dissolves it, so scrolling off
+   the hero reads as landing on a floor rather than crossing an edge. */
+.section--lands::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: clamp(180px, 32vh, 460px);
+    background: linear-gradient(to bottom, #fff 0%, rgba(255, 255, 255, 0) 100%);
+    pointer-events: none;
+}
+
+.section--lands {
+    position: relative;
 }
 
 .site-footer {
@@ -457,6 +478,31 @@ body::before {
     clip-path: inset(50%);
     white-space: nowrap;
     border: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Arrival
+   site.js puts .js-reveal on each section, so nothing is ever hidden unless
+   the script is there to show it again. Without it the page just renders.
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+    .js-reveal .section__inner > * {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.7s cubic-bezier(0.2, 0.6, 0.2, 1),
+                    transform 0.7s cubic-bezier(0.2, 0.6, 0.2, 1);
+    }
+
+    .js-reveal.is-revealed .section__inner > * {
+        opacity: 1;
+        transform: none;
+    }
+
+    /* A short stagger, so the heading leads and the body follows it in. */
+    .js-reveal.is-revealed .section__inner > *:nth-child(2) { transition-delay: 0.09s; }
+    .js-reveal.is-revealed .section__inner > *:nth-child(3) { transition-delay: 0.18s; }
+    .js-reveal.is-revealed .section__inner > *:nth-child(4) { transition-delay: 0.27s; }
 }
 
 /* --------------------------------------------------------------------------

@@ -60,4 +60,28 @@
     update();
     window.addEventListener("scroll", update, { passive: true });
     window.addEventListener("resize", update, { passive: true });
+
+    /* Sections ease in as they arrive rather than being there all at once.
+       The hidden state is added here rather than in the stylesheet, so a
+       section is never left invisible if this never runs. */
+    var sections = [].slice.call(document.querySelectorAll(".section"));
+    if (!sections.length) return;
+
+    if (!("IntersectionObserver" in window)) {
+        sections.forEach(function (s) { s.classList.add("is-revealed"); });
+        return;
+    }
+
+    var seen = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add("is-revealed");
+            seen.unobserve(entry.target);   // it stays arrived; no flicker on the way back up
+        });
+    }, { rootMargin: "0px 0px -12% 0px", threshold: 0.08 });
+
+    sections.forEach(function (s) {
+        s.classList.add("js-reveal");
+        seen.observe(s);
+    });
 })();
