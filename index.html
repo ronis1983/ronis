@@ -11,10 +11,16 @@
 </head>
 <body>
 
-<section class="hero">
+<!-- Fills the viewport and carries the background and the ground, both of
+     which run edge to edge. The composition itself lives in .hero, which
+     keeps the design's proportions. -->
+<div class="stage-frame">
 
-    <!-- Decorative wave along the bottom edge -->
-    <img class="hero__wave" src="images/wave-bottom.svg" alt="" aria-hidden="true">
+    <!-- The ground. Outside .hero so it spans the full window rather than
+         stopping at the edge of the composition. -->
+    <img class="wave-ground" src="images/wave-bottom.svg" alt="" aria-hidden="true">
+
+<section class="hero">
 
     <!-- Soft ground shadow under the artwork -->
     <img class="hero__shadow" src="images/hero-shadow.svg" alt="" aria-hidden="true">
@@ -46,6 +52,8 @@
     </header>
 
 </section>
+
+</div>
 
 </body>
 </html>

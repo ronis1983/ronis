@@ -53,29 +53,41 @@
     box-sizing: border-box;
 }
 
+/* The page is meant to be taken in at a glance, with no scrolling, so the
+   whole thing is sized to the window rather than to the design's pixels.
+
+   --stage-w is the width the composition gets: the window's width, or as
+   much as its height allows at the design's ratio, whichever is smaller.
+   1.40625 is 1440/1024, so a window wider than that is limited by its
+   height and a narrower one by its width. The 2166px cap is where the
+   artwork reaches its native resolution - a 714px slot in a 2166px stage
+   renders the 1074px image at exactly 1:1 - so it never has to upscale. */
+:root {
+    --stage-w: min(100vw, 100svh * 1.40625, 2166px);
+}
+
 body {
     margin: 0;
+    overflow: hidden;
     font-family: "Assistant", sans-serif;
     background-color: #c9c554;
 }
 
-/* --------------------------------------------------------------------------
-   Hero stage
-   The frame clips its content, and its 1440x1024 ratio is what keeps the
-   proportional scaling honest: height follows width, so one set of cqw
-   values positions things on both axes.
-   -------------------------------------------------------------------------- */
-
-.hero {
-    container-type: inline-size;
+/* The window-sized frame. The gradient and the ground live here rather than
+   on .hero so they run edge to edge: a ground that stopped at the edge of
+   the composition would read as a white rectangle floating in the
+   background on a wide window. The composition sits at the bottom, so on a
+   window taller than the design's ratio the room left over opens up above
+   it, where the gradient is flat, instead of below the ground. */
+.stage-frame {
     position: relative;
-    width: 100%;
-    max-width: 1440px;
-    margin-inline: auto;
-    aspect-ratio: 1440 / 1024;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    width: 100vw;
+    height: 100vh;
+    height: 100svh;
     overflow: hidden;
-    /* Radial gradient from node 2003:35: an ellipse centred in the frame,
-       with radii 720x513 - exactly half the frame, i.e. farthest-side. */
     background: radial-gradient(
         ellipse farthest-side at 50% 50%,
         #d9d9d9 0%,
@@ -85,19 +97,40 @@ body {
     );
 }
 
+/* Node 2005:68, stretched to the window's width. Its height and its overhang
+   past the bottom edge stay tied to --stage-w, so it keeps the thickness the
+   design gives it however wide the window is. */
+.wave-ground {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: calc(var(--stage-w) * 0.105989);  /* 152.624px at 1440 */
+    bottom: calc(var(--stage-w) * -0.049135); /* the design clips its lower part */
+}
+
+/* --------------------------------------------------------------------------
+   Hero stage
+   The frame clips its content, and its 1440x1024 ratio is what keeps the
+   proportional scaling honest: height follows width, so one set of cqw
+   values positions things on both axes.
+   -------------------------------------------------------------------------- */
+
+/* The composition. Transparent, so the frame's gradient shows through and
+   the artwork inside here still paints over the ground behind it, which is
+   the layer order the design uses. Its ratio is what makes the cqw values
+   below position things on both axes from one set of numbers. */
+.hero {
+    container-type: inline-size;
+    position: relative;
+    flex: none;
+    width: var(--stage-w);
+    aspect-ratio: 1440 / 1024;
+}
+
 /* Layers are absolutely positioned siblings, so document order is paint
    order - the same stacking Figma uses. */
 .hero > * {
     position: absolute;
-}
-
-/* Wave, node 2005:68. The SVG carries filter bleed, so the rendered box is
-   1552.78x152.624 at (-36.76, 942.13) rather than the node's own bounds. */
-.hero__wave {
-    left: -2.5528cqw;   /* -36.76px  */
-    top: 65.4257cqw;    /* 942.13px  */
-    width: 107.8319cqw; /* 1552.78px */
-    height: 10.5989cqw; /* 152.624px */
 }
 
 /* Ground shadow, node 2003:36 - also bleed-expanded, to 688x95 at (269, 923). */
@@ -297,22 +330,31 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   Small screens
-   The Figma file has no mobile frame, so this layout is not from the design:
-   below 768px the stage stops being a fixed-ratio canvas and the layers fall
-   into a single column, because proportional scaling alone would shrink the
-   30px nav links to about 8px on a phone.
+   Portrait and narrow screens
+   The Figma file has no mobile frame, so this layout is not from the design.
+   It takes over for anything portrait or square, phones and tablets alike,
+   because a viewport much taller than the design's 1.40625 ratio would
+   otherwise leave a third of the screen as empty background above the
+   composition, with the nav stranded in the middle of it.
+
+   The layers fall into a single column sized in vmin, which tracks whichever
+   viewport axis is smaller. That reads the same as vw in portrait and shrinks
+   the type on a landscape phone instead of overflowing, and it keeps one set
+   of values working from a 320px phone up to a 1024px tablet. The column is
+   exactly one screen tall, with the artwork absorbing whatever the text
+   leaves, so nothing scrolls and nothing is cropped.
    -------------------------------------------------------------------------- */
 
-@media (max-width: 768px) {
+@media (max-width: 768px), (max-aspect-ratio: 1 / 1) {
     .hero {
         container-type: normal;
         display: flex;
         flex-direction: column;
         align-items: center;
         aspect-ratio: auto;
-        min-height: 100svh;
-        padding: 24px 20px 0;
+        width: 100%;
+        height: 100%;
+        padding: clamp(14px, 3vmin, 28px) clamp(14px, 4vmin, 40px) 0;
         text-align: center;
     }
 
@@ -323,39 +365,39 @@ body {
     .site-header {
         order: 1;
         height: auto;
-        padding: 0 0 32px;
+        padding: 0 0 clamp(14px, 4vmin, 34px);
     }
 
     .site-logo {
-        font-size: 34px;
+        font-size: clamp(30px, 6vmin, 56px);
     }
 
     .nav-list {
-        gap: 14px;
+        gap: clamp(10px, 2.2vmin, 22px);
     }
 
     .nav-link {
-        font-size: 18px;
+        font-size: clamp(16px, 3.4vmin, 28px);
     }
 
     .nav-link--pill {
-        width: 74px;
-        height: 38px;
+        width: clamp(66px, 14vmin, 116px);
+        height: clamp(34px, 7.2vmin, 58px);
     }
 
     .nav-link--pill::before {
         border-width: 2px;
-        border-radius: 19px;
+        border-radius: 999px;
     }
 
     .nav-divider {
         width: 1px;
-        height: 22px;
+        height: clamp(22px, 4.4vmin, 36px);
     }
 
     .hero__wordmark {
         order: 2;
-        font-size: 19vw;
+        font-size: clamp(56px, 19vmin, 240px);
     }
 
     .hero__copy {
@@ -363,40 +405,47 @@ body {
     }
 
     .hero__headline-top {
-        font-size: 32px;
+        font-size: clamp(26px, 8.2vmin, 64px);
     }
 
     .hero__headline-bottom {
         margin: 0;
-        font-size: 33px;
+        font-size: clamp(27px, 8.4vmin, 66px);
     }
 
     .hero__cta {
         position: relative;
         left: auto;
         top: auto;
-        width: 200px;
-        height: 46px;
-        margin: 24px auto 0;
-        font-size: 22px;
+        width: clamp(170px, 46vmin, 300px);
+        height: clamp(40px, 11.8vmin, 72px);
+        margin: clamp(14px, 6vmin, 36px) auto 0;
+        font-size: clamp(19px, 5.6vmin, 36px);
     }
 
     .hero__cta::before {
-        border-radius: 23px;
+        border-radius: 999px;
     }
 
+    /* The artwork takes whatever height the text leaves, rather than its own
+       aspect ratio, which is what keeps the column inside one screen.
+       `contain` means it shrinks whole instead of cropping. */
     .hero__art {
         order: 4;
+        flex: 1 1 auto;
+        min-height: 0;
         width: 100%;
-        max-width: 420px;
+        max-width: clamp(280px, 88vmin, 560px);
         height: auto;
-        margin-top: 8px;
+        object-fit: contain;
+        object-position: bottom center;
+        margin-top: clamp(6px, 1.5vmin, 16px);
         filter: none;
     }
 
-    /* Both are ground/edge decoration for the desktop composition. */
+    /* Both are ground and edge decoration for the landscape composition. */
     .hero__shadow,
-    .hero__wave {
+    .wave-ground {
         display: none;
     }
 }
