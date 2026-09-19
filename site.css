@@ -71,13 +71,13 @@ body {
     margin: 0;
     font-family: "Assistant", sans-serif;
     color: #23220b;
-    background-color: #c9c554;
+    background-color: #e5e160;
 }
 
 /* The background, fixed to the viewport so it stays put on the pages that
    scroll and matches the home page exactly on the one that does not.
    Node 2003:35: an ellipse centred in the frame with radii 720x513, which is
-   exactly half of it - farthest-side. It is clamped to #c9c554 along all four
+   exactly half of it - farthest-side. It is clamped to #e5e160 along all four
    edges, which is why that colour works as the page's base. */
 body::before {
     content: "";
@@ -86,10 +86,10 @@ body::before {
     z-index: -1;
     background: radial-gradient(
         ellipse farthest-side at 50% 50%,
-        #d9d9d9 0%,
-        #d1cf97 50%,
-        #cdca75 75%,
-        #c9c554 100%
+        #f7f7f7 0%,
+        #eeecac 50%,
+        #eae685 75%,
+        #e5e160 100%
     );
 }
 
@@ -115,7 +115,7 @@ body::before {
    would. It is behind everything, so the artwork and the type stay clean.
    --grain sets how strong it is; it is meant to be felt, not seen. */
 :root {
-    --grain: 0.08;
+    --grain: 0.25;
 }
 
 body::after {
@@ -125,7 +125,7 @@ body::after {
     z-index: -1;
     pointer-events: none;
     opacity: var(--grain);
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch' result='t'/%3E%3CfeColorMatrix in='t' type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1 0 0 0 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)'/%3E%3C/svg%3E");
     background-repeat: repeat;
 }
 
