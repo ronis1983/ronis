@@ -170,7 +170,13 @@
             checkAlpha(function (ok) {
                 if (!ok) return;   /* the still stays, and nothing is fetched */
 
-                clip.loop = true;
+                /* It runs once and then dissolves back to the still rather
+                   than looping. The clip's last frame is nowhere near its
+                   first, so looping it would jump every time it wrapped, and
+                   crossfading that jump doubles the figure visibly. Settling
+                   on the still has neither problem, and the still is the
+                   composition the design is built around anyway. */
+                clip.loop = false;
 
                 /* Only once it is actually playing does the still step aside.
                    Until then, and if it ever stops being able to, the still is
@@ -178,6 +184,7 @@
                 clip.addEventListener("playing", function () {
                     hero.classList.add("is-playing");
                 });
+                clip.addEventListener("ended", fallBackToStill);
                 clip.addEventListener("error", fallBackToStill);
                 clip.addEventListener("stalled", fallBackToStill);
 

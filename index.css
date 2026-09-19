@@ -238,7 +238,7 @@
    never seen. */
 .hero__clip {
     opacity: 0;
-    transition: opacity 0.35s ease;
+    transition: opacity 0.7s ease;
 }
 
 .hero.is-playing .hero__clip {
@@ -249,7 +249,7 @@
    gap in the composition on the frame the clip starts or stops. */
 .hero.is-playing .hero__art {
     opacity: 0;
-    transition: opacity 0.35s ease;
+    transition: opacity 0.7s ease;
 }
 
 /* --------------------------------------------------------------------------
