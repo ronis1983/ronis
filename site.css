@@ -93,6 +93,22 @@ body::before {
     );
 }
 
+/* The browser's own focus ring is a 1px hairline, which all but disappears
+   against the olive. This one is thick enough and dark enough to follow while
+   tabbing, and only shows for keyboard use - a mouse click never draws it. */
+:focus-visible {
+    outline: 3px solid #26240a;
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
+.nav-link:focus-visible,
+.hero__cta:focus-visible,
+.button:focus-visible {
+    outline-offset: 5px;
+    border-radius: 999px;
+}
+
 /* Hebrew sits on the baseline and does not use the descender space the line
    box reserves, so a line box centred in a box leaves the letters looking
    low. Measured in Assistant: ascent 102, descent 29, Hebrew letters 56 tall
