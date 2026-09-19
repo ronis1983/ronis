@@ -170,13 +170,13 @@
             checkAlpha(function (ok) {
                 if (!ok) return;   /* the still stays, and nothing is fetched */
 
-                /* It runs once and then dissolves back to the still rather
-                   than looping. The clip's last frame is nowhere near its
-                   first, so looping it would jump every time it wrapped, and
-                   crossfading that jump doubles the figure visibly. Settling
-                   on the still has neither problem, and the still is the
-                   composition the design is built around anyway. */
-                clip.loop = false;
+                /* It loops. The clip does not return to its opening pose, so
+                   the file itself is cut at the frame that comes closest and
+                   carries a three-frame crossfade over the wrap - which takes
+                   the jump from 63 down to 34, where two genuinely adjacent
+                   frames score 18. Longer crossfades barely improve on that
+                   and visibly double the rider and the reins. */
+                clip.loop = true;
 
                 /* Only once it is actually playing does the still step aside.
                    Until then, and if it ever stops being able to, the still is
@@ -184,7 +184,6 @@
                 clip.addEventListener("playing", function () {
                     hero.classList.add("is-playing");
                 });
-                clip.addEventListener("ended", fallBackToStill);
                 clip.addEventListener("error", fallBackToStill);
                 clip.addEventListener("stalled", fallBackToStill);
 
