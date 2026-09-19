@@ -1,0 +1,375 @@
+/* ==========================================================================
+   The home page composition, built from Figma "Wireframe - 1" (frame
+   2003:33), design canvas 1440x1024. Loaded on top of site.css.
+
+   Inside .hero every size is written in `cqw` - 1cqw is 1% of .hero's width -
+   so the whole composition scales as one piece. The conversion is px / 14.4,
+   because 1440/100 = 14.4, and the design's pixel value is kept in a comment
+   next to each rule so it can be checked against Figma.
+   ========================================================================== */
+
+/* --stage-w is the width the composition gets: the frame's width, or as much
+   as its height allows at the design's ratio, whichever is smaller. 1.40625 is
+   1440/1024, so a window wider than that is limited by its height and a
+   narrower one by its width. The 2166px cap is where the artwork reaches its
+   native resolution - a 714px slot in a 2166px stage renders the 1074px image
+   at exactly 1:1 - so it never has to upscale.
+
+   It is measured in cqw against .stage-frame rather than in vw on purpose.
+   100vw counts the vertical scrollbar's width, which the page does not
+   actually have to draw in, so anything sized to it hangs past the right edge
+   by however wide that scrollbar is and puts a horizontal scrollbar on the
+   page. The frame is 100% of the body, so 100cqw is the width really
+   available. Declared on the frame's children because an element cannot
+   query itself. */
+.stage-frame > * {
+    --stage-w: min(100cqw, 100svh * 1.40625, 2166px);
+}
+
+/* The first screen of the page, exactly one window tall, so the composition
+   is always seen whole before anything is scrolled.
+
+   The ground lives here rather than on .hero so it runs edge to edge: a
+   ground that stopped at the edge of the composition would read as a white
+   rectangle floating in the background on a wide window. The composition sits
+   at the bottom, so on a window taller than the design's ratio the room left
+   over opens up above it, where the gradient is flat, instead of below the
+   ground. */
+.stage-frame {
+    container-type: inline-size;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    width: 100%;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+}
+
+/* Node 2005:68, stretched to the window's width. Its height and its overhang
+   past the bottom edge stay tied to --stage-w, so it keeps the thickness the
+   design gives it however wide the window is. */
+.wave-ground {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: calc(var(--stage-w) * 0.105989);  /* 152.624px at 1440 */
+    bottom: calc(var(--stage-w) * -0.049135); /* the design clips its lower part */
+}
+
+/* The composition. Transparent, so the page background shows through and the
+   artwork inside here still paints over the ground behind it, which is the
+   layer order the design uses. Its ratio is what lets the cqw values below
+   position things on both axes from one set of numbers. */
+.hero {
+    container-type: inline-size;
+    position: relative;
+    flex: none;
+    width: var(--stage-w);
+    aspect-ratio: 1440 / 1024;
+}
+
+/* Layers are absolutely positioned siblings, so document order is paint
+   order - the same stacking Figma uses. */
+.hero > * {
+    position: absolute;
+}
+
+/* Ground shadow, node 2003:36. The SVG carries filter bleed, so its rendered
+   box is 688x95 at (269, 923) rather than the node's own bounds. */
+.hero__shadow {
+    left: 18.6819cqw;  /* 269.02px */
+    top: 64.0972cqw;   /* 923px    */
+    width: 47.775cqw;  /* 687.96px */
+    height: 6.5972cqw; /* 95px     */
+}
+
+/* Oversized wordmark, node 2003:44. */
+.hero__wordmark {
+    left: 20.2778cqw;      /* 292px */
+    top: 6.4583cqw;        /* 93px  */
+    margin: 0;
+    font-family: "Inter", sans-serif;
+    font-weight: 900;
+    font-size: 20.8333cqw; /* 300px */
+    line-height: normal;
+    color: #fff;
+    white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   Headline, call to action and the cue below it
+   -------------------------------------------------------------------------- */
+
+.hero__copy {
+    left: 62.0833cqw; /* 894px */
+    top: 30.4861cqw;  /* 439px */
+}
+
+.hero__headline {
+    margin: 0;
+    line-height: normal;
+    color: #000;
+    white-space: nowrap;
+}
+
+.hero__headline-top,
+.hero__headline-bottom {
+    display: block;
+}
+
+.hero__headline-top {
+    font-weight: 600;
+    font-size: 4.8611cqw; /* 70px */
+}
+
+/* The two headline lines are separate text nodes whose boxes overlap: node
+   2003:55 occupies 439-531px and node 2003:56 starts at 499px, so the second
+   line is pulled up by 32px. Both are right-aligned on the same edge
+   (x=1231px), which the RTL direction gives for free - no horizontal nudge. */
+.hero__headline-bottom {
+    margin-top: -2.2222cqw; /* 499px - (439px + 92px line box) */
+    font-weight: 800;
+    font-size: 5cqw;        /* 72px */
+}
+
+/* Node 2003:59 plus its label, node 2003:60.
+
+   The design puts this pill at x=952-1214, whose centre is 1083, while the
+   headline block above it runs 894-1231 and centres on 1062.5 - so in the
+   file the button sits 20.5px right of the text it belongs to. That reads as
+   a misalignment rather than an intention, so it is centred on the block
+   here instead. */
+.hero__cta {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18.1944cqw;      /* 262px */
+    height: 3.4722cqw;      /* 50px  */
+    margin: 3.2639cqw auto 0; /* 640px - (439px + 154px of headline) */
+    font-weight: 600;
+    font-size: 2.7778cqw;   /* 40px  */
+    color: #000;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: transform 0.25s ease;
+}
+
+.hero__cta::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: #fff;
+    border-radius: 2.0139cqw; /* 29px */
+    opacity: 0.59;
+    transition: opacity 0.25s ease;
+}
+
+.hero__cta:hover,
+.hero__cta:focus-visible {
+    transform: translateY(-2px);
+}
+
+.hero__cta:hover::before,
+.hero__cta:focus-visible::before {
+    opacity: 0.85;
+}
+
+/* A cue under the button. It rests for most of the cycle and dips once, so it
+   reads as an invitation rather than something blinking for attention. */
+.hero__more {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    width: 2.7778cqw;         /* 40px */
+    margin: 1.7361cqw auto 0; /* 25px below the button */
+    color: #2f2d0c;
+    transition: color 0.25s ease;
+}
+
+.hero__more svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    animation: hero-more-dip 3.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.hero__more:hover,
+.hero__more:focus-visible {
+    color: #000;
+}
+
+@keyframes hero-more-dip {
+    0%, 58%, 100% { transform: translateY(0);   opacity: 0.5; }
+    76%           { transform: translateY(28%); opacity: 0.9; }
+}
+
+/* One slot for the figure, holding the still and the clip stacked. Keeping
+   them in a wrapper rather than as two siblings of .hero is what stops the
+   clip from becoming a box of its own in the stacked layout, where it was
+   sitting beside the still and squeezing it down to nothing. */
+.hero__media {
+    left: 9.3056cqw;   /* 134px */
+    top: 15.4861cqw;   /* 223px */
+    width: 49.5833cqw; /* 714px */
+    height: 53.125cqw; /* 765px */
+    /* On the wrapper, so it follows whichever layer is visible. Node 2003:34
+       gives 10% black, which barely registers against the wordmark behind it;
+       deepened, and split into a tight contact shadow plus the design's wider
+       one, so the figure reads as standing in front of the letters. */
+    filter: drop-shadow(-0.8cqw 0 0.42cqw rgba(0, 0, 0, 0.22))
+            drop-shadow(-2.3611cqw 0 1.0417cqw rgba(0, 0, 0, 0.3));
+    pointer-events: none;
+}
+
+.hero__art,
+.hero__clip {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* The still is what is on screen until the clip is genuinely running, so a
+   clip that never loads, never decodes or is never allowed to play is simply
+   never seen. */
+.hero__clip {
+    opacity: 0;
+    transition: opacity 0.7s ease;
+}
+
+.hero.is-playing .hero__clip {
+    opacity: 1;
+}
+
+/* The still stays put underneath rather than being removed, so there is no
+   gap in the composition on the frame the clip starts or stops. */
+.hero.is-playing .hero__art {
+    opacity: 0;
+    transition: opacity 0.7s ease;
+}
+
+/* --------------------------------------------------------------------------
+   Portrait and narrow screens
+   The Figma file has no mobile frame, so this layout is not from the design.
+   It takes over for anything portrait or square, phones and tablets alike,
+   because a window much taller than the design's 1.40625 ratio would
+   otherwise leave a third of the screen as empty background above the
+   composition, with the nav stranded in the middle of it.
+
+   The layers fall into a single column sized in vmin, which tracks whichever
+   viewport axis is smaller. That reads the same as vw in portrait and shrinks
+   the type on a landscape phone instead of overflowing, and it keeps one set
+   of values working from a 320px phone up to a 1024px tablet. The column is
+   exactly one screen tall, with the artwork absorbing whatever the text
+   leaves, so nothing scrolls and nothing is cropped.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 768px), (max-aspect-ratio: 1 / 1) {
+    /* The frame itself becomes the column: header on top, composition filling
+       what is left. The header is a sibling of .hero, not a child, so it is
+       the frame's direction that has to change - setting `order` on it while
+       the frame was still a row is what put it beside the composition. */
+    .stage-frame {
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
+        /* The header is fixed, so the column has to start below it. In
+           landscape the composition is positioned clear of it already. */
+        padding-top: calc(var(--header-h) + clamp(8px, 2vmin, 20px));
+    }
+
+    .hero {
+        container-type: normal;
+        flex: 1 1 auto;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        aspect-ratio: auto;
+        width: 100%;
+        height: auto;
+        padding: 0 clamp(14px, 4vmin, 40px);
+        text-align: center;
+    }
+
+    /* Document order inside .hero is already wordmark, copy, artwork. */
+    .hero > * {
+        position: static;
+    }
+
+    .hero__wordmark {
+        font-size: clamp(56px, 19vmin, 240px);
+    }
+
+    .hero__headline-top {
+        font-size: clamp(26px, 8.2vmin, 64px);
+    }
+
+    .hero__headline-bottom {
+        margin: 0;
+        font-size: clamp(27px, 8.4vmin, 66px);
+    }
+
+    .hero__cta {
+        width: clamp(170px, 46vmin, 300px);
+        height: clamp(40px, 11.8vmin, 72px);
+        margin: clamp(14px, 6vmin, 36px) auto 0;
+        font-size: clamp(19px, 5.6vmin, 36px);
+    }
+
+    .hero__cta::before {
+        border-radius: 999px;
+    }
+
+    .hero__more {
+        width: clamp(24px, 7vmin, 44px);
+        margin: clamp(10px, 3vmin, 22px) auto 0;
+    }
+
+    /* The slot takes whatever height the text leaves, rather than its own
+       aspect ratio, which is what keeps the column inside one screen.
+       `contain` on the layers means the figure shrinks whole, never cropped.
+       position: relative here because the stacked layout makes every direct
+       child of .hero static, and the layers inside still need something to
+       be positioned against. */
+    .hero__media {
+        position: relative;
+        /* The landscape rule sets left/top to place the slot on the design's
+           coordinates. Relative positioning still honours them, which shifted
+           the figure down and out of the bottom of the screen, so they are
+           cleared here rather than merely overridden by the flow. */
+        left: auto;
+        top: auto;
+        flex: 1 1 auto;
+        min-height: 0;
+        width: 100%;
+        max-width: clamp(280px, 88vmin, 560px);
+        margin-top: clamp(6px, 1.5vmin, 16px);
+        filter: none;
+    }
+
+    .hero__art,
+    .hero__clip {
+        object-fit: contain;
+        object-position: bottom center;
+    }
+
+    /* Both are ground and edge decoration for the landscape composition. */
+    .hero__shadow,
+    .wave-ground {
+        display: none;
+    }
+}
+
+/* On a screen too short to hold the column comfortably, the cue is the first
+   thing to go - it is the only element that is decoration rather than
+   content, and dropping it gives the artwork back its room. */
+@media (max-height: 480px) {
+    .hero__more {
+        display: none;
+    }
+}
