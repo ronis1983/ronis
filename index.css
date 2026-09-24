@@ -224,13 +224,21 @@
     pointer-events: none;
 }
 
+/* `contain`, not `cover`. Cover fills the slot and crops whatever does not
+   fit, and the clip is a slightly taller shape than the slot - 0.919 against
+   0.933 - so it was losing 5.8px off the top and the bottom. That is 7.4 rows
+   of the clip, and the rider's head comes within 1 row of the top at one point
+   in the loop, so his crown was being cut off. Contain fits the whole frame
+   in instead; the still's shape already matches the slot, so it is unchanged
+   by this. */
 .hero__art,
 .hero__clip {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
+    object-position: center bottom;
 }
 
 /* The still is what is on screen until the clip is genuinely running, so a
