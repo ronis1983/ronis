@@ -85,26 +85,28 @@ a { color: inherit; text-decoration: none; }
     height: 100svh;
     min-height: 560px;
     overflow: hidden;
-    /* Figma frame fill: red radial glow in the centre fading to black at the edges */
-    background: radial-gradient(ellipse 50% 50% at 50% 50%,
-        #a40c0c 0%, #7b0909 25%, #520606 50%, #290303 75%, #150101 87.5%, #0a0101 93.75%, #000 100%);
+    background: #000;
 }
 
 .hero-skyline {                       /* black bands on the sides (and top), as in the Figma design */
     position: absolute;
-    top: calc(var(--header-h) - 48px);
-    left: -14px;
-    right: -14px;
-    bottom: calc(var(--pave) - 59px);
-    border: 54px solid #000;
+    top: calc(var(--header-h) + 6px);
+    left: 40px;
+    right: 40px;
+    bottom: calc(var(--pave) - 5px);
+    overflow: hidden;
+    border-radius: 16px 16px 0 0;     /* softly rounded top corners (bottom edge sits behind the pavement) */
+    /* Figma frame fill: red radial glow in the centre fading to black at the edges */
+    background: radial-gradient(ellipse 50% 50% at 50% 50%,
+        #a40c0c 0%, #7b0909 25%, #520606 50%, #290303 75%, #150101 87.5%, #0a0101 93.75%, #000 100%);
 }
-.hero-skyline::before {
+.hero-skyline::before {               /* far layer: scrolls slower than the page */
     content: "";
     position: absolute;
-    inset: 0;
-    border-radius: 16px;              /* softly rounded corners */
+    inset: -20% 0 0;                  /* spare height above, so the image can drift down while scrolling */
     background: url("assets/skyline.jpg") center / cover no-repeat;
     opacity: 0.3;
+    transform: translate3d(0, calc(var(--sy, 0) * 0.15px), 0);
 }
 
 .hero-pavement {
@@ -149,6 +151,7 @@ a { color: inherit; text-decoration: none; }
     width: var(--tw);
     margin-bottom: 6vh;
 }
+.hero-content { translate: 0 calc(var(--sy, 0) * 0.12px); }   /* middle layer */
 .hero-content h1 {
     margin: 0 0 10px;
     font-size: clamp(34px, 4.2vw, 56px);
@@ -207,7 +210,7 @@ a { color: inherit; text-decoration: none; }
     transform-origin: 50% 85%;
     /* --mx/--my (mouse) and --s (scroll) are set by script.js */
     transform:
-        translate3d(calc(var(--mx, 0) * 14px), calc(var(--my, 0) * 9px + var(--s, 0) * 30px), 0)
+        translate3d(calc(var(--mx, 0) * 14px), calc(var(--my, 0) * 9px - var(--sy, 0) * 0.1px), 0)
         scale(calc(1 + var(--s, 0) * 0.1));
     transition: transform 0.15s ease-out;
 }
@@ -327,6 +330,18 @@ html { scroll-behavior: smooth; }
 .site-footer .logo { font-size: 28px; }
 
 
+/* ---------- scroll parallax / reveal (driven by script.js) ---------- */
+[data-parallax] { translate: 0 calc(var(--py, 0) * 1px); }
+
+.reveal { opacity: 0; transition: opacity 0.7s ease-out; }
+.reveal.in { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+    [data-parallax], .hero-content { translate: none; }
+    .hero-skyline::before { transform: none; }
+    .reveal { opacity: 1; transition: none; }
+}
+
 /* ---------- responsive ---------- */
 @media (max-width: 900px) {
     .features, .projects { grid-template-columns: 1fr; }
@@ -342,8 +357,7 @@ html { scroll-behavior: smooth; }
 
     /* stacked: character on top, text below, pavement still fully visible at the bottom */
     .hero { height: auto; min-height: 100vh; min-height: 100svh; }
-    .hero-skyline { top: calc(var(--header-h) - 20px); border-width: 20px; }
-    .hero-skyline::before { border-radius: 12px; }
+    .hero-skyline { top: var(--header-h); left: 6px; right: 6px; bottom: calc(var(--pave) - 39px); border-radius: 12px 12px 0 0; }
     .hero-inner {
         position: relative;
         flex-direction: column;

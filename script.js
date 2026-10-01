@@ -1,25 +1,46 @@
-// Depth effect for the hero character: it follows the mouse a little and
-// moves toward the viewer as the page scrolls, so it feels like it is
-// flying out of the screen. Does nothing for users who prefer reduced motion.
+// Scroll and pointer effects. Does nothing for users who prefer reduced motion.
+//  - hero: the skyline, text and character move at different speeds while
+//    scrolling (parallax), and the character also follows the mouse a little
+//    and grows slightly, as if flying out of the screen
+//  - elements marked data-parallax data-speed="n" float relative to the viewport
+//  - sections fade in when they scroll into view
 (function () {
-    var hero = document.querySelector('.hero');
-    var character = document.querySelector('.hero-character');
-    if (!hero || !character) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    var mx = 0, my = 0, s = 0, queued = false;
+    var hero = document.querySelector('.hero');
+    var character = document.querySelector('.hero-character');
+    var layers = Array.prototype.slice.call(document.querySelectorAll('[data-parallax]'));
+    var mx = 0, my = 0, queued = false;
 
     function apply() {
         queued = false;
-        character.style.setProperty('--mx', mx.toFixed(3));
-        character.style.setProperty('--my', my.toFixed(3));
-        character.style.setProperty('--s', s.toFixed(3));
+        var vh = window.innerHeight;
+
+        if (hero) {
+            var sy = Math.min(Math.max(window.scrollY, 0), hero.offsetHeight);
+            hero.style.setProperty('--sy', sy.toFixed(1));
+            if (character) {
+                character.style.setProperty('--mx', mx.toFixed(3));
+                character.style.setProperty('--my', my.toFixed(3));
+                character.style.setProperty('--s', (sy / hero.offsetHeight).toFixed(3));
+            }
+        }
+
+        layers.forEach(function (el) {
+            // measure the parent so the element's own offset never feeds back into the maths
+            var r = el.parentElement.getBoundingClientRect();
+            if (r.bottom < -200 || r.top > vh + 200) return;
+            var speed = parseFloat(el.getAttribute('data-speed')) || 0;
+            var offset = (r.top + r.height / 2 - vh / 2) * speed;
+            offset = Math.max(-48, Math.min(48, offset));   // keep the movement subtle on tall (stacked) layouts
+            el.style.setProperty('--py', offset.toFixed(1));
+        });
     }
     function queue() {
         if (!queued) { queued = true; requestAnimationFrame(apply); }
     }
 
-    if (window.matchMedia('(pointer: fine)').matches) {
+    if (hero && character && window.matchMedia('(pointer: fine)').matches) {
         hero.addEventListener('pointermove', function (e) {
             var r = hero.getBoundingClientRect();
             mx = ((e.clientX - r.left) / r.width - 0.5) * 2;
@@ -29,8 +50,23 @@
         hero.addEventListener('pointerleave', function () { mx = 0; my = 0; queue(); });
     }
 
-    window.addEventListener('scroll', function () {
-        s = Math.min(1, Math.max(0, window.scrollY / hero.offsetHeight));
-        queue();
-    }, { passive: true });
+    window.addEventListener('scroll', queue, { passive: true });
+    window.addEventListener('resize', queue);
+    queue();
+
+    // fade-in on scroll
+    if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('in');
+                    io.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+        document.querySelectorAll('.section-title, .lead, .features li, .project, .cta .btn').forEach(function (el) {
+            el.classList.add('reveal');
+            io.observe(el);
+        });
+    }
 })();
