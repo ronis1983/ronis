@@ -1,0 +1,418 @@
+/* Design: Figma "Desktop - 1" (1440 x 709), RTL Hebrew landing hero */
+:root {
+    --gold: #eebf00;
+    --title: #d3d3d3;
+    --text: #c3c3c3;
+    --font: "Assistant", "Segoe UI", Arial, sans-serif;
+    --header-h: 72px;
+    --pave: clamp(110px, 19vh, 170px);   /* visible pavement strip at the bottom of the hero */
+    --edge: max(5vw, calc((100vw - 1280px) / 2));   /* shared side margin: logo/character on the left, menu/text on the right */
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+    margin: 0;
+    scroll-behavior: smooth;
+    scroll-padding-top: var(--header-h);
+}
+body {
+    margin: 0;
+    background: #000;
+    color: #fff;
+    font-family: var(--font);
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* ---------- header (fixed, stays while scrolling) ---------- */
+.site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: row-reverse;      /* logo on the left, nav on the right (as in Figma) */
+    justify-content: space-between;
+    align-items: center;
+    height: var(--header-h);
+    padding: 0 var(--edge);
+    background: rgba(0, 0, 0, 0.82);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    transition: background-color 0.25s;
+}
+.site-header.at-top {                 /* script.js: at the very top the band is plain black, so the cape can reach into it */
+    background: transparent;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+}
+/* the "camera" dot from the design */
+.site-header::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 47.4%;
+    width: 20px;
+    height: 20px;
+    transform: translateY(-50%);
+    border-radius: 50%;
+    background: rgba(217, 217, 217, 0.29);
+}
+
+.logo {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--gold);
+    text-shadow: -10px 3px 3px rgba(0, 0, 0, 0.25);
+    direction: ltr;
+}
+
+.main-nav ul {
+    display: flex;
+    gap: clamp(20px, 2.4vw, 36px);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.main-nav a {
+    font-size: clamp(18px, 1.7vw, 24px);
+    font-weight: 600;
+    color: #fff;
+    transition: color 0.2s;
+}
+.main-nav a:hover { color: var(--gold); }
+
+/* ---------- hero: exactly one screen tall, pavement and character fully visible ---------- */
+.hero {
+    position: relative;
+    height: 100vh;
+    height: 100svh;
+    min-height: 560px;
+    overflow: hidden;
+    background: #000;
+}
+
+.hero-skyline {                       /* black bands on the sides (and top), as in the Figma design */
+    position: absolute;
+    top: calc(var(--header-h) + 6px);
+    left: 40px;
+    right: 40px;
+    bottom: calc(var(--pave) - 5px);
+    overflow: hidden;
+    border-radius: 16px 16px 0 0;     /* softly rounded top corners (bottom edge sits behind the pavement) */
+    /* Figma frame fill: red radial glow in the centre fading to black at the edges */
+    background: radial-gradient(ellipse 50% 50% at 50% 50%,
+        #a40c0c 0%, #7b0909 25%, #520606 50%, #290303 75%, #150101 87.5%, #0a0101 93.75%, #000 100%);
+}
+.hero-skyline::before {               /* far layer: scrolls slower than the page */
+    content: "";
+    position: absolute;
+    inset: -20% 0 0;                  /* spare height above, so the image can drift down while scrolling */
+    background: url("assets/skyline.jpg") center / cover no-repeat;
+    opacity: 0.3;
+    transform: translate3d(0, calc(var(--sy, 0) * 0.15px), 0);
+}
+
+.hero-pavement {
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: var(--pave);
+    background: url("assets/pavement.jpg") center top / cover no-repeat;
+}
+
+/* text + character share one row and are sized so they can never touch */
+.hero-inner {
+    --tw: clamp(300px, 40vw, 500px);                 /* text column width */
+    --gap: clamp(40px, 4.5vw, 80px);                 /* clear space between text and character */
+    --lift: 34px;                                    /* how far the cape reaches up into the black top band */
+    --top: calc(var(--header-h) + 12px - var(--lift));  /* the visible figure starts just below the menu, minus the lift ... */
+    --bottom: 28px;                                  /* ... and ends just above the bottom edge */
+    /* The PNG has transparent margins (9.5% top, 5.8% bottom) and its visible part is 84.7% of its height,
+       so the box is sized to make the VISIBLE figure fill exactly the space between --top and --bottom. */
+    --ch: min(
+        calc((100vh - var(--top) - var(--bottom)) / 0.847),
+        calc((100vw - 2 * var(--edge) - 16px - var(--tw) - var(--gap)) * 1.5),
+        var(--ch-max, 100000px)
+    );
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;                    /* RTL: first child (text) on the right */
+    align-items: flex-end;
+    justify-content: flex-start;      /* RTL: text flush with the menu on the right, character right next to it */
+    gap: var(--gap);
+    padding: var(--top) var(--edge) var(--bottom);
+}
+@supports (height: 100svh) {
+    .hero-inner {
+        --ch: min(
+            calc((100svh - var(--top) - var(--bottom)) / 0.847),
+            calc((100vw - 2 * var(--edge) - 16px - var(--tw) - var(--gap)) * 1.5),
+            var(--ch-max, 100000px)
+        );
+    }
+}
+/* the source image is 1024 x 1536: on 2x screens keep it at most ~1.1x upscaled so it never gets soft */
+@media (min-resolution: 2dppx) {
+    .hero-inner { --ch-max: 840px; }
+}
+
+.hero-content {
+    flex: none;
+    align-self: center;
+    width: var(--tw);
+    margin-bottom: 6vh;
+}
+.hero-content { translate: 0 calc(var(--sy, 0) * 0.12px); }   /* middle layer */
+.hero-content h1 {
+    margin: 0 0 10px;
+    font-size: clamp(34px, 4.2vw, 56px);
+    font-weight: 800;
+    line-height: 1.25;
+    color: var(--title);
+}
+.hero-content p {
+    margin: 0 0 24px;
+    font-size: clamp(18px, 1.9vw, 26px);
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--text);
+}
+
+.nowrap { white-space: nowrap; }
+
+.hero-actions { display: flex; gap: 16px; }
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 190px;
+    height: 44px;
+    padding: 0 12px;
+    border-radius: 12px;
+    font-size: clamp(15px, 1.5vw, 20px);
+    font-weight: 600;
+    color: #000;
+    white-space: nowrap;
+    transition: transform 0.15s, filter 0.15s;
+}
+.btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+
+.btn-primary {
+    background: var(--gold);
+    box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
+}
+.btn-ghost {
+    background: rgba(124, 123, 121, 0.42);
+    border: 1px solid #fff;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* ---------- the character: "flies out of the screen" ---------- */
+.hero-character {
+    flex: none;
+    position: relative;
+    isolation: isolate;
+    height: var(--ch);
+    width: calc(var(--ch) * 2 / 3);
+    margin-bottom: calc(var(--ch) * -0.058);        /* transparent bottom margin of the PNG */
+    pointer-events: none;
+    transform-origin: 50% 85%;
+    /* --mx/--my (mouse) and --s (scroll) are set by script.js */
+    transform:
+        translate3d(calc(var(--mx, 0) * 14px), calc(var(--my, 0) * 9px - var(--sy, 0) * 0.1px), 0)
+        scale(calc(1 + var(--s, 0) * 0.1));
+    transition: transform 0.15s ease-out;
+}
+.hero-character::before {             /* warm light spilling out of the "screen" */
+    content: "";
+    position: absolute;
+    inset: -4% -10% 0;
+    z-index: -1;
+    background: radial-gradient(closest-side, rgba(238, 140, 40, 0.38), rgba(164, 12, 12, 0.2) 55%, transparent 78%);
+    filter: blur(12px);
+    animation: glow 1.4s 0.15s ease-out both;
+}
+.hero-character img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 18px 26px rgba(0, 0, 0, 0.5));
+    animation: burst 1.2s 0.2s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+
+@keyframes burst {                    /* starts small and "deep" inside the screen, then flies toward the viewer */
+    from {
+        opacity: 0;
+        transform: scale(0.45) translate3d(12%, -6%, 0);
+        filter: blur(8px) drop-shadow(0 18px 26px rgba(0, 0, 0, 0.5));
+    }
+    55% { opacity: 1; }
+    to {
+        opacity: 1;
+        transform: none;
+        filter: blur(0) drop-shadow(0 18px 26px rgba(0, 0, 0, 0.5));
+    }
+}
+@keyframes glow {
+    from { opacity: 0; transform: scale(0.4); }
+    to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-character { transform: none !important; transition: none; }
+    .hero-character img, .hero-character::before { animation: none; }
+}
+
+/* ---------- sections ---------- */
+html { scroll-behavior: smooth; }
+
+.section { padding: 96px 24px; background: #000; }
+.section-alt { background: #0d0d0d; }
+.container { max-width: 1190px; margin: 0 auto; }
+
+.section-title {
+    margin: 0 0 12px;
+    font-size: 48px;
+    font-weight: 800;
+    color: var(--title);
+}
+.section-title::after {
+    content: "";
+    display: block;
+    width: 64px;
+    height: 4px;
+    margin-top: 12px;
+    border-radius: 2px;
+    background: var(--gold);
+}
+.lead {
+    max-width: 640px;
+    margin: 0 0 48px;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--text);
+}
+
+.features, .projects {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.features li, .project {
+    padding: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    background: rgba(124, 123, 121, 0.12);
+}
+.feature-num { font-size: 20px; font-weight: 800; color: var(--gold); }
+.features h3, .project h3 { margin: 8px 0; font-size: 28px; color: var(--title); }
+.features p, .project p { margin: 0; font-size: 20px; line-height: 1.4; color: var(--text); }
+
+.project { padding: 16px 16px 24px; transition: transform 0.2s; }
+.project:hover { transform: translateY(-4px); }
+.project h3 { padding: 0 12px; }
+.project p { padding: 0 12px; }
+.project-img { height: 200px; margin-bottom: 16px; border-radius: 8px; }
+.img-1 { background: linear-gradient(135deg, #7b0909, #151515); }
+.img-2 { background: linear-gradient(135deg, #eebf00, #3a2a00); }
+.img-3 { background: linear-gradient(135deg, #555, #111); }
+
+.cta { text-align: center; }
+.cta .section-title::after, .cta .lead { margin-inline: auto; }
+.cta .btn { margin-top: 0; }
+
+.site-footer {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 51px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    font-size: 18px;
+    color: var(--text);
+}
+.site-footer .logo { font-size: 28px; }
+
+
+/* ---------- scroll parallax / reveal (driven by script.js) ---------- */
+[data-parallax] { translate: 0 calc(var(--py, 0) * 1px); }
+
+.reveal { opacity: 0; transition: opacity 0.7s ease-out; }
+.reveal.in { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+    [data-parallax], .hero-content { translate: none; }
+    .hero-skyline::before { transform: none; }
+    .reveal { opacity: 1; transition: none; }
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 900px) {
+    .features, .projects { grid-template-columns: 1fr; }
+    .site-header::after { display: none; }
+}
+
+@media (max-width: 760px) {
+    :root { --header-h: 56px; --pave: 90px; --edge: 24px; }
+
+    .logo { font-size: 24px; }
+    .main-nav ul { gap: 16px; padding-inline-end: 0; }
+    .main-nav a { font-size: 16px; }
+
+    /* stacked: character on top, text below, pavement still fully visible at the bottom */
+    .hero { height: auto; min-height: 100vh; min-height: 100svh; }
+    .hero-skyline { top: var(--header-h); left: 6px; right: 6px; bottom: calc(var(--pave) - 39px); border-radius: 12px 12px 0 0; }
+    .hero-inner {
+        position: relative;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
+        gap: 4px;
+        min-height: 100vh;
+        min-height: 100svh;
+        padding: calc(var(--header-h) + 8px) var(--edge) calc(var(--pave) + 16px);
+        perspective: none;
+    }
+    .hero-character {
+        --ch: min(34vh, 300px);
+        margin-bottom: 0;
+        order: -1;
+        align-self: center;
+    }
+    @supports (height: 100svh) { .hero-character { --ch: min(34svh, 300px); } }
+    .hero-content { align-self: stretch; width: auto; margin: 0; }
+
+    .section { padding: 64px 20px; }
+    .section-title { font-size: 36px; }
+    .lead { font-size: 20px; }
+    .site-footer { flex-direction: column; gap: 8px; padding: 24px 20px; }
+}
+
+/* ---------- contact page ---------- */
+.contact-section { padding-top: 160px; min-height: calc(100vh - 80px); }
+.contact-form { display: grid; gap: 20px; max-width: 560px; }
+.contact-form label { display: grid; gap: 8px; font-size: 20px; font-weight: 600; color: var(--text); }
+.contact-form input, .contact-form textarea {
+    padding: 12px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    background: rgba(124, 123, 121, 0.2);
+    font: inherit;
+    color: #fff;
+}
+.contact-form input:focus, .contact-form textarea:focus { outline: 2px solid var(--gold); }
+.contact-form .btn { border: 0; cursor: pointer; font-family: inherit; }
