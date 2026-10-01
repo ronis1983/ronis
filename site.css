@@ -98,15 +98,6 @@ a { color: inherit; text-decoration: none; }
     height: 131px;
     background: url("assets/pavement.jpg") center top / cover no-repeat;
 }
-.hero-shadow {
-    position: absolute;
-    left: 19.7%;
-    top: 94px;
-    width: 302px;
-    height: 26px;
-    border-radius: 50%;
-    background: rgba(34, 33, 33, 0.33);
-}
 
 /* ---------- hero content ---------- */
 .hero-content {
@@ -166,10 +157,88 @@ a { color: inherit; text-decoration: none; }
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
+/* ---------- sections ---------- */
+html { scroll-behavior: smooth; }
+
+.section { padding: 96px 24px; background: #000; }
+.section-alt { background: #0d0d0d; }
+.container { max-width: 1190px; margin: 0 auto; }
+
+.section-title {
+    margin: 0 0 12px;
+    font-size: 48px;
+    font-weight: 800;
+    color: var(--title);
+}
+.section-title::after {
+    content: "";
+    display: block;
+    width: 64px;
+    height: 4px;
+    margin-top: 12px;
+    border-radius: 2px;
+    background: var(--gold);
+}
+.lead {
+    max-width: 640px;
+    margin: 0 0 48px;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--text);
+}
+
+.features, .projects {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.features li, .project {
+    padding: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    background: rgba(124, 123, 121, 0.12);
+}
+.feature-num { font-size: 20px; font-weight: 800; color: var(--gold); }
+.features h3, .project h3 { margin: 8px 0; font-size: 28px; color: var(--title); }
+.features p, .project p { margin: 0; font-size: 20px; line-height: 1.4; color: var(--text); }
+
+.project { padding: 16px 16px 24px; transition: transform 0.2s; }
+.project:hover { transform: translateY(-4px); }
+.project h3 { padding: 0 12px; }
+.project p { padding: 0 12px; }
+.project-img { height: 200px; margin-bottom: 16px; border-radius: 8px; }
+.img-1 { background: linear-gradient(135deg, #7b0909, #151515); }
+.img-2 { background: linear-gradient(135deg, #eebf00, #3a2a00); }
+.img-3 { background: linear-gradient(135deg, #555, #111); }
+
+.cta { text-align: center; }
+.cta .section-title::after, .cta .lead { margin-inline: auto; }
+.cta .btn { margin-top: 0; }
+
+.site-footer {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 51px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    font-size: 18px;
+    color: var(--text);
+}
+.site-footer .logo { font-size: 28px; }
+
 /* ---------- responsive ---------- */
+@media (max-width: 900px) {
+    .features, .projects { grid-template-columns: 1fr; }
+}
+
 @media (max-width: 1100px) {
     .hero-content { margin-inline-start: 60px; }
-    .hero-shadow, .hero-dot { display: none; }
+    .hero-dot { display: none; }
 }
 
 @media (max-width: 700px) {
@@ -186,4 +255,23 @@ a { color: inherit; text-decoration: none; }
     .hero-actions { flex-direction: column; gap: 16px; width: 100%; }
     .btn { width: 100%; font-size: 20px; }
     .hero-pavement { height: 90px; }
+    .section { padding: 64px 20px; }
+    .section-title { font-size: 36px; }
+    .lead { font-size: 20px; }
+    .site-footer { flex-direction: column; gap: 8px; padding: 24px 20px; }
 }
+
+/* ---------- contact page ---------- */
+.contact-section { padding-top: 160px; min-height: calc(100vh - 80px); }
+.contact-form { display: grid; gap: 20px; max-width: 560px; }
+.contact-form label { display: grid; gap: 8px; font-size: 20px; font-weight: 600; color: var(--text); }
+.contact-form input, .contact-form textarea {
+    padding: 12px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    background: rgba(124, 123, 121, 0.2);
+    font: inherit;
+    color: #fff;
+}
+.contact-form input:focus, .contact-form textarea:focus { outline: 2px solid var(--gold); }
+.contact-form .btn { border: 0; cursor: pointer; font-family: inherit; }
