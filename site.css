@@ -123,9 +123,14 @@ a { color: inherit; text-decoration: none; }
 .hero-inner {
     --tw: clamp(300px, 40vw, 500px);                 /* text column width */
     --gap: clamp(40px, 4.5vw, 80px);                 /* clear space between text and character */
-    --ch: min(                                       /* character height: fits the screen AND the space left of the text */
-        calc(100vh - 20px - var(--pave) * 0.1),
-        calc((100vw - 2 * var(--edge) - 16px - var(--tw) - var(--gap)) * 1.5)
+    --top: calc(var(--header-h) + 12px);             /* the visible figure starts just below the menu ... */
+    --bottom: 28px;                                  /* ... and ends just above the bottom edge */
+    /* The PNG has transparent margins (9.5% top, 5.8% bottom) and its visible part is 84.7% of its height,
+       so the box is sized to make the VISIBLE figure fill exactly the space between --top and --bottom. */
+    --ch: min(
+        calc((100vh - var(--top) - var(--bottom)) / 0.847),
+        calc((100vw - 2 * var(--edge) - 16px - var(--tw) - var(--gap)) * 1.5),
+        var(--ch-max, 100000px)
     );
     position: absolute;
     inset: 0;
@@ -134,15 +139,20 @@ a { color: inherit; text-decoration: none; }
     align-items: flex-end;
     justify-content: flex-start;      /* RTL: text flush with the menu on the right, character right next to it */
     gap: var(--gap);
-    padding: 20px var(--edge) calc(var(--pave) * 0.1);
+    padding: var(--top) var(--edge) var(--bottom);
 }
 @supports (height: 100svh) {
     .hero-inner {
         --ch: min(
-            calc(100svh - 20px - var(--pave) * 0.1),
-            calc((100vw - 2 * var(--edge) - 16px - var(--tw) - var(--gap)) * 1.5)
+            calc((100svh - var(--top) - var(--bottom)) / 0.847),
+            calc((100vw - 2 * var(--edge) - 16px - var(--tw) - var(--gap)) * 1.5),
+            var(--ch-max, 100000px)
         );
     }
+}
+/* the source image is 1024 x 1536: on 2x screens keep it at most ~1.1x upscaled so it never gets soft */
+@media (min-resolution: 2dppx) {
+    .hero-inner { --ch-max: 840px; }
 }
 
 .hero-content {
@@ -206,6 +216,7 @@ a { color: inherit; text-decoration: none; }
     isolation: isolate;
     height: var(--ch);
     width: calc(var(--ch) * 2 / 3);
+    margin-bottom: calc(var(--ch) * -0.058);        /* transparent bottom margin of the PNG */
     pointer-events: none;
     transform-origin: 50% 85%;
     /* --mx/--my (mouse) and --s (scroll) are set by script.js */
@@ -371,6 +382,7 @@ html { scroll-behavior: smooth; }
     }
     .hero-character {
         --ch: min(34vh, 300px);
+        margin-bottom: 0;
         order: -1;
         align-self: center;
     }
