@@ -98,6 +98,10 @@ HERO = '''<main class="hero">
 
 SCRIPT = '''<script>
 (function () {
+    var header = document.querySelector('.site-header');
+    function markTop() { if (header) header.classList.toggle('at-top', window.scrollY < 8); }
+    markTop();
+    window.addEventListener('scroll', markTop, { passive: true });
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     var hero = document.querySelector('.hero'), ch = document.querySelector('.hero-character');
     if (!hero || !ch) return;

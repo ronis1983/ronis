@@ -5,6 +5,12 @@
 //  - elements marked data-parallax data-speed="n" float relative to the viewport
 //  - sections fade in when they scroll into view
 (function () {
+    // the header is see-through at the very top (the character's cape reaches into that band) and solid once scrolled
+    var header = document.querySelector('.site-header');
+    function markTop() { if (header) header.classList.toggle('at-top', window.scrollY < 8); }
+    markTop();
+    window.addEventListener('scroll', markTop, { passive: true });
+
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     var hero = document.querySelector('.hero');
