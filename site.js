@@ -1,15 +1,16 @@
-/* Two small things, neither of which the page depends on to be usable:
+/* Three small things, none of which the page depends on to be usable:
 
    - The header gets a frosted backdrop once the page has scrolled, so text
      passing beneath it stays readable. Over the hero it stays clear, the way
      the design draws it.
+   - The figure walks on as the page is scrolled.
    - The ring in the nav lights up around the section currently being read,
      and follows you down the page.
 
    Without this file the header is still fixed and every link still works;
-   the backdrop just never appears and no ring lights up. On a page with no
-   sections of its own, the markup says which link is current and this leaves
-   it alone. */
+   the backdrop just never appears, the figure stands still and no ring
+   lights up. On a page with no sections of its own, the markup says which
+   link is current and this leaves it alone. */
 (function () {
     "use strict";
 
@@ -68,6 +69,39 @@
         });
     }
 
+    /* The figure walks on as the page is scrolled. --walk runs from 0 at the
+       top of the page to 1 once the first screen has gone by, and the
+       stylesheet turns that into how far the figure has travelled; nothing
+       about how far, or in which direction, is decided here.
+
+       Tied to the scroll position rather than played as an animation, so it
+       runs backwards on the way up and the figure is always where the
+       scrollbar says it is. Left alone for a reader who has asked for less
+       motion: the property stays unset and the stylesheet's fallback holds
+       the figure still. */
+    var stage = document.querySelector(".stage-frame");
+    var composition = document.querySelector(".hero");
+    var walks = !!(stage && composition) && !(window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    var walked = -1;
+
+    function markWalk() {
+        if (!walks) return;
+
+        var box = stage.getBoundingClientRect();
+        if (box.height <= 0) return;
+
+        var along = Math.min(Math.max(-box.top / box.height, 0), 1);
+
+        /* Rounded before it is written. A thousandth of the stride is well
+           under a pixel, so anything finer than this is a style
+           invalidation that changes nothing on screen. */
+        along = Math.round(along * 1000) / 1000;
+        if (along === walked) return;
+        walked = along;
+        composition.style.setProperty("--walk", along);
+    }
+
     var pairs = [];
     [].forEach.call(document.querySelectorAll('.nav-link[href^="#"]'), function (link) {
         var section = document.querySelector(link.getAttribute("href"));
@@ -105,13 +139,24 @@
     }
 
     function update() {
+        pending = null;
         markScrolled();
+        markWalk();
         if (pairs.length) markCurrent();
     }
 
+    /* A scroll can fire many times between two frames, and the figure can
+       only move once per frame anyway, so the work is collapsed onto the
+       next one rather than repeated for every event. */
+    var pending = null;
+
+    function schedule() {
+        if (pending === null) pending = requestAnimationFrame(update);
+    }
+
     update();
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update, { passive: true });
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule, { passive: true });
 
     /* ----------------------------------------------------------------------
        The clip on the hero
@@ -170,12 +215,10 @@
             checkAlpha(function (ok) {
                 if (!ok) return;   /* the still stays, and nothing is fetched */
 
-                /* It loops. The clip does not return to its opening pose, so
-                   the file itself is cut at the frame that comes closest and
-                   carries a three-frame crossfade over the wrap - which takes
-                   the jump from 63 down to 34, where two genuinely adjacent
-                   frames score 18. Longer crossfades barely improve on that
-                   and visibly double the rider and the reins. */
+                /* It loops. The file is one stride, cut where the walk
+                   returns to its opening pose, so the wrap costs less than
+                   the clip's own worst step between two neighbouring
+                   frames and there is nothing to fade over. */
                 clip.loop = true;
 
                 /* Only once it is actually playing does the still step aside.

@@ -224,6 +224,26 @@
     pointer-events: none;
 }
 
+/* --------------------------------------------------------------------------
+   Walking on
+
+   --walk is written by site.js: 0 at the top of the page, 1 once the first
+   screen has been scrolled past. The figure and the shadow it casts on the
+   ground move together, leftwards, which is the way the rhino faces.
+
+   Scrolled rather than animated, so it runs backwards on the way up and the
+   figure is always exactly where the scrollbar says it is. With the property
+   unset - no script, or a reader who has asked for less motion - the calc
+   resolves to zero and nothing here moves.
+
+   The frame clips, so however far the figure travels it can never widen the
+   page; that is the same `overflow: hidden` that keeps the ground's overhang
+   off the bottom. */
+.hero__media,
+.hero__shadow {
+    transform: translateX(calc(var(--walk, 0) * -22cqw)); /* 317px at 1440 */
+}
+
 /* `contain`, not `cover`. Cover fills the slot and crops whatever does not
    fit, and the clip is a slightly taller shape than the slot - 0.919 against
    0.933 - so it was losing 5.8px off the top and the bottom. That is 7.4 rows
@@ -358,6 +378,13 @@
         max-width: clamp(280px, 88vmin, 560px);
         margin-top: clamp(6px, 1.5vmin, 16px);
         filter: none;
+    }
+
+    /* .hero is not a query container in this layout, so cqw here is a
+       percentage of the window rather than of the composition, and the
+       figure has far less room either side of it. The shadow is off. */
+    .hero__media {
+        transform: translateX(calc(var(--walk, 0) * -16cqw));
     }
 
     .hero__art,
