@@ -115,24 +115,25 @@ a { color: inherit; text-decoration: none; }
 /* text + character share one row and are sized so they can never touch */
 .hero-inner {
     --tw: clamp(300px, 40vw, 500px);                 /* text column width */
+    --gap: clamp(40px, 4.5vw, 80px);                 /* clear space between text and character */
     --ch: min(                                       /* character height: fits the screen AND the space left of the text */
         calc(100vh - 20px - var(--pave) * 0.1),
-        calc((100vw - 2 * var(--edge) - 16px - var(--tw) - 32px) * 1.5)
+        calc((100vw - 2 * var(--edge) - 16px - var(--tw) - var(--gap)) * 1.5)
     );
     position: absolute;
     inset: 0;
     z-index: 2;
     display: flex;                    /* RTL: first child (text) on the right */
     align-items: flex-end;
-    justify-content: space-between;   /* text flush with the menu, character flush with the logo */
-    gap: 32px;
+    justify-content: flex-start;      /* RTL: text flush with the menu on the right, character right next to it */
+    gap: var(--gap);
     padding: 20px var(--edge) calc(var(--pave) * 0.1);
 }
 @supports (height: 100svh) {
     .hero-inner {
         --ch: min(
             calc(100svh - 20px - var(--pave) * 0.1),
-            calc((100vw - 2 * var(--edge) - 16px - var(--tw) - 32px) * 1.5)
+            calc((100vw - 2 * var(--edge) - 16px - var(--tw) - var(--gap)) * 1.5)
         );
     }
 }
