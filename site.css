@@ -4,13 +4,19 @@
     --title: #d3d3d3;
     --text: #c3c3c3;
     --font: "Assistant", "Segoe UI", Arial, sans-serif;
+    --header-h: 72px;
+    --pave: clamp(110px, 19vh, 170px);   /* visible pavement strip at the bottom of the hero */
 }
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html, body { margin: 0; }
-
+html {
+    margin: 0;
+    scroll-behavior: smooth;
+    scroll-padding-top: var(--header-h);
+}
 body {
+    margin: 0;
     background: #000;
     color: #fff;
     font-family: var(--font);
@@ -18,138 +24,167 @@ body {
 
 a { color: inherit; text-decoration: none; }
 
-/* ---------- header ---------- */
+/* ---------- header (fixed, stays while scrolling) ---------- */
 .site-header {
-    position: absolute;
-    inset: 0 0 auto 0;
-    z-index: 3;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
     display: flex;
     flex-direction: row-reverse;      /* logo on the left, nav on the right (as in Figma) */
     justify-content: space-between;
     align-items: center;
-    height: 100px;
-    padding: 0 51px;
+    height: var(--header-h);
+    padding: 0 clamp(20px, 3.5vw, 51px);
+    background: rgba(0, 0, 0, 0.82);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+/* the "camera" dot from the design */
+.site-header::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 47.4%;
+    width: 20px;
+    height: 20px;
+    transform: translateY(-50%);
+    border-radius: 50%;
+    background: rgba(217, 217, 217, 0.29);
 }
 
 .logo {
-    font-size: 40px;
+    font-size: 32px;
     font-weight: 800;
     color: var(--gold);
-    text-shadow: -13px 4px 4px rgba(0, 0, 0, 0.25);
+    text-shadow: -10px 3px 3px rgba(0, 0, 0, 0.25);
     direction: ltr;
 }
 
 .main-nav ul {
     display: flex;
-    gap: 40px;
+    gap: clamp(20px, 2.4vw, 36px);
     margin: 0;
-    padding: 0 0 0 0;
+    padding: 0;
+    padding-inline-end: clamp(0px, 4vw, 60px);
     list-style: none;
-    padding-inline-end: 60px;         /* nav sits 136px from the right edge */
 }
-
 .main-nav a {
-    font-size: 30px;
+    font-size: clamp(18px, 1.7vw, 24px);
     font-weight: 600;
     color: #fff;
     transition: color 0.2s;
 }
 .main-nav a:hover { color: var(--gold); }
 
-/* ---------- hero ---------- */
+/* ---------- hero: exactly one screen tall, pavement and character fully visible ---------- */
 .hero {
     position: relative;
-    min-height: 709px;
-    overflow-x: clip;                 /* the character may overhang the hero vertically, as in Figma */
+    height: 100vh;
+    height: 100svh;
+    min-height: 560px;
+    overflow: hidden;
     background: #000;
 }
 
+/* the "screen": a framed skyline panel the character appears to fly out of */
 .hero-skyline {
     position: absolute;
-    top: 35px;
+    top: calc(var(--header-h) - 48px);
     left: -14px;
     right: -14px;
-    height: 602px;
+    bottom: calc(var(--pave) - 59px);
     border: 54px solid #000;
 }
 .hero-skyline::before {
     content: "";
     position: absolute;
     inset: 0;
+    border-radius: 8px;
     background: url("assets/skyline.jpg") center / cover no-repeat;
     opacity: 0.3;
 }
-
-.hero-dot {
+.hero-skyline::after {                /* thin screen edge + vignette */
+    content: "";
     position: absolute;
-    top: 20px;
-    left: 47.4%;
-    width: 25px;
-    height: 25px;
-    border-radius: 50%;
-    background: rgba(217, 217, 217, 0.29);
+    inset: 0;
+    border-radius: 8px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14), inset 0 0 90px rgba(0, 0, 0, 0.6);
+    pointer-events: none;
 }
 
 .hero-pavement {
     position: absolute;
+    z-index: 1;
     left: 0;
     right: 0;
     bottom: 0;
-    height: 131px;
+    height: var(--pave);
     background: url("assets/pavement.jpg") center top / cover no-repeat;
 }
 
-.hero-character {
+/* text + character share one row and are sized so they can never touch */
+.hero-inner {
+    --tw: clamp(300px, 40vw, 500px);                 /* text column width */
+    --gap: clamp(32px, 6vw, 120px);
+    --ch: min(                                       /* character height: fits the screen AND the space left of the text */
+        calc(100vh - var(--header-h) - 24px - var(--pave) * 0.3),
+        calc((100vw - 10vw - 16px - var(--tw) - var(--gap)) * 1.5)
+    );
     position: absolute;
-    z-index: 1;
-    top: -63px;
-    left: 185px;
-    width: 574px;
-    height: auto;
-    pointer-events: none;
-}
-
-/* ---------- hero content ---------- */
-.hero-content {
-    position: relative;
+    inset: 0;
     z-index: 2;
-    width: min(555px, 100%);
-    margin-inline-start: 125px;       /* right edge in RTL */
-    padding-top: 159px;
+    display: flex;                    /* RTL: first child (text) on the right */
+    align-items: flex-end;
+    justify-content: center;
+    gap: var(--gap);
+    padding: calc(var(--header-h) + 16px) 5vw calc(var(--pave) * 0.3);
+    perspective: 1400px;
+}
+@supports (height: 100svh) {
+    .hero-inner {
+        --ch: min(
+            calc(100svh - var(--header-h) - 24px - var(--pave) * 0.3),
+            calc((100vw - 10vw - 16px - var(--tw) - var(--gap)) * 1.5)
+        );
+    }
 }
 
+.hero-content {
+    flex: none;
+    align-self: center;
+    width: var(--tw);
+    margin-bottom: 6vh;
+}
 .hero-content h1 {
-    margin: 0 0 12px;
-    font-size: 70px;
+    margin: 0 0 10px;
+    font-size: clamp(34px, 4.2vw, 56px);
     font-weight: 800;
-    line-height: 1.3;
+    line-height: 1.25;
     color: var(--title);
-    white-space: nowrap;
 }
-
 .hero-content p {
-    margin: 0 0 32px;
-    font-size: 32px;
+    margin: 0 0 24px;
+    font-size: clamp(18px, 1.9vw, 26px);
     font-weight: 600;
-    line-height: 1.2;
+    line-height: 1.25;
     color: var(--text);
 }
 
-.hero-actions {
-    display: flex;
-    gap: 44px;
-    width: max-content;
-}
+.hero-actions { display: flex; gap: 16px; }
 
 .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 220px;
-    height: 47px;
-    padding: 0 24px;
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 190px;
+    height: 44px;
+    padding: 0 12px;
     border-radius: 12px;
-    font-size: 24px;
+    font-size: clamp(15px, 1.5vw, 20px);
     font-weight: 600;
     color: #000;
     white-space: nowrap;
@@ -165,6 +200,65 @@ a { color: inherit; text-decoration: none; }
     background: rgba(124, 123, 121, 0.42);
     border: 1px solid #fff;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* ---------- the character: "flies out of the screen" ---------- */
+.hero-character {
+    flex: none;
+    position: relative;
+    isolation: isolate;
+    height: var(--ch);
+    width: calc(var(--ch) * 2 / 3);
+    pointer-events: none;
+    transform-origin: 50% 85%;
+    /* --mx/--my (mouse) and --s (scroll) are set by script.js */
+    transform:
+        translate3d(calc(var(--mx, 0) * 14px), calc(var(--my, 0) * 9px + var(--s, 0) * 36px), 0)
+        rotateY(calc(var(--mx, 0) * -6deg))
+        rotateX(calc(var(--my, 0) * 4deg))
+        scale(calc(1 + var(--s, 0) * 0.18));
+    transition: transform 0.15s ease-out;
+    will-change: transform;
+}
+.hero-character::before {             /* warm light spilling out of the "screen" */
+    content: "";
+    position: absolute;
+    inset: -4% -10% 0;
+    z-index: -1;
+    background: radial-gradient(closest-side, rgba(238, 140, 40, 0.38), rgba(164, 12, 12, 0.2) 55%, transparent 78%);
+    filter: blur(12px);
+    animation: glow 1.4s 0.15s ease-out both;
+}
+.hero-character img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 18px 26px rgba(0, 0, 0, 0.5));
+    animation: burst 1.2s 0.2s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+
+@keyframes burst {                    /* starts small and "deep" inside the screen, then flies toward the viewer */
+    from {
+        opacity: 0;
+        transform: scale(0.45) translate3d(12%, -6%, 0);
+        filter: blur(8px) drop-shadow(0 18px 26px rgba(0, 0, 0, 0.5));
+    }
+    55% { opacity: 1; }
+    to {
+        opacity: 1;
+        transform: none;
+        filter: blur(0) drop-shadow(0 18px 26px rgba(0, 0, 0, 0.5));
+    }
+}
+@keyframes glow {
+    from { opacity: 0; transform: scale(0.4); }
+    to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-character { transform: none !important; transition: none; }
+    .hero-character img, .hero-character::before { animation: none; }
 }
 
 /* ---------- sections ---------- */
@@ -241,32 +335,42 @@ html { scroll-behavior: smooth; }
 }
 .site-footer .logo { font-size: 28px; }
 
+
 /* ---------- responsive ---------- */
 @media (max-width: 900px) {
     .features, .projects { grid-template-columns: 1fr; }
+    .site-header::after { display: none; }
 }
 
-@media (max-width: 1100px) {
-    .hero-content { margin-inline-start: 60px; }
-    .hero-character { left: 0; width: 42vw; top: 0; }
-    .hero-dot { display: none; }
-}
+@media (max-width: 760px) {
+    :root { --header-h: 56px; --pave: 90px; }
 
-@media (max-width: 700px) {
-    .site-header { height: 72px; padding: 0 20px; }
-    .logo { font-size: 28px; }
+    .logo { font-size: 24px; }
     .main-nav ul { gap: 16px; padding-inline-end: 0; }
-    .main-nav a { font-size: 18px; }
+    .main-nav a { font-size: 16px; }
 
-    .hero { min-height: 100svh; overflow: hidden; }
-    .hero-character { display: none; }
-    .hero-skyline { border-width: 20px; }
-    .hero-content { margin-inline: 24px; padding-top: 140px; width: auto; }
-    .hero-content h1 { font-size: 40px; white-space: normal; }
-    .hero-content p { font-size: 20px; }
-    .hero-actions { flex-direction: column; gap: 16px; width: 100%; }
-    .btn { width: 100%; font-size: 20px; }
-    .hero-pavement { height: 90px; }
+    /* stacked: character on top, text below, pavement still fully visible at the bottom */
+    .hero { height: auto; min-height: 100vh; min-height: 100svh; }
+    .hero-skyline { top: calc(var(--header-h) - 20px); border-width: 20px; }
+    .hero-inner {
+        position: relative;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
+        gap: 4px;
+        min-height: 100vh;
+        min-height: 100svh;
+        padding: calc(var(--header-h) + 8px) 24px calc(var(--pave) + 16px);
+        perspective: none;
+    }
+    .hero-character {
+        --ch: min(34vh, 300px);
+        order: -1;
+        align-self: center;
+    }
+    @supports (height: 100svh) { .hero-character { --ch: min(34svh, 300px); } }
+    .hero-content { align-self: stretch; width: auto; margin: 0; }
+
     .section { padding: 64px 20px; }
     .section-title { font-size: 36px; }
     .lead { font-size: 20px; }
