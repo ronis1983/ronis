@@ -1,7 +1,7 @@
 // Scroll and pointer effects. Does nothing for users who prefer reduced motion.
 //  - hero: the skyline and the text move at different speeds while scrolling
 //    (parallax); the character stays put, standing on the pavement
-//  - elements marked data-parallax data-speed="n" float relative to the viewport
+//  - elements marked data-parallax data-speed="n" would float relative to the viewport (none are marked at the moment)
 //  - sections fade in when they scroll into view
 (function () {
     // the header is see-through at the very top and solid once scrolled
