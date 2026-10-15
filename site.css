@@ -225,12 +225,23 @@ a { color: inherit; text-decoration: none; }
     width: calc(var(--ch) * 0.6575);                /* video aspect ratio 768 : 1168 */
     margin-bottom: calc(var(--ch) * -0.02);         /* transparent bottom margin of the video */
     pointer-events: none;
-    transform-origin: 50% 85%;
-    /* --mx/--my (mouse) and --s (scroll) are set by script.js */
-    transform:
-        translate3d(calc(var(--mx, 0) * 14px), calc(var(--my, 0) * 9px - var(--sy, 0) * 0.1px), 0)
-        scale(calc(1 + var(--s, 0) * 0.1));
-    transition: transform 0.15s ease-out;
+}
+/* shadow cast on the pavement: a dark contact patch under each sandal plus a softer pool between them
+   (light comes from the left, so the shadows lean slightly right) */
+.hero-character::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    left: 0;
+    top: 93%;
+    width: 100%;
+    height: 9%;
+    background:
+        radial-gradient(ellipse 13% 42% at 36% 46%, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0) 100%),
+        radial-gradient(ellipse 14% 42% at 79% 44%, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0) 100%),
+        radial-gradient(ellipse 44% 46% at 58% 48%, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0) 100%);
+    filter: blur(1.5px);
+    animation: shadow-in 1s 0.5s ease-out both;
 }
 .hero-character::before {             /* warm light spilling out of the "screen" */
     content: "";
@@ -247,13 +258,14 @@ a { color: inherit; text-decoration: none; }
     width: 100%;
     height: 100%;
     object-fit: contain;
+    transform-origin: 50% 98%;        /* the feet */
     animation: burst 1.2s 0.2s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
 }
 
 @keyframes burst {                    /* starts small and "deep" inside the screen, then flies toward the viewer */
     from {
         opacity: 0;
-        transform: scale(0.45) translate3d(12%, -6%, 0);
+        transform: scale(0.55);
         filter: blur(8px);
     }
     55% { opacity: 1; }
@@ -263,14 +275,17 @@ a { color: inherit; text-decoration: none; }
         filter: blur(0);
     }
 }
+@keyframes shadow-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
 @keyframes glow {
     from { opacity: 0; transform: scale(0.4); }
     to { opacity: 1; transform: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .hero-character { transform: none !important; transition: none; }
-    .hero-character video, .hero-character img, .hero-character::before { animation: none; }
+    .hero-character video, .hero-character img, .hero-character::before, .hero-character::after { animation: none; }
 }
 
 /* ---------- sections ---------- */
@@ -394,6 +409,7 @@ html { scroll-behavior: smooth; }
         align-self: center;
     }
     @supports (height: 100svh) { .hero-character { --ch: min(34svh, 300px); } }
+    .hero-character::after { display: none; }       /* not standing on the pavement in the stacked layout */
     .hero-content { align-self: stretch; width: auto; margin: 0; }
 
     .section { padding: 64px 20px; }
