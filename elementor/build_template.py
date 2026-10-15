@@ -110,42 +110,35 @@ HERO = '''<main class="hero">
 
 SCRIPT = '''<script>
 (function () {
+    // header: see-through at the very top, solid once scrolled
     var header = document.querySelector('.site-header');
     function markTop() { if (header) header.classList.toggle('at-top', window.scrollY < 8); }
     markTop();
     window.addEventListener('scroll', markTop, { passive: true });
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    var hero = document.querySelector('.hero'), ch = document.querySelector('.hero-character');
-    if (!hero || !ch) return;
-    var mx = 0, my = 0, queued = false;
-    function apply() {
-        queued = false;
-        var sy = Math.min(Math.max(window.scrollY, 0), hero.offsetHeight);
-        hero.style.setProperty('--sy', sy.toFixed(1));
-        ch.style.setProperty('--mx', mx.toFixed(3));
-        ch.style.setProperty('--my', my.toFixed(3));
-        ch.style.setProperty('--s', (sy / hero.offsetHeight).toFixed(3));
-    }
-    function queue() { if (!queued) { queued = true; requestAnimationFrame(apply); } }
-    if (window.matchMedia('(pointer: fine)').matches) {
-        hero.addEventListener('pointermove', function (e) {
-            var r = hero.getBoundingClientRect();
-            mx = ((e.clientX - r.left) / r.width - 0.5) * 2;
-            my = ((e.clientY - r.top) / r.height - 0.5) * 2;
-            queue();
-        });
-        hero.addEventListener('pointerleave', function () { mx = 0; my = 0; queue(); });
-    }
-    window.addEventListener('scroll', queue, { passive: true });
-    window.addEventListener('resize', queue);
-    queue();
-    var video = ch.querySelector('video');
+
+    // play the character video only while the hero is on screen
+    var video = document.querySelector('.hero-character video');
     if (video && 'IntersectionObserver' in window) {
         new IntersectionObserver(function (entries) {
-            if (!video.hasAttribute('autoplay')) return;
+            if (!video.hasAttribute('autoplay')) return;      // fallback mode: keep the still poster
             if (entries[0].isIntersecting) { var p = video.play(); if (p && p.catch) p.catch(function () {}); } else video.pause();
         }).observe(video);
     }
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    // hero parallax: the skyline and the text drift while scrolling; the character stays put on the pavement
+    var hero = document.querySelector('.hero');
+    if (!hero) return;
+    var queued = false;
+    function apply() {
+        queued = false;
+        hero.style.setProperty('--sy', Math.min(Math.max(window.scrollY, 0), hero.offsetHeight).toFixed(1));
+    }
+    function queue() { if (!queued) { queued = true; requestAnimationFrame(apply); } }
+    window.addEventListener('scroll', queue, { passive: true });
+    window.addEventListener('resize', queue);
+    queue();
 })();
 </script>'''
 
