@@ -37,7 +37,23 @@
             </div>
 
             <div class="hero-character">
-                <img src="assets/hero-character.png" alt="RONIS בתלבושת גיבור על, עף לעבר הצופה" width="1024" height="1536" fetchpriority="high">
+                <video autoplay muted loop playsinline preload="auto" poster="assets/hero-character-poster.webp" width="768" height="1168" aria-label="RONIS בתלבושת גיבור על, מסובב את כדור הארץ על האצבע">
+                    <source src="assets/hero-character.webm" type="video/webm">
+                </video>
+                <script>
+                    /* Safari and iOS ignore the transparency of WebM and would show a solid box, and users who prefer
+                       reduced motion should not get autoplay: both keep the still poster instead of the video. */
+                    (function () {
+                        var ua = navigator.userAgent;
+                        var webkit = /iP(hone|ad|od)/.test(ua) || (/Safari/.test(ua) && !/Chrome|Chromium|Android|Edg|OPR|Firefox/.test(ua));
+                        if (webkit || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                            var v = document.currentScript.previousElementSibling;
+                            v.removeAttribute('autoplay');
+                            v.removeChild(v.querySelector('source'));
+                            v.load();
+                        }
+                    })();
+                </script>
             </div>
         </div>
     </main>

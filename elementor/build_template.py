@@ -91,10 +91,22 @@ HERO = '''<main class="hero">
             </div>
         </div>
         <div class="hero-character">
-            <img src="%shero-character.png" alt="RONIS בתלבושת גיבור על, עף לעבר הצופה" width="1024" height="1536">
+            <video autoplay muted loop playsinline preload="auto" poster="%shero-character-poster.webp" width="768" height="1168" aria-label="RONIS בתלבושת גיבור על, מסובב את כדור הארץ על האצבע">
+                <source src="%shero-character.webm" type="video/webm">
+            </video>
+            <script>
+                (function () {
+                    var ua = navigator.userAgent;
+                    var webkit = /iP(hone|ad|od)/.test(ua) || (/Safari/.test(ua) && !/Chrome|Chromium|Android|Edg|OPR|Firefox/.test(ua));
+                    if (webkit || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                        var v = document.currentScript.previousElementSibling;
+                        v.removeAttribute('autoplay'); v.removeChild(v.querySelector('source')); v.load();
+                    }
+                })();
+            </script>
         </div>
     </div>
-</main>''' % ASSET_BASE
+</main>''' % (ASSET_BASE, ASSET_BASE)
 
 SCRIPT = '''<script>
 (function () {
@@ -127,6 +139,13 @@ SCRIPT = '''<script>
     window.addEventListener('scroll', queue, { passive: true });
     window.addEventListener('resize', queue);
     queue();
+    var video = ch.querySelector('video');
+    if (video && 'IntersectionObserver' in window) {
+        new IntersectionObserver(function (entries) {
+            if (!video.hasAttribute('autoplay')) return;
+            if (entries[0].isIntersecting) { var p = video.play(); if (p && p.catch) p.catch(function () {}); } else video.pause();
+        }).observe(video);
+    }
 })();
 </script>'''
 

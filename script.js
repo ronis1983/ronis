@@ -11,6 +11,16 @@
     markTop();
     window.addEventListener('scroll', markTop, { passive: true });
 
+    // play the character video only while the hero is on screen (saves battery and CPU)
+    var video = document.querySelector('.hero-character video');
+    if (video && 'IntersectionObserver' in window) {
+        new IntersectionObserver(function (entries) {
+            if (!video.hasAttribute('autoplay')) return;      // fallback mode: keep the still poster
+            if (entries[0].isIntersecting) { var p = video.play(); if (p && p.catch) p.catch(function () {}); }
+            else video.pause();
+        }).observe(video);
+    }
+
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     var hero = document.querySelector('.hero');

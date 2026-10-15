@@ -129,14 +129,14 @@ a { color: inherit; text-decoration: none; }
 .hero-inner {
     --tw: clamp(300px, 40vw, 500px);                 /* text column width */
     --gap: clamp(40px, 4.5vw, 80px);                 /* clear space between text and character */
-    --lift: 34px;                                    /* how far the cape reaches up into the black top band */
+    --lift: 0px;                                     /* raise the figure so its top reaches into the black top band (0 = just below the menu) */
     --top: calc(var(--header-h) + 12px - var(--lift));  /* the visible figure starts just below the menu, minus the lift ... */
     --bottom: 28px;                                  /* ... and ends just above the bottom edge */
-    /* The PNG has transparent margins (9.5% top, 5.8% bottom) and its visible part is 84.7% of its height,
+    /* The video (768 x 1168) has transparent margins (2.7% top, 2.0% bottom) and its visible part is 95.4% of its height,
        so the box is sized to make the VISIBLE figure fill exactly the space between --top and --bottom. */
     --ch: min(
-        calc((100vh - var(--top) - var(--bottom)) / 0.847),
-        calc((100vw - 2 * var(--edge) - 16px - var(--tw) - var(--gap)) * 1.5),
+        calc((100vh - var(--top) - var(--bottom)) / 0.954),
+        calc((100vw - 2 * var(--edge) - 16px - var(--tw) - var(--gap)) * 1.5209),
         var(--ch-max, 100000px)
     );
     position: absolute;
@@ -151,15 +151,15 @@ a { color: inherit; text-decoration: none; }
 @supports (height: 100svh) {
     .hero-inner {
         --ch: min(
-            calc((100svh - var(--top) - var(--bottom)) / 0.847),
-            calc((100vw - 2 * var(--edge) - 16px - var(--tw) - var(--gap)) * 1.5),
+            calc((100svh - var(--top) - var(--bottom)) / 0.954),
+            calc((100vw - 2 * var(--edge) - 16px - var(--tw) - var(--gap)) * 1.5209),
             var(--ch-max, 100000px)
         );
     }
 }
-/* the source image is 1024 x 1536: on 2x screens keep it at most ~1.1x upscaled so it never gets soft */
+/* the source video is 768 px wide: on 2x screens keep it at most ~1.25x upscaled so it never gets soft */
 @media (min-resolution: 2dppx) {
-    .hero-inner { --ch-max: 840px; }
+    .hero-inner { --ch-max: 730px; }
 }
 
 .hero-content {
@@ -222,8 +222,8 @@ a { color: inherit; text-decoration: none; }
     position: relative;
     isolation: isolate;
     height: var(--ch);
-    width: calc(var(--ch) * 2 / 3);
-    margin-bottom: calc(var(--ch) * -0.058);        /* transparent bottom margin of the PNG */
+    width: calc(var(--ch) * 0.6575);                /* video aspect ratio 768 : 1168 */
+    margin-bottom: calc(var(--ch) * -0.02);         /* transparent bottom margin of the video */
     pointer-events: none;
     transform-origin: 50% 85%;
     /* --mx/--my (mouse) and --s (scroll) are set by script.js */
@@ -241,12 +241,12 @@ a { color: inherit; text-decoration: none; }
     filter: blur(12px);
     animation: glow 1.4s 0.15s ease-out both;
 }
+.hero-character video,
 .hero-character img {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: contain;
-    filter: drop-shadow(0 18px 26px rgba(0, 0, 0, 0.5));
     animation: burst 1.2s 0.2s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
 }
 
@@ -254,13 +254,13 @@ a { color: inherit; text-decoration: none; }
     from {
         opacity: 0;
         transform: scale(0.45) translate3d(12%, -6%, 0);
-        filter: blur(8px) drop-shadow(0 18px 26px rgba(0, 0, 0, 0.5));
+        filter: blur(8px);
     }
     55% { opacity: 1; }
     to {
         opacity: 1;
         transform: none;
-        filter: blur(0) drop-shadow(0 18px 26px rgba(0, 0, 0, 0.5));
+        filter: blur(0);
     }
 }
 @keyframes glow {
@@ -270,7 +270,7 @@ a { color: inherit; text-decoration: none; }
 
 @media (prefers-reduced-motion: reduce) {
     .hero-character { transform: none !important; transition: none; }
-    .hero-character img, .hero-character::before { animation: none; }
+    .hero-character video, .hero-character img, .hero-character::before { animation: none; }
 }
 
 /* ---------- sections ---------- */
