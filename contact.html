@@ -1,30 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>יצירת קשר | RONIS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="site.css">
 </head>
-<body>
-    <form name="contact" method="POST" data-netlify="true">
-        <p>
-          <label>Your Name: <input type="text" name="name" /></label>   
-        </p>
-        <p>
-          <label>Your Email: <input type="email" name="email" /></label>
-        </p>
-        <p>
-          <label>Your Role: <select name="role[]" multiple>
-            <option value="leader">Leader</option>
-            <option value="follower">Follower</option>
-          </select></label>
-        </p>
-        <p>
-          <label>Message: <textarea name="message"></textarea></label>
-        </p>
-        <p>
-          <button type="submit">Send</button>
-        </p>
-      </form>
+<body class="page-contact">
+    <header class="site-header">
+        <a class="logo" href="index.html">RONIS</a>
+        <nav class="main-nav" aria-label="ניווט ראשי">
+            <ul>
+                <li><a href="index.html#about">אודות</a></li>
+                <li><a href="index.html#projects">פרויקטים</a></li>
+                <li><a href="contact.html">יצירת קשר</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="section contact-section">
+        <div class="container">
+            <h1 class="section-title">יצירת קשר</h1>
+            <p class="lead">ספרו לי על הפרויקט ואחזור אליכם בהקדם.</p>
+            <form class="contact-form" name="contact" method="POST" data-netlify="true">
+                <label>שם מלא <input type="text" name="name" required></label>
+                <label>אימייל <input type="email" name="email" required></label>
+                <label>הודעה <textarea name="message" rows="6" required></textarea></label>
+                <button class="btn btn-primary" type="submit">שליחה &gt;&gt;</button>
+            </form>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <span class="logo">RONIS</span>
+        <span>© 2026 כל הזכויות שמורות</span>
+    </footer>
 </body>
 </html>
